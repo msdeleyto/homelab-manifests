@@ -42,5 +42,6 @@ kubectl kustomize "${certmanager_dir}" --enable-helm | kubectl apply -f -
 echo -e "\nDeploying metallb..."
 metallb_dir="${project_path}/metallb"
 
-kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.15.2/config/manifests/metallb-native.yaml
+helm repo add metallb https://metallb.github.io/metallb
+helm upgrade --install --namespace network -f "${metallb_dir}"/values.yaml metallb metallb/metallb --wait
 kubectl kustomize "${metallb_dir}" --enable-helm | kubectl apply -f -
