@@ -6,7 +6,7 @@ project_path="$(git rev-parse --show-toplevel)"
 
 # nfs
 echo -e "\nDeploying nfs..."
-nfs_dir="${project_path}/nfs"
+nfs_dir="${project_path}/storage/nfs"
 
 # Replace secrets
 sed -i "s|<path:secret/data/infra#k8s_nfs>|${K8S_NFS}|" "${nfs_dir}"/values.yaml

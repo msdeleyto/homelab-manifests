@@ -12,7 +12,7 @@ project_path="$(git rev-parse --show-toplevel)"
 
 # argocd
 echo -e "\nDeploying argocd..."
-argocd_dir="${project_path}/argocd"
+argocd_dir="${project_path}/devops-tools/argocd"
 
 # Replace secrets
 sed -i "s|<path:secret/data/infra#domain>|${DOMAIN}|" "${argocd_dir}"/values.yaml

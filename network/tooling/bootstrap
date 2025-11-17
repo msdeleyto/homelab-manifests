@@ -9,13 +9,13 @@ helm repo add mittwald https://helm.mittwald.de
 helm repo update
 
 echo -e "\nDeploying replicator..."
-replicator_dir="${project_path}/replicator"
+replicator_dir="${project_path}/network/replicator"
 
 helm upgrade --install --namespace default kubernetes-replicator mittwald/kubernetes-replicator --values "${replicator_dir}"/values.yaml
 
 # traefik
 echo -e "\nDeploying traefik..."
-traefik_dir="${project_path}/traefik"
+traefik_dir="${project_path}/network/traefik"
 
 # Replace env variables
 sed -i "s|<path:secret/data/infra#domain>|${DOMAIN}|" "${traefik_dir}"/values.yaml
@@ -29,7 +29,7 @@ helm upgrade --install --namespace network --create-namespace -f "${traefik_dir}
 kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.18.1/cert-manager.crds.yaml
 
 echo -e "\nDeploying cert-manager..."
-certmanager_dir="${project_path}/certmanager"
+certmanager_dir="${project_path}/network/certmanager"
 
 # Replace env variables
 sed -i "s|<path:secret/data/infra#domain>|${DOMAIN}|" "${certmanager_dir}"/values.yaml
@@ -41,6 +41,6 @@ helm upgrade --install --namespace network -f "${certmanager_dir}"/values.yaml c
 
 # metallb
 echo -e "\nDeploying metallb..."
-metallb_dir="${project_path}/metallb"
+metallb_dir="${project_path}/network/metallb"
 
 kubectl kustomize "${metallb_dir}" --enable-helm | kubectl apply -f -
