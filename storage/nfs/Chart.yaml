@@ -1,0 +1,5 @@
+apiVersion: v2
+name: nfs-sc
+description: Deploy NFS storageclass
+type: application
+version: 0.1.0

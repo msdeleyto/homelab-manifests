@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orcaslicer
+  namespace: misc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: orcaslicer
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: orcaslicer
+    spec:
+      containers:
+      - image: lscr.io/linuxserver/orcaslicer:2.3.0
+        name: orcaslicer
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: PGID
+          value: "1000"
+        - name: PUID
+          value: "1000"
+        - name: CUSTOM_USER
+          valueFrom:
+            secretKeyRef:
+              name: orcaslicer-secrets
+              key: orcaslicer-ui-username
+        - name: PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: orcaslicer-secrets
+              key: orcaslicer-ui-password
+        ports:
+        - containerPort: 3001
+          name: https
+          protocol: TCP
+        volumeMounts:
+        - name: config
+          mountPath: /config
+      restartPolicy: Always
+      volumes:
+      - name: config
+        nfs:
+          server: ${NFS_SERVER}
+          path: /volume1/kubernetes/config/orcaslicer

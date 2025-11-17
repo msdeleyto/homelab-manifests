@@ -1,0 +1,59 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: cwa
+spec:
+  replicas: {{ .Values.deployment.replicas }}
+  selector:
+    matchLabels:
+      app: cwa
+  template:
+    metadata:
+      labels:
+        app: cwa
+    spec:
+      {{- with .Values.deployment.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+      - name: cwa
+        image: {{ .Values.deployment.image.repository }}:{{ .Values.deployment.image.tag }}
+        ports:
+        - name: web
+          containerPort: 8083
+        env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        - name: CUSTOM_USER
+          valueFrom:
+            secretKeyRef:
+              name: cwa
+              key: USER
+        - name: CUSTOM_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: cwa
+              key: PASSWORD
+        volumeMounts:
+        - name: config
+          mountPath: /config
+        - name: library
+          mountPath: /calibre-library 
+        - name: new-books
+          mountPath: /cwa-book-ingest
+      volumes:
+      - name: config
+        nfs:
+          server: {{ .Values.nfs }}
+          path: /volume1/kubernetes/config/calibre
+      - name: library
+        nfs:
+          server: {{ .Values.nfs }}
+          path: /volume1/data/media/books/library
+      - name: new-books
+        nfs:
+          server: {{ .Values.nfs }}
+          path: /volume1/data/media/books/new

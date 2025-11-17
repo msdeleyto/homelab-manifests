@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jellyfin
+spec:
+  replicas: {{ .Values.deployment.replicas }}
+  selector:
+    matchLabels:
+      app: jellyfin
+  template:
+    metadata:
+      labels:
+        app: jellyfin
+    spec:
+      {{- with .Values.deployment.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+      - name: jellyfin
+        image: {{ .Values.deployment.image.repository }}:{{ .Values.deployment.image.tag }}
+        securityContext:
+          privileged: true
+        env:
+        {{- range .Values.deployment.env }}
+        - name: {{ .name }}
+          value: {{ .value | quote }}
+        {{- end }}
+        ports:
+        - containerPort: 8096
+        volumeMounts:
+        - mountPath: /config
+          name: config
+        - name: data
+          mountPath: /data/media
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: jellyfin-config-pvc
+      - name: data
+        nfs:
+          server: {{ .Values.nfs }}
+          path: /volume1/data/media

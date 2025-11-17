@@ -1,0 +1,10 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+helmCharts:
+- name: mend-renovate-ce
+  repo: https://mend.github.io/renovate-ce-ee
+  version: 11.4.0
+  releaseName: mend-renovate-ce
+  namespace: devops-tools
+  valuesFile: values.yaml

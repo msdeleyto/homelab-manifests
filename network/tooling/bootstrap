@@ -1,0 +1,46 @@
+#!/bin/bash
+
+set -eu
+
+project_path="$(git rev-parse --show-toplevel)"
+
+# Install replicator
+helm repo add mittwald https://helm.mittwald.de
+helm repo update
+
+echo -e "\nDeploying replicator..."
+replicator_dir="${project_path}/replicator"
+
+helm upgrade --install --namespace default kubernetes-replicator mittwald/kubernetes-replicator --values "${replicator_dir}"/values.yaml
+
+# traefik
+echo -e "\nDeploying traefik..."
+traefik_dir="${project_path}/traefik"
+
+# Replace env variables
+sed -i "s|<path:secret/data/infra#domain>|${DOMAIN}|" "${traefik_dir}"/values.yaml
+sed -i "s|<path:secret/data/monitoring/crowdsec#traefik_bouncer_key>|${CROWDSEC_TRAEFIK_BOUNCER_KEY}|" "${traefik_dir}"/values.yaml
+
+helm dependency build "${traefik_dir}"
+helm upgrade --install --namespace network --create-namespace -f "${traefik_dir}"/values.yaml traefik "${traefik_dir}"
+
+# cert-manager
+
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.18.1/cert-manager.crds.yaml
+
+echo -e "\nDeploying cert-manager..."
+certmanager_dir="${project_path}/certmanager"
+
+# Replace env variables
+sed -i "s|<path:secret/data/infra#domain>|${DOMAIN}|" "${certmanager_dir}"/values.yaml
+sed -i "s|<path:secret/data/network/certmanager#letsEncryptEmail>|${LETS_ENCRYPT_EMAIL}|" "${certmanager_dir}"/values.yaml
+sed -i "s|<path:secret/data/network/certmanager#apiToken>|${CERT_MANAGER_API_TOKEN}|" "${certmanager_dir}"/values.yaml
+
+helm dependency build "${certmanager_dir}"
+helm upgrade --install --namespace network -f "${certmanager_dir}"/values.yaml cert-manager "${certmanager_dir}"
+
+# metallb
+echo -e "\nDeploying metallb..."
+metallb_dir="${project_path}/metallb"
+
+kubectl kustomize "${metallb_dir}" --enable-helm | kubectl apply -f -

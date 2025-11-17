@@ -1,0 +1,44 @@
+#!/bin/bash
+
+# Required environment variables:
+# - ADMIN_PASSWORD: The password for the admin user in Vault.
+# - VAULT_TOKEN: The token for authenticating with Vault.
+
+VAULT_READER_ROLE="argocd-reader"
+VAULT_READER_K8S_SA="argocd-repo-server"
+
+kubectl -n vault exec -it vault-0 -- vault login "${VAULT_TOKEN}" || exit 1
+
+kubectl -n vault exec -it vault-0 -- vault auth enable kubernetes || echo "Kubernetes auth already enabled"
+
+# Test if needed
+kubectl -n vault exec -it vault-0 -- vault write auth/kubernetes/config \
+  token_reviewer_jwt="$(kubectl get secret vault-auth -n vault -o jsonpath="{.data.token}" | base64 -d)" \
+  kubernetes_host="$(kubectl config view --raw -o jsonpath='{.clusters[0].cluster.server}')" \
+  kubernetes_ca_cert="$(kubectl get secret vault-auth -n vault -o jsonpath="{.data['ca\.crt']}" | base64 -d)"
+
+kubectl -n vault exec -it vault-0 -- vault policy write admin - <<EOF
+path "secret/data/*" {
+  capabilities = ["create", "read", "update", "delete", "list"]
+}
+EOF
+
+kubectl -n vault exec -it vault-0 -- vault policy write read-policy - <<EOF
+path "secret/data/*" {
+  capabilities = ["read", "list"]
+}
+EOF
+
+kubectl -n vault exec -it vault-0 -- vault write auth/kubernetes/role/${VAULT_READER_ROLE} \
+  bound_service_account_names=${VAULT_READER_K8S_SA} \
+  bound_service_account_namespaces="*" \
+  policies=read-policy \
+  ttl=24h
+
+kubectl -n vault exec -it vault-0 -- vault auth enable userpass || echo "Already enabled"
+
+kubectl -n vault exec -it vault-0 -- vault write auth/userpass/users/admin \
+  password="${ADMIN_PASSWORD}" \
+  policies=admin
+
+kubectl -n vault exec -it vault-0 -- vault secrets enable -path=secret -version=2 kv

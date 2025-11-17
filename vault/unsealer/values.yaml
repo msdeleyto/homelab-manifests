@@ -1,0 +1,10 @@
+vault:
+  server: http://vault:8200
+  key1: <path:secret/data/vault/unsealer#key1>
+  key2: <path:secret/data/vault/unsealer#key2>
+  key3: <path:secret/data/vault/unsealer#key3>
+
+cronjob:
+  image:
+    repository: hashicorp/vault
+    tag: 1.20.4

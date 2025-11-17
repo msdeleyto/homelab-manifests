@@ -1,0 +1,87 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: cwa-downloader
+spec:
+  replicas: {{ .Values.deployment.replicas }}
+  selector:
+    matchLabels:
+      app: cwa-downloader
+  template:
+    metadata:
+      labels:
+        app: cwa-downloader
+    spec:
+      {{- with .Values.deployment.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      initContainers:
+      - name: vpn
+        image: {{ .Values.vpn.image }}:{{ .Values.vpn.imageTag }}
+        restartPolicy: Always
+        securityContext:
+          capabilities:
+            add:
+            - NET_ADMIN
+        env:
+        - name: VPN_SERVICE_PROVIDER
+          value: nordvpn
+        - name: VPN_TYPE
+          value: openvpn
+        - name: OPENVPN_USER
+          valueFrom:
+            secretKeyRef:
+              name: cwa-downloader
+              key: OPENVPN_USER
+        - name: OPENVPN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: cwa-downloader
+              key: OPENVPN_PASSWORD
+        - name: DNS_KEEP_NAMESERVER
+          value: "on"
+        - name: FIREWALL_OUTBOUND_SUBNETS
+          value: "10.42.0.0/15"
+      - name: verify-vpn
+        image: busybox
+        command:
+        - sh
+        - -c
+        - |
+          sleep 30
+          while ! ping -c 1 8.8.8.8; do
+            echo "Ping failed, retrying in 5"
+            sleep 5
+          done
+          echo "ping succesfull, exiting"
+      containers:
+      - name: cwa-downloader
+        image: {{ .Values.deployment.image.repository }}:{{ .Values.deployment.image.tag }}
+        ports:
+        - name: web
+          containerPort: 8084
+        env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        - name: BOOK_LANGUAGE
+          value: "es"
+        - name: CWA_DB_PATH
+          value: /auth/app.db
+        volumeMounts:
+        - name: cwa-db
+          mountPath: /auth/app.db
+          subPath: app.db
+        - name: new-books
+          mountPath: /cwa-book-ingest
+      volumes:
+      - name: cwa-db
+        nfs:
+          server: {{ .Values.nfs }}
+          path: /volume1/kubernetes/config/calibre
+      - name: new-books
+        nfs:
+          server: {{ .Values.nfs }}
+          path: /volume1/data/media/books/new

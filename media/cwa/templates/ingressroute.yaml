@@ -1,0 +1,13 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: cwa
+spec:
+  entryPoints:
+  - websecure
+  routes:
+  - match: Host(`cwa.{{ .Values.domain }}`)
+    kind: Rule
+    services:
+    - name: cwa
+      port: {{ .Values.service.port }}

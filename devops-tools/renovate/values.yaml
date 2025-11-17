@@ -1,0 +1,35 @@
+renovate:
+  mendRnvAcceptTos: 'y'
+  mendRnvPlatform: 'github'
+  config: |
+    module.exports = {
+      "kubernetes": {
+        "fileMatch": ["\\.yaml$"]
+      }
+    }
+  githubComToken: <path:secret/data/devopstools/renovate#githubComToken>
+  mendRnvGithubAppId: <path:secret/data/devopstools/renovate#mendRnvGithubAppId>
+  mendRnvGithubAppKey: <path:secret/data/devopstools/renovate/mendRnvGithubAppKey#private_key>
+  mendRnvLicenseKey: <path:secret/data/devopstools/renovate#mendRnvLicenseKey>
+  mendRnvServerApiSecret: <path:secret/data/devopstools/renovate#mendRnvServerApiSecret>
+  mendRnvWebhookSecret: <path:secret/data/devopstools/renovate#mendRnvWebhookSecret>
+  mendRnvCronJobSchedulerAll: '0 * * * *'
+ingress:
+  enabled: true
+  ingressClassName: traefik
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+  hosts:
+    renovate.<path:secret/data/infra#domain>:
+      paths:
+      - path: '/'
+        pathType: Prefix
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+nodeSelector:
+  size: s

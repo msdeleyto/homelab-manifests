@@ -1,0 +1,30 @@
+#!/bin/bash
+
+set -eu
+
+# Add helm repository for argocd
+helm repo add argo https://argoproj.github.io/argo-helm
+helm repo update
+
+kubectl create namespace devops-tools || true
+
+project_path="$(git rev-parse --show-toplevel)"
+
+# argocd
+echo -e "\nDeploying argocd..."
+argocd_dir="${project_path}/argocd"
+
+# Replace secrets
+sed -i "s|<path:secret/data/infra#domain>|${DOMAIN}|" "${argocd_dir}"/values.yaml
+sed -i "s|<path:secret/data/devopstools/argocd#admin_password>|${ARGOCD_PASSWORD}|" "${argocd_dir}"/values.yaml
+sed -i "s|<path:secret/data/devopstools/argocd#gh_org1_username>|${ARGOCD_GH_ORG1_USERNAME}|" "${argocd_dir}"/values.yaml
+sed -i "s|<path:secret/data/devopstools/argocd#gh_org1_password>|${ARGOCD_GH_ORG1_PASSWORD}|" "${argocd_dir}"/values.yaml
+
+kubectl apply -f "${argocd_dir}"/secret.yaml
+
+# Install CRDs
+kubectl apply -k https://github.com/argoproj/argo-cd/manifests/crds\?ref\=stable
+
+kubectl kustomize "${argocd_dir}" --enable-helm | kubectl apply -f -
+
+echo -e "Done!\n"

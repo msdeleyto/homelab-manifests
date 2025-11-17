@@ -1,0 +1,60 @@
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 250m
+    memory: 256Mi
+logs:
+  general:
+    format: json
+    filePath: "/var/log/traefik/traefik.log"
+  access:
+    enabled: true
+podSecurityContext:
+  runAsUser: 1000
+  runAsGroup: 1000
+deployment:
+  additionalVolumes:
+  - name: traefik-logs
+    nfs:
+      server: <path:secret/data/infra#nfs>
+      path: /volume1/kubernetes/logs/traefik
+additionalVolumeMounts:
+- name: traefik-logs
+  mountPath: /var/log/traefik
+ports:
+  # web:
+  #   middlewares:
+  #   - network-crowdsec@kubernetescrd
+  # websecure:
+  #   middlewares:
+  #   - network-crowdsec@kubernetescrd
+  loki:
+    port: 3100        
+    expose:
+      default: true
+    exposedPort: 3100
+    protocol: TCP
+  prometheus:
+    port: 9090
+    expose:
+      default: true
+    exposedPort: 9090
+    protocol: TCP
+nodeSelector:
+  role: cp
+tolerations:
+- key: "role"
+  operator: "Equal"
+  value: "cp"
+  effect: "NoSchedule"
+providers:
+  kubernetesCRD:
+    enabled: true
+    allowCrossNamespace: true
+experimental:
+  plugins:
+    bouncer:
+      moduleName: github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin
+      version: v1.4.2

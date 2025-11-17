@@ -1,0 +1,22 @@
+image:
+  repository: otel/opentelemetry-collector
+
+mode: deployment
+
+config:
+  exporters:
+    otlp/tempo:
+      endpoint: http://tempo:4317
+      tls:
+        insecure: true
+  receivers:
+    jaeger: null
+    prometheus: null
+    zipkin: null
+  service:
+    pipelines:
+      traces:
+        receivers: [otlp]
+        exporters: [otlp/tempo]
+      metrics: null
+      logs: null

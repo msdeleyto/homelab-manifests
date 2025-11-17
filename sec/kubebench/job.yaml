@@ -1,0 +1,53 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kube-bench
+  namespace: sec
+spec:
+  template:
+    metadata:
+      labels:
+        app: kube-bench
+    spec:
+      containers:
+      - command:
+        - "kube-bench"
+        args:
+        - "--benchmark"
+        - "k3s-cis-1.7"
+        image: docker.io/aquasec/kube-bench:v0.11.1
+        name: kube-bench
+        volumeMounts:
+        - name: etc-systemd
+          mountPath: /etc/systemd
+          readOnly: true
+        - name: etc-kubernetes
+          mountPath: /etc/kubernetes
+          readOnly: true
+        - name: usr-bin
+          mountPath: /usr/local/mount-from-host/bin
+          readOnly: true
+        - name: root-dir
+          mountPath: /root
+        - name: var-lib-rancher-k3s-agent
+          mountPath: /var/lib/rancher/k3s/agent
+          readOnly: true
+      hostPID: true
+      restartPolicy: Never
+      volumes:
+      - name: etc-systemd
+        hostPath:
+          path: /etc/systemd
+      - name: etc-kubernetes
+        hostPath:
+          path: /etc/kubernetes
+      - name: usr-bin
+        hostPath:
+          path: /usr/bin
+      - name: root-dir
+        hostPath:
+          path: /root
+      - name: var-lib-rancher-k3s-agent
+        hostPath:
+          path: /var/lib/rancher/k3s/agent

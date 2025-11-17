@@ -1,0 +1,32 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: jellyfin-backup
+spec:
+  schedule: "{{ .Values.backup.schedule }}"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: backup
+            image: {{ .Values.backup.image.repository }}:{{ .Values.backup.image.tag }}
+            command:
+            - /bin/sh
+            - -c
+            - |
+{{ .Values.backup.command | indent 14 }}
+            volumeMounts:
+            - name: backup
+              mountPath: /backup
+            - name: config
+              mountPath: /config
+          restartPolicy: OnFailure
+          volumes:
+          - name: config
+            persistentVolumeClaim:
+              claimName: jellyfin-config-pvc
+          - name: backup
+            nfs:
+              server: {{ .Values.nfs }}
+              path: /volume1/kubernetes/backup/jellyfin

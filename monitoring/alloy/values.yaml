@@ -1,0 +1,81 @@
+alloy:
+  configMap:
+    content: |-
+      livedebugging {
+        enabled = true
+      }
+
+      logging {
+        level  = "info"
+        format = "logfmt"
+      }
+
+      prometheus.remote_write "default" {
+        endpoint {
+          url = "http://prometheus-server/api/v1/write"
+        }
+      }
+
+      loki.write "default" {
+        endpoint {
+          url       = "http://loki:3100/loki/api/v1/push"
+          tenant_id = "krieg"
+        }
+      }
+
+      prometheus.scrape "traefik" {
+        targets      = [
+          {"__address__" = "traefik.network:80", "instance" = "traefik"},
+        ]
+        forward_to   = [prometheus.remote_write.default.receiver]
+        metrics_path = "/api"
+      }
+
+      prometheus.scrape "crowdsec" {
+        targets      = [
+          {"__address__" = "crowdsec-agent-service:6060", "job" = "crowdsec-agent", "component" = "agent"},
+          {"__address__" = "crowdsec-service:6060", "job" = "crowdsec-lapi", "component" = "lapi"},
+        ]
+        forward_to   = [prometheus.remote_write.default.receiver]
+        metrics_path = "/metrics"
+      }
+
+      local.file_match "local_files" {
+        path_targets = [{"__path__" = "/var/log/traefik/traefik.log"}]
+        sync_period = "5s"
+      }
+
+      loki.source.file "traefik_logs" {
+        targets    = local.file_match.local_files.targets
+        forward_to = [loki.write.default.receiver]
+        tail_from_end = true
+      }
+  mounts:
+    extra:
+    - name: traefik-logs
+      mountPath: /var/log/traefik
+
+controller:
+  volumes:
+    extra:
+    - name: traefik-logs
+      nfs:
+        server: <path:secret/data/infra#nfs>
+        path: /volume1/kubernetes/logs/traefik
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 300m
+      memory: 512Mi
+  nodeSelector:
+    size: m
+
+ingress:
+  enabled: true
+  ingressClassName: traefik
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+  hosts:
+  - alloy.<path:secret/data/infra#domain>

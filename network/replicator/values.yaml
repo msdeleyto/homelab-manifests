@@ -1,0 +1,14 @@
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+nodeSelector:
+  role: cp
+tolerations:
+- key: "role"
+  operator: "Equal"
+  value: "cp"
+  effect: "NoSchedule"

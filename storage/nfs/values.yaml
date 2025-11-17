@@ -1,0 +1,14 @@
+deployment:
+  replicas: 1
+  nfs_ip: <path:secret/data/infra#k8s_nfs>
+  nfs_path: /srv/nfs/k8s
+  nodeSelector:
+    role: cp
+  image:
+    repository: registry.k8s.io/sig-storage/nfs-subdir-external-provisioner
+    tag: v4.0.2
+tolerations:
+- key: "role"
+  operator: "Equal"
+  value: "cp"
+  effect: "NoSchedule"

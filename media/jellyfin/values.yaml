@@ -1,0 +1,39 @@
+pvc:
+  storageClassName: nfs-sc
+  accessModes:
+  - ReadWriteOnce
+  size: 10Gi
+
+deployment:
+  nodeSelector:
+    size: m
+  image:
+    repository: ghcr.io/linuxserver/jellyfin
+    tag: "10.11.0"
+  replicas: 1
+  env:
+  - name: PUID
+    value: "1000"
+  - name: PGID
+    value: "100"
+  - name: TZ
+    value: Europe/Amsterdam
+
+service:
+  type: ClusterIP
+  port: 8096
+
+domain: <path:secret/data/infra#domain>
+nfs: <path:secret/data/infra#nfs>
+
+backup:
+  schedule: "0 15 * * *"
+  image:
+    repository: busybox
+    tag: "1.37"
+  command: |
+    echo "Starting backup at $(date)"
+    tar -czf /backup/jellyfin-$(date +%Y%m%d%H%M%S).tar.gz /config
+    echo "Backup completed at $(date)"
+    echo "Removing backups older than 3 days"
+    find /backup -maxdepth 1 -mtime +3 -type f -delete

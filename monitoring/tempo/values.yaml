@@ -1,0 +1,7 @@
+persistence:
+  enabled: true
+  enableStatefulSetAutoDeletePVC: false
+  storageClassName: nfs-sc
+  accessModes:
+    - ReadWriteOnce
+  size: 10Gi

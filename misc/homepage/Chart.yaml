@@ -1,0 +1,5 @@
+apiVersion: v2
+name: homepage
+description: Mod chart for homepage with AVP support
+type: application
+version: 0.1.0

@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: homepage-service
+spec:
+  type: ClusterIP
+  selector:
+    app: homepage
+  ports:
+  - name: web
+    protocol: TCP
+    port: 3000
+    targetPort: 3000

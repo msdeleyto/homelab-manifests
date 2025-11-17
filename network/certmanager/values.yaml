@@ -1,0 +1,3 @@
+domain: <path:secret/data/infra#domain>
+letsEncryptEmail: <path:secret/data/network/certmanager#letsEncryptEmail>
+apiToken: <path:secret/data/network/certmanager#apiToken>

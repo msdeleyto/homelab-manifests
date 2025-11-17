@@ -1,0 +1,18 @@
+deployment:
+  nodeSelector:
+    size: s
+  image:
+    repository: crocodilestick/calibre-web-automated
+    tag: "V3.0.4"
+  replicas: 1
+
+user:
+  username: <path:secret/data/media/calibre#user>
+  password: <path:secret/data/media/calibre#password>
+
+service:
+  type: ClusterIP
+  port: 8083
+
+domain: <path:secret/data/infra#domain>
+nfs: <path:secret/data/infra#nfs>

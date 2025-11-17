@@ -1,0 +1,25 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: orcaslicer-ingress
+  namespace: misc
+spec:
+  entryPoints:
+  - websecure
+  routes:
+  - match: Host(`orcaslicer.${DOMAIN}`)
+    kind: Rule
+    services:
+    - kind: Service
+      name: orcaslicer-service
+      port: https
+      serversTransport: orcaslicer-transport
+---
+# Needed to solve the error 502 Bad Gateway
+apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: orcaslicer-transport
+  namespace: misc
+spec:
+  insecureSkipVerify: true

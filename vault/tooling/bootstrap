@@ -1,0 +1,20 @@
+#!/bin/bash
+
+set -eu
+
+# Add helm repository
+helm repo add hashicorp https://helm.releases.hashicorp.com
+helm repo update
+
+kubectl create namespace vault || true
+
+project_path="$(git rev-parse --show-toplevel)"
+
+# vault
+echo -e "\nDeploying vault..."
+vault_dir="${project_path}/vault"
+
+# Replace secrets
+sed -i "s|<path:secret/data/infra#domain>|${DOMAIN}|" "${vault_dir}"/values.yaml
+
+kubectl kustomize "${vault_dir}" --enable-helm | kubectl apply -f -
