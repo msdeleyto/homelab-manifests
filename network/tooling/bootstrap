@@ -13,6 +13,8 @@ replicator_dir="${project_path}/replicator"
 
 helm upgrade --install --namespace default kubernetes-replicator mittwald/kubernetes-replicator --values "${replicator_dir}"/values.yaml
 
+kubectl create namespace network || true
+
 # traefik
 echo -e "\nDeploying traefik..."
 traefik_dir="${project_path}/traefik"
