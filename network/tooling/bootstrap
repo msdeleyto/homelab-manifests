@@ -20,6 +20,7 @@ echo -e "\nDeploying traefik..."
 traefik_dir="${project_path}/traefik"
 
 # Replace env variables
+sed -i "s|<path:secret/data/infra#domain>|${DOMAIN}|" "${traefik_dir}"/traefik-values.yaml
 sed -i "s|<path:secret/data/infra#domain>|${DOMAIN}|" "${traefik_dir}"/values.yaml
 sed -i "s|<path:secret/data/monitoring/crowdsec#traefik_bouncer_key>|${CROWDSEC_TRAEFIK_BOUNCER_KEY}|" "${traefik_dir}"/values.yaml
 
