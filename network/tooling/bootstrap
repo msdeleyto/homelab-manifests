@@ -45,6 +45,6 @@ echo -e "\nDeploying metallb..."
 metallb_dir="${project_path}/metallb"
 
 helm repo add metallb https://metallb.github.io/metallb
-helm install metallb metallb/metallb --namespace network --wait
+helm upgrade --install --namespace network -f "${metallb_dir}"/values.yaml metallb metallb/metallb --wait
 
 kubectl kustomize "${metallb_dir}" --enable-helm | kubectl apply -f -
