@@ -22,13 +22,9 @@ sed -i "s|<path:secret/data/infra#domain>|${DOMAIN}|" "${traefik_dir}"/values.ya
 sed -i "s|<path:secret/data/monitoring/crowdsec#traefik_bouncer_key>|${CROWDSEC_TRAEFIK_BOUNCER_KEY}|" "${traefik_dir}"/values.yaml
 
 kubectl apply -f https://raw.githubusercontent.com/traefik/traefik/v3.6/docs/content/reference/dynamic-configuration/kubernetes-crd-definition-v1.yml
-helm dependency build "${traefik_dir}"
-helm upgrade --install --namespace network --create-namespace -f "${traefik_dir}"/values.yaml traefik "${traefik_dir}"
+kubectl kustomize "${traefik_dir}" --enable-helm | kubectl apply -f -
 
 # cert-manager
-
-kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.18.1/cert-manager.crds.yaml
-
 echo -e "\nDeploying cert-manager..."
 certmanager_dir="${project_path}/certmanager"
 
@@ -37,6 +33,7 @@ sed -i "s|<path:secret/data/infra#domain>|${DOMAIN}|" "${certmanager_dir}"/value
 sed -i "s|<path:secret/data/network/certmanager#letsEncryptEmail>|${LETS_ENCRYPT_EMAIL}|" "${certmanager_dir}"/values.yaml
 sed -i "s|<path:secret/data/network/certmanager#apiToken>|${CERT_MANAGER_API_TOKEN}|" "${certmanager_dir}"/values.yaml
 
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.18.1/cert-manager.crds.yaml
 kubectl kustomize "${certmanager_dir}" --enable-helm | kubectl apply -f -
 
 # metallb
