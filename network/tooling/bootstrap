@@ -44,4 +44,7 @@ helm upgrade --install --namespace network -f "${certmanager_dir}"/values.yaml c
 echo -e "\nDeploying metallb..."
 metallb_dir="${project_path}/metallb"
 
+helm repo add metallb https://metallb.github.io/metallb
+helm install metallb metallb/metallb --namespace network
+
 kubectl kustomize "${metallb_dir}" --enable-helm | kubectl apply -f -
