@@ -4,7 +4,7 @@ kind: Kustomization
 helmCharts:
 - name: mend-renovate-ce
   repo: https://mend.github.io/renovate-ce-ee
-  version: 11.4.0
+  version: 11.5.0
   releaseName: mend-renovate-ce
   namespace: devops-tools
   valuesFile: values.yaml
