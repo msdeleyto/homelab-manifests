@@ -53,11 +53,6 @@ server:
 
 repoServer:
   replicas: 1
-  dnsConfig:
-    nameservers:
-      - 8.8.8.8
-      - 1.1.1.1
-  dnsPolicy: None
   rbac:
   - verbs:
     - get
