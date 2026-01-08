@@ -9,7 +9,7 @@ ingress:
 
 extraVolumeMounts:
 - name: dashboards
-  mountPath: /var/lib/grafana/dashboards/cm
+  mountPath: /var/lib/grafana/dashboards/default
   readOnly: true
 extraVolumes:
 - name: dashboards
@@ -19,7 +19,7 @@ extraVolumes:
         name: dashboards
         items:
         - key: kubernetes.json
-          path: /var/lib/grafana/dashboards/cm/kubernetes.json
+          path: /var/lib/grafana/dashboards/default/kubernetes.json
 
 adminUser: <path:secret/data/monitoring/grafana#admin_user>
 adminPassword: <path:secret/data/monitoring/grafana#admin_password>
@@ -80,11 +80,3 @@ dashboardProviders:
       editable: false
       options:
         path: /var/lib/grafana/dashboards/default
-    - name: cm
-      orgId: 1
-      folder: ""
-      type: file
-      disableDeletion: false
-      editable: false
-      options:
-        path: /var/lib/grafana/dashboards/cm
