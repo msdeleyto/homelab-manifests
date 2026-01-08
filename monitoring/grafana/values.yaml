@@ -9,7 +9,7 @@ ingress:
 
 extraVolumeMounts:
 - name: dashboards
-  mountPath: /dashboards
+  mountPath: /var/lib/grafana/dashboards
   readOnly: true
 extraVolumes:
 - name: dashboards
@@ -79,4 +79,4 @@ dashboardProviders:
       disableDeletion: false
       editable: false
       options:
-        path: /dashboards
+        path: /var/lib/grafana/dashboards
