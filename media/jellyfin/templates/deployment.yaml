@@ -13,10 +13,6 @@ spec:
         app: jellyfin
     spec:
       securityContext:
-        runAsNonRoot: true
-        runAsUser: 1000
-        runAsGroup: 100
-        fsGroup: 1000
         seccompProfile:
           type: RuntimeDefault
       automountServiceAccountToken: false
@@ -37,6 +33,10 @@ spec:
       - name: jellyfin
         image: {{ .Values.deployment.image.repository }}:{{ .Values.deployment.image.tag }}
         securityContext:
+          runAsNonRoot: true
+          runAsUser: 1000
+          runAsGroup: 100
+          fsGroup: 1000
           allowPrivilegeEscalation: false
           readOnlyRootFilesystem: false # fix
           capabilities:
