@@ -3,6 +3,10 @@ kind: Deployment
 metadata:
   name: jellyfin
 spec:
+  securityContext:
+    runAsNonRoot: true
+    seccompProfile:
+      type: RuntimeDefault
   replicas: {{ .Values.deployment.replicas }}
   selector:
     matchLabels:
@@ -21,7 +25,10 @@ spec:
       - name: jellyfin
         image: {{ .Values.deployment.image.repository }}:{{ .Values.deployment.image.tag }}
         securityContext:
-          privileged: true
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop: [ALL]
         env:
         {{- range .Values.deployment.env }}
         - name: {{ .name }}
