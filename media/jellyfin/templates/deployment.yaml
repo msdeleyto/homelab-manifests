@@ -41,3 +41,4 @@ spec:
         nfs:
           server: {{ .Values.nfs }}
           path: /volume1/data/media
+  automountServiceAccountToken: false
