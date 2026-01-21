@@ -25,8 +25,7 @@ spec:
       - name: jellyfin
         image: {{ .Values.deployment.image.repository }}:{{ .Values.deployment.image.tag }}
         securityContext:
-          allowPrivilegeEscalation: false
-          readOnlyRootFilesystem: false # fix
+          privileged: true
           capabilities:
             drop: [ALL]
         env:
