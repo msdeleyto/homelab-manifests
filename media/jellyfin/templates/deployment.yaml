@@ -13,7 +13,10 @@ spec:
         app: jellyfin
     spec:
       securityContext:
-        runAsNonRoot: false # fix
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 100
+        fsGroup: 1000
         seccompProfile:
           type: RuntimeDefault
       automountServiceAccountToken: false
