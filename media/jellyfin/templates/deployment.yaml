@@ -13,6 +13,9 @@ spec:
         app: jellyfin
     spec:
       securityContext:
+        runAsRoot: false
+        runAsUser: 1000
+        runAsGroup: 100
         fsGroup: 1000
         seccompProfile:
           type: RuntimeDefault
@@ -25,14 +28,8 @@ spec:
       - name: jellyfin
         image: {{ .Values.deployment.image.repository }}:{{ .Values.deployment.image.tag }}
         securityContext:
-          privileged: true
           capabilities:
             drop: [ALL]
-        env:
-        {{- range .Values.deployment.env }}
-        - name: {{ .name }}
-          value: {{ .value | quote }}
-        {{- end }}
         ports:
         - containerPort: 8096
         volumeMounts:

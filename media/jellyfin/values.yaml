@@ -8,16 +8,9 @@ deployment:
   nodeSelector:
     size: m
   image:
-    repository: ghcr.io/linuxserver/jellyfin
+    repository: docker.io/jellyfin/jellyfin
     tag: "10.11.6"
   replicas: 1
-  env:
-  - name: PUID
-    value: "1000"
-  - name: PGID
-    value: "100"
-  - name: TZ
-    value: Europe/Amsterdam
 
 service:
   type: ClusterIP
