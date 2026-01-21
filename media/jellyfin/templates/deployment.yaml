@@ -24,6 +24,15 @@ spec:
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      initContainers:
+      - name: fix-permissions
+        image: busybox
+        command: ["sh", "-c", "chown -R 1000:100 /run"]
+        securityContext:
+          runAsUser: 0
+        volumeMounts:
+        - mountPath: /run
+          name: run
       containers:
       - name: jellyfin
         image: {{ .Values.deployment.image.repository }}:{{ .Values.deployment.image.tag }}
@@ -42,12 +51,16 @@ spec:
         volumeMounts:
         - mountPath: /config
           name: config
+        - mountPath: /run
+          name: run
         - name: data
           mountPath: /data/media
       volumes:
       - name: config
         persistentVolumeClaim:
           claimName: jellyfin-config-pvc
+      - name: run
+        emptyDir: {}
       - name: data
         nfs:
           server: {{ .Values.nfs }}
