@@ -12,6 +12,7 @@ spec:
       labels:
         app: jellyfin
     spec:
+      automountServiceAccountToken: false
       {{- with .Values.deployment.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -41,4 +42,3 @@ spec:
         nfs:
           server: {{ .Values.nfs }}
           path: /volume1/data/media
-  automountServiceAccountToken: false
