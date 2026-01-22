@@ -35,7 +35,7 @@ tracing:
     enabled: true
     http:
       enabled: true
-      endpoint: "https://opentelemetry-collector.monitoring:4318/v1/tracing"
+      endpoint: http://opentelemetry-collector.monitoring:4318/v1/traces
 metrics:
   prometheus:
     service:
