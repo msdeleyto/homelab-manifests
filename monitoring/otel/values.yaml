@@ -4,11 +4,16 @@ image:
 mode: deployment
 
 config:
+  receivers:
+    otlp:
+      protocols:
+        http:
+          endpoint: 0.0.0.0:4318
   exporters:
     otlphttp:
       endpoint: http://tempo:4318
   service:
     pipelines:
       traces:
-        exporters:
-        - otlphttp
+        receivers: [otlp]
+        exporters: [otlphttp]
