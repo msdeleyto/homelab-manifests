@@ -5,10 +5,8 @@ mode: deployment
 
 config:
   exporters:
-    otlp/tempo:
+    otlphttp:
       endpoint: http://tempo:4318
-      tls:
-        insecure: true
   receivers:
     jaeger: null
     prometheus: null
@@ -17,6 +15,6 @@ config:
     pipelines:
       traces:
         receivers: [otlp]
-        exporters: [otlp/tempo]
+        exporters: [otlphttp]
       metrics: null
       logs: null
