@@ -5,13 +5,13 @@ mode: deployment
 
 config:
   receivers:
-    debug:
-      verbosity: detailed
     otlp:
       protocols:
         http:
           endpoint: 0.0.0.0:4318
   exporters:
+    debug:
+      verbosity: detailed
     otlp:
       endpoint: tempo:4317
       tls:
