@@ -5,8 +5,8 @@ mode: deployment
 
 config:
   receivers:
-    logging: 
-      loglevel: info
+    debug:
+      verbosity: detailed
     otlp:
       protocols:
         http:
@@ -23,4 +23,4 @@ config:
         - otlp
         exporters:
         - otlp
-        - logging
+        - debug
