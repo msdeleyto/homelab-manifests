@@ -9,6 +9,9 @@ config:
       protocols:
         http:
           endpoint: 0.0.0.0:4318
+    jaeger: {}
+    prometheus: {}
+    zipkin: {}
   exporters:
     debug:
       verbosity: detailed
