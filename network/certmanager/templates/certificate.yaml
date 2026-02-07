@@ -12,7 +12,7 @@ spec:
   secretName: domain-tls-secret
   commonName: {{ .Values.domain }}
   issuerRef:
-    name: letsencrypt-staging
+    name: letsencrypt-{{ .Values.env }}
     kind: ClusterIssuer
   dnsNames:
   - {{ .Values.domain }}

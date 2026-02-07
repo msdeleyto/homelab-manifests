@@ -1,3 +1,4 @@
+env: <path:secret/data/infra#env>
 domain: <path:secret/data/infra#env>.<path:secret/data/infra#domain>
 rootDomain: <path:secret/data/infra#domain>
 letsEncryptEmail: <path:secret/data/network/certmanager#letsEncryptEmail>
