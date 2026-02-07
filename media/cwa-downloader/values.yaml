@@ -16,5 +16,5 @@ vpn:
   user: <path:secret/data/p2p/vpn#user>
   password: <path:secret/data/p2p/vpn#password>
 
-domain: <path:secret/data/infra#domain>
+domain: <path:secret/data/infra#env>.<path:secret/data/infra#domain>
 nfs: <path:secret/data/infra#nfs>

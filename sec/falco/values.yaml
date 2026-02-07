@@ -28,7 +28,7 @@ falcosidekick:
       annotations:
         traefik.ingress.kubernetes.io/router.entrypoints: websecure
       hosts:
-      - host: falco.<path:secret/data/infra#domain>
+      - host: falco.<path:secret/data/infra#env>.<path:secret/data/infra#domain>
         paths:
         - path: /
   config:

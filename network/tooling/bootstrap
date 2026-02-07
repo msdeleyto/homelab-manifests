@@ -4,24 +4,19 @@ set -eu
 
 project_path="$(dirname $0)/.."
 
-# Install replicator
-helm repo add mittwald https://helm.mittwald.de
-helm repo update
-
-echo -e "\nDeploying replicator..."
-replicator_dir="${project_path}/replicator"
-
-helm upgrade --install --namespace default kubernetes-replicator mittwald/kubernetes-replicator --values "${replicator_dir}"/values.yaml
-
 kubectl create namespace network || true
+
+# istio
+kubectl kustomize "${project_path}/istio" --enable-helm | kubectl apply -f -
 
 # traefik
 echo -e "\nDeploying traefik..."
 traefik_dir="${project_path}/traefik"
 
 # Replace env variables
-sed -i "s|<path:secret/data/infra#nfs>|${NFS}|" "${traefik_dir}"/traefik-values.yaml
+sed -i "s|<path:secret/data/infra#k8s_nfs>|${K8S_NFS}|" "${traefik_dir}"/traefik-values.yaml
 sed -i "s|<path:secret/data/infra#domain>|${DOMAIN}|" "${traefik_dir}"/values.yaml
+sed -i "s|<path:secret/data/infra#env>|${ENV}|" "${traefik_dir}"/values.yaml
 sed -i "s|<path:secret/data/monitoring/crowdsec#traefik_bouncer_key>|${CROWDSEC_TRAEFIK_BOUNCER_KEY}|" "${traefik_dir}"/values.yaml
 
 kubectl apply -f https://raw.githubusercontent.com/traefik/traefik/v3.6/docs/content/reference/dynamic-configuration/kubernetes-crd-definition-v1.yml
@@ -33,6 +28,7 @@ certmanager_dir="${project_path}/certmanager"
 
 # Replace env variables
 sed -i "s|<path:secret/data/infra#domain>|${DOMAIN}|" "${certmanager_dir}"/values.yaml
+sed -i "s|<path:secret/data/infra#env>|${ENV}|" "${certmanager_dir}"/values.yaml
 sed -i "s|<path:secret/data/network/certmanager#letsEncryptEmail>|${LETS_ENCRYPT_EMAIL}|" "${certmanager_dir}"/values.yaml
 sed -i "s|<path:secret/data/network/certmanager#apiToken>|${CERT_MANAGER_API_TOKEN}|" "${certmanager_dir}"/values.yaml
 
@@ -42,6 +38,8 @@ kubectl kustomize "${certmanager_dir}" --enable-helm | kubectl apply -f -
 # metallb
 echo -e "\nDeploying metallb..."
 metallb_dir="${project_path}/metallb"
+
+sed -i "s|<path:secret/data/infra#lb_ip>|${LB_IP}|" "${metallb_dir}"/ip-addresspool.yaml
 
 helm repo add metallb https://metallb.github.io/metallb
 helm upgrade --install --namespace network -f "${metallb_dir}"/values.yaml metallb metallb/metallb --wait

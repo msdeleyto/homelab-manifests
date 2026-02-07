@@ -1,0 +1,52 @@
+#!/bin/bash
+
+# Verify requirements
+verify_requirements() {
+  local project_dir=""
+  project_dir="$1"
+
+  if ! which kubectl 2>&1 > /dev/null; then
+    echo "    [!] kubect not detected!"
+    error="1"
+  fi
+
+  if ! which helm 2>&1 > /dev/null; then
+    echo "    [!] helm not detected!"
+    error="1"
+  fi
+
+  if [[ $error ]]; then
+    exit 1
+  fi
+}
+
+sealed_secrets_certificates_dir="$1"
+vault_secrets="$2"
+vault_secret_files="$3"
+
+project_path="$(dirname $0)/.."
+
+echo "[+] Verifying requirements..."
+verify_requirements "${project_path}"
+echo -e "    Everything ready!\\n"
+
+# Install gateway crds
+kubectl apply --server-side -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.4.0/experimental-install.yaml
+
+echo "[1/4] Bootstraping core services..."
+"${project_path}"/default/tooling/bootstrap "${sealed_secrets_certificates_dir}"
+echo -e "   Core services ready!\\n"
+
+echo "[2/4] Bootstraping network..."
+"${project_path}"/network/tooling/bootstrap
+echo -e "   Network ready!\\n"
+
+echo "[3/4] Bootstraping vault..."
+"${project_path}"/vault/tooling/bootstrap "${vault_secrets}" "${vault_secret_files}"
+echo -e "   Vault ready!\\n"
+
+echo "[4/4] Bootstraping devops-tools..."
+"${project_path}"/devops-tools/tooling/bootstrap
+echo -e "   Devops-tools ready!\\n"
+
+echo "[+] Cluster services ready!"

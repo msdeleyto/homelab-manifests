@@ -1,0 +1,37 @@
+#!/bin/bash
+
+set -eu
+
+certificates_dir="$1"
+project_path="$(dirname $0)/.."
+
+# Install nfs storage class
+nfs_dir="${project_path}/nfs-sc"
+
+sed -i "s|<path:secret/data/infra#k8s_nfs>|${K8S_NFS}|" "${nfs_dir}"/values.yaml
+
+helm upgrade nfs-sc "${nfs_dir}" \
+  --install \
+  --namespace default \
+  --values "${nfs_dir}"/values.yaml \
+  --wait
+
+# Install sealed secrets
+kubectl create secret tls sealed-secrets-key \
+  --cert="${certificates_dir}/cert.pem" \
+  --key="${certificates_dir}/key.pem" \
+  --namespace default \
+  --dry-run=client -o yaml | kubectl apply -f -
+
+helm upgrade sealed-secrets sealed-secrets/sealed-secrets \
+  --install \
+  --namespace default \
+  --values "${project_path}/sealed-secrets/values.yaml" \
+  --wait
+
+# Install replicator
+helm upgrade kubernetes-replicator mittwald/kubernetes-replicator \
+  --install \
+  --namespace default \
+  --values "${project_path}/replicator/values.yaml" \
+  --wait

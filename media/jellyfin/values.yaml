@@ -16,7 +16,7 @@ service:
   type: ClusterIP
   port: 8096
 
-domain: <path:secret/data/infra#domain>
+domain: <path:secret/data/infra#env>.<path:secret/data/infra#domain>
 nfs: <path:secret/data/infra#nfs>
 
 backup:

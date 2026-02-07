@@ -4,11 +4,7 @@ kind: Kustomization
 helmCharts:
 - name: vault
   repo: https://helm.releases.hashicorp.com
-  version: 0.31.0
+  version: 0.32.0
   releaseName: vault
   namespace: vault
   valuesFile: values.yaml
-
-resources:
-- serviceaccount.yaml
-- secret.yaml

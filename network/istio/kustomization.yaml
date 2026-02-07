@@ -1,0 +1,46 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: network
+
+helmCharts:
+- name: base
+  repo: https://istio-release.storage.googleapis.com/charts
+  version: 1.28.3
+  releaseName: istio-base
+
+- name: istiod
+  repo: https://istio-release.storage.googleapis.com/charts
+  version: 1.28.3
+  releaseName: istio-istiod
+  valuesInline:
+    profile: ambient
+    global:
+      istioNamespace: network
+    nodeSelector:
+      role: cp
+    tolerations:
+    - key: "role"
+      operator: "Equal"
+      value: "cp"
+      effect: "NoSchedule"
+
+- name: cni
+  repo: https://istio-release.storage.googleapis.com/charts
+  version: 1.28.3
+  releaseName: istio-cni
+  valuesInline:
+    profile: ambient
+    global:
+      istioNamespace: network
+    cni:
+      cniBinDir: /var/lib/rancher/k3s/data/cni
+      cniConfDir: /var/lib/rancher/k3s/agent/etc/cni/net.d
+
+- name: ztunnel
+  repo: https://istio-release.storage.googleapis.com/charts
+  version: 1.28.3
+  releaseName: istio-ztunnel
+  valuesInline:
+    global:
+      istioNamespace: network

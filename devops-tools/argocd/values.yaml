@@ -1,5 +1,5 @@
 global:
-  domain: cd.<path:secret/data/infra#domain>
+  domain: cd.<path:secret/data/infra#env>.<path:secret/data/infra#domain>
 
 configs:
   params:
