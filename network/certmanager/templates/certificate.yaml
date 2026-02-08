@@ -10,13 +10,13 @@ metadata:
     meta.helm.sh/release-namespace: {{ .Release.Namespace }}
 spec:
   secretName: domain-tls-secret
-  commonName: {{ .Values.domain }}
+  commonName: {{ .Values.rootDomain }}
   issuerRef:
     name: letsencrypt-{{ .Values.env }}
     kind: ClusterIssuer
   dnsNames:
-  - {{ .Values.domain }}
-  - "*.{{ .Values.domain }}"
+  - {{ .Values.rootDomain }}
+  - "*.{{ .Values.rootDomain }}"
   secretTemplate:
     annotations:
       replicator.v1.mittwald.de/replication-allowed: "true"
