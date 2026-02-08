@@ -20,9 +20,6 @@ spec:
           apiTokenSecretRef:
             name: cert-manager-secrets
             key: api-token
-      selector:
-        dnsZones:
-        - {{ .Values.rootDomain }}
 ---
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
@@ -46,6 +43,3 @@ spec:
           apiTokenSecretRef:
             name: cert-manager-secrets
             key: api-token
-      selector:
-        dnsZones:
-        - {{ .Values.rootDomain }}
