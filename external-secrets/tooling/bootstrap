@@ -5,7 +5,7 @@ set -eu
 project_path="$(dirname $0)/.."
 
 # Install ESO CRDs
-kubectl apply -f "https://raw.githubusercontent.com/external-secrets/external-secrets/<replace_with_your_version>/deploy/crds/bundle.yaml" --server-side
+kubectl apply -f "https://raw.githubusercontent.com/external-secrets/external-secrets/v2.0.0/deploy/crds/bundle.yaml" --server-side
 
 # Install ESO
 kubectl kustomize "${project_path}/external-secrets" --enable-helm | kubectl apply -f -
