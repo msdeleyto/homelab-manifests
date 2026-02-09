@@ -13,7 +13,7 @@ spec:
   commonName: {{ .Values.domain }}
   issuerRef:
     name: letsencrypt-{{ .Values.env }}
-    kind: ClusterIssuer
+    kind: Issuer
   dnsNames:
   - {{ .Values.domain }}
   - "*.{{ .Values.domain }}"
