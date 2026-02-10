@@ -14,7 +14,7 @@ spec:
           restartPolicy: OnFailure
           containers:
           - name: vault-unsealer
-            image: {{ .Values.cronjob.image.repository }}:{{ .Values.cronjob.image.tag }}
+            image: hashicorp/vault:1.21.2
             command:
               - /bin/sh
               - -c
@@ -37,18 +37,6 @@ spec:
             env:
             - name: VAULT_ADDR
               value: {{ .Values.vault.server }}
-            - name: KEY1
-              valueFrom:
-                secretKeyRef:
-                  name: vault-unseal-secret
-                  key: key1
-            - name: KEY2
-              valueFrom:
-                secretKeyRef:
-                  name: vault-unseal-secret
-                  key: key2
-            - name: KEY3
-              valueFrom:
-                secretKeyRef:
-                  name: vault-unseal-secret
-                  key: key3
+            envFrom:
+            - secretRef:
+                name: vault-unseal-secret
