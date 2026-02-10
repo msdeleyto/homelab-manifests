@@ -67,7 +67,7 @@ repoServer:
     args:
       - |
         apt-get update && \
-          apt-get install -y binutils curl
+          apt-get install -y binutils curl xz-utils
 
         curl http://ftp.de.debian.org/debian/pool/main/g/gettext/gettext-base_0.23.2-1_amd64.deb -o gettext.deb
 
