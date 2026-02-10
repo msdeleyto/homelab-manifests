@@ -9,6 +9,8 @@ configs:
           insecure: true
   secret:
     createSecret: false
+  cmp:
+    create: true
 
 dex:
   enabled: false
