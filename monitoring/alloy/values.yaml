@@ -37,7 +37,7 @@ controller:
     extra:
     - name: traefik-logs
       nfs:
-        server: <path:secret/data/infra#k8s_nfs>
+        server: ${INFRA_K8S_NFS}
         path: /volume1/kubernetes/logs/traefik
   resources:
     requests:
@@ -55,4 +55,4 @@ ingress:
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: websecure
   hosts:
-  - alloy.<path:secret/data/infra#domain>
+  - alloy.${INFRA_DOMAIN}

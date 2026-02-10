@@ -1,3 +1,6 @@
+crds:
+  enabled: true
+
 resources:
   requests:
     cpu: 100m
