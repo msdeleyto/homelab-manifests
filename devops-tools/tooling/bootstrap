@@ -16,8 +16,8 @@ argocd_dir="${project_path}/argocd"
 
 kubectl apply -f "${argocd_dir}/external-secrets.yaml" --wait
 
-sed -i "s|  domain: cd.\${INFRA_DOMAIN}|${INFRA_DOMAIN}|" "${argocd_dir}/values.yaml"
-sed -i "s|    path: ./${INFRA_ENV}|${INFRA_ENV}|" "${argocd_dir}/application.yaml"
+sed -i "s|  domain: cd.\${INFRA_DOMAIN}|  domain: cd.${INFRA_DOMAIN}|" "${argocd_dir}/values.yaml"
+sed -i "s|    path: ./\${INFRA_ENV}|    path: ./${INFRA_ENV}|" "${argocd_dir}/application.yaml"
 
 kubectl kustomize --enable-helm "${argocd_dir}" | kubectl apply --wait -f -
 
