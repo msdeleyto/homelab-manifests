@@ -29,8 +29,14 @@ echo "[+] Verifying requirements..."
 verify_requirements "${project_path}"
 echo -e "    Everything ready!\\n"
 
+# Install traefik crds
+kubectl apply -f https://raw.githubusercontent.com/traefik/traefik/v3.6/docs/content/reference/dynamic-configuration/kubernetes-crd-definition-v1.yml
+
 # Install cert-manager crds
 kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.19.2/cert-manager.yaml
+
+# Install gateway crds
+kubectl apply --server-side -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.4.1/standard-install.yaml
 
 # Install storage
 echo "[1/4] Bootstraping storage..."
