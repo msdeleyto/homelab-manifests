@@ -3,7 +3,7 @@ kind: Kustomization
 
 helmCharts:
 - name: prometheus
-  repo: oci://ghcr.io/prometheus-community/charts/prometheus
+  repo: oci://ghcr.io/prometheus-community/charts
   version: 28.9.0
   releaseName: prometheus
   namespace: monitoring
