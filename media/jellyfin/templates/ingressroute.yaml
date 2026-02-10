@@ -10,4 +10,4 @@ spec:
     kind: Rule
     services:
     - name: jellyfin
-      port: {{ .Values.service.port }}
+      port: 8096
