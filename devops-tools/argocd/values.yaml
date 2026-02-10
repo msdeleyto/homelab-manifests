@@ -54,9 +54,6 @@ repoServer:
     - ''
     resources:
     - configmaps   
-  envFrom:
-  - configMapRef:
-      name: infra-config
   volumes:
   - name: cmp-plugin
     configMap:
@@ -68,6 +65,9 @@ repoServer:
     securityContext:
       runAsNonRoot: true
       runAsUser: 999
+    envFrom:
+    - configMapRef:
+      name: infra-config
     volumeMounts:
     - mountPath: /var/run/argocd
       name: var-files
