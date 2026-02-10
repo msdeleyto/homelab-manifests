@@ -30,13 +30,13 @@ configs:
             fi
 
             # Render by type
-            if [ -f Chart.yaml ]; then
-              helm template . | envsubst
-            elif [ -f kustomization.yaml ]; then
-              kustomize build . | envsubst
+            if [[ -f Chart.yaml ]]; then
+              helm template . | envsubst '${INFRA_DOMAIN} ${INFRA_K8S_NFS} ${INFRA_DATA_NFS} ${INFRA_LB_IP}'
+            elif [[ -f kustomization.yaml ]]; then
+              kustomize build . | envsubst '${INFRA_DOMAIN} ${INFRA_K8S_NFS} ${INFRA_DATA_NFS} ${INFRA_LB_IP}'
             else
               find . -name '*.yaml' -print0 | \
-                xargs -0 cat | envsubst
+                xargs -0 cat | envsubst '${INFRA_DOMAIN} ${INFRA_K8S_NFS} ${INFRA_DATA_NFS} ${INFRA_LB_IP}'
             fi
 
 dex:
