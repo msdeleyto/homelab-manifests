@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://github.com/home-kops/argocd-config.git
     targetRevision: main
-    path: ./<path:secret/data/infra#env>
+    path: .${INFRA_ENV}
     directory:
       recurse: true
   destination:
