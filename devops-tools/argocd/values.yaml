@@ -58,6 +58,21 @@ repoServer:
   - name: cmp-plugin
     configMap:
       name: argocd-cmp-cm
+  - name: envsubst
+    emptyDir: {}
+  initContainers:
+  - name: download-envsubst
+    image: alpine:3.23
+    command: [sh, -c]
+    args:
+      - |
+        set -ex
+
+        curl -L https://github.com/a8m/envsubst/releases/download/v1.2.0/envsubst-`uname -s`-`uname -m` -o /envsubst/envsubst
+        chmod +x /envsubst/envsubst
+    volumeMounts:
+    - mountPath: /envsubst
+      name: envsubst
   extraContainers:
   - name: infra-envsubst
     command: [/var/run/argocd/argocd-cmp-server]
@@ -76,6 +91,9 @@ repoServer:
     - mountPath: /home/argocd/cmp-server/config/plugin.yaml
       subPath: infra-envsubst.yaml
       name: cmp-plugin
+    - mountPath: /usr/local/bin/envsubst
+      subPath: envsubst
+      name: envsubst
   automountServiceAccountToken: true
 
 applicationSet:
