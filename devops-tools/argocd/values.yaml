@@ -9,6 +9,35 @@ configs:
           insecure: true
   secret:
     createSecret: false
+  cmp:
+    create: true
+    plugins:
+      infra-envsubst:
+        generate:
+          command:
+          - bash
+          - "-c"
+          - |
+            set -e
+            echo "Replacing env vars in manifests"
+
+            if kubectl get cm homelab-vars -n argocd >/dev/null 2>&1; then
+              kubectl get cm homelab-vars -n argocd -o json |
+                jq -r '.data | to_entries[] | "\(.key)=\(.value)"' > /tmp/env
+              set -a
+              source /tmp/env
+              set +a
+            fi
+
+            # Render by type
+            if [ -f Chart.yaml ]; then
+              helm template . | envsubst
+            elif [ -f kustomization.yaml ]; then
+              kustomize build . | envsubst
+            else
+              find . -name '*.yaml' -print0 | \
+                xargs -0 cat | envsubst
+            fi
 
 dex:
   enabled: false
@@ -21,6 +50,28 @@ controller:
 
 server:
   replicas: 1
+  rbac:
+  - verbs:
+    - get
+    apiGroups:
+    - ''
+    resources:
+    - configmaps   
+  envFrom:
+  - configMapRef:
+      name: infra-config
+  extraContainers:
+  - name: infra-envsubst
+    command: [/var/run/argocd/argocd-cmp-server]
+    image: quay.io/argoproj/argocd:v3.2.5
+    securityContext:
+      runAsNonRoot: true
+      runAsUser: 999
+    volumeMounts:
+    - mountPath: /home/argocd/cmp-server/config/plugin.yaml
+      subPath: infra-envsubst.yaml
+      name: cmp-plugin
+  automountServiceAccountToken: true
   ingress:
     enabled: true
     ingressClassName: traefik
