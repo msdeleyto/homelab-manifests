@@ -11,3 +11,5 @@ kubectl create namespace external-secrets || true
 
 # Install ESO
 kubectl kustomize "${project_path}/external-secrets" --enable-helm | kubectl apply --wait -f -
+
+kubectl --namespace external-secrets wait --for condition=available deploy/external-secrets-webhook
