@@ -68,7 +68,7 @@ repoServer:
       - |
         set -ex
 
-        curl -L https://github.com/a8m/envsubst/releases/download/v1.2.0/envsubst-`uname -s`-`uname -m` -o /envsubst/envsubst
+        wget "https://github.com/a8m/envsubst/releases/download/v1.2.0/envsubst-$(uname -s)-$(uname -m)" -O /envsubst/envsubst
         chmod +x /envsubst/envsubst
     volumeMounts:
     - mountPath: /envsubst
