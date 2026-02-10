@@ -76,7 +76,7 @@ repoServer:
   extraContainers:
   - name: infra-envsubst
     command: [/var/run/argocd/argocd-cmp-server]
-    image: registry.k8s.io/kustomize/kustomize:v5.0.0
+    image: quay.io/argoproj/argocd:v3.2.5
     securityContext:
       runAsNonRoot: true
       runAsUser: 999
