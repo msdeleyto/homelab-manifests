@@ -31,12 +31,12 @@ spec:
         - name: CUSTOM_USER
           valueFrom:
             secretKeyRef:
-              name: cwa
+              name: ccwa-secreta
               key: USER
         - name: CUSTOM_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: cwa
+              name: cwa-secret
               key: PASSWORD
         volumeMounts:
         - name: config

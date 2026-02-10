@@ -3,9 +3,9 @@ kind: Service
 metadata:
   name: cwa
 spec:
-  type: {{ .Values.service.type }}
+  type: ClusterIP
   ports:
-  - port: {{ .Values.service.port }}
+  - port: 8083
     targetPort: 8083
   selector:
     app: cwa
