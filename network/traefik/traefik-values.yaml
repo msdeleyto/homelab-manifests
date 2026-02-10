@@ -8,21 +8,21 @@ resources:
 logs:
   general:
     format: json
-#    filePath: "/var/log/traefik/traefik.log"
+    filePath: "/var/log/traefik/traefik.log"
   access:
     enabled: true
 podSecurityContext:
   runAsUser: 1000
   runAsGroup: 1000
-#deployment:
-#  additionalVolumes:
-#  - name: traefik-logs
-#    nfs:
-#      server: <path:secret/data/infra#data_nfs>
-#      path: /volume1/kubernetes/logs/traefik
-#additionalVolumeMounts:
-#- name: traefik-logs
-#  mountPath: /var/log/traefik
+deployment:
+  additionalVolumes:
+  - name: traefik-logs
+    nfs:
+      server: ${INFRA_DATA_NFS}
+      path: /volume1/kubernetes/logs/${INFRA_ENV}/traefik
+additionalVolumeMounts:
+- name: traefik-logs
+  mountPath: /var/log/traefik
 # ports:
 #   web:
 #     middlewares:
