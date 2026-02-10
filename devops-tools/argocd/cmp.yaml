@@ -9,9 +9,10 @@ data:
     kind: ConfigManagementPlugin
     metadata:
       name: infra-envsubst
-      namespace: devops-tools
     spec:
-      version: v1.0
+      discover:
+        find:
+          command: [sh, -c, find . -name kustomization.yaml]
       generate:
         command:
         - bash
