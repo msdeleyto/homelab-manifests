@@ -1,6 +1,6 @@
 deployment:
   replicas: 1
-  nfs_ip: <path:secret/data/infra#k8s_nfs>
+  nfs_ip: ${INFRA_K8S_NFS}
   nfs_path: /srv/nfs/k8s
   nodeSelector:
     role: cp

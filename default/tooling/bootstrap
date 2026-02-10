@@ -4,13 +4,4 @@ set -eu
 
 project_path="$(dirname $0)/.."
 
-# Install nfs storage class
-nfs_dir="${project_path}/nfs-sc"
-
-sed -i "s|<path:secret/data/infra#k8s_nfs>|${K8S_NFS}|" "${nfs_dir}"/values.yaml
-
-helm upgrade nfs-sc "${nfs_dir}" \
-  --install \
-  --namespace default \
-  --values "${nfs_dir}"/values.yaml \
-  --wait
+kubectl kustomize --enable-helm "${project_path}/nfs-sc" | envsubst "${INFRA_K8S_NFS}" | kubectl apply --wait -f -

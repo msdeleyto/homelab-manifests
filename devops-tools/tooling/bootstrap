@@ -6,18 +6,11 @@ set -eu
 helm repo add argo https://argoproj.github.io/argo-helm && \
   helm repo update
 
-kubectl create namespace devops-tools || true
-
-# argocd
-echo -e "\nDeploying argocd..."
-argocd_dir="$(dirname $0)/../argocd"
-
-sed -i "s|<path:secret/data/infra#domain>|${DOMAIN}|" "${argocd_dir}"/values.yaml
-sed -i "s|<path:secret/data/infra#env>|${ENV}|" "${argocd_dir}"/application.yaml
-
 # Install CRDs
 kubectl apply --server-side -k https://github.com/argoproj/argo-cd/manifests/crds\?ref\=stable
 
-kubectl kustomize "${argocd_dir}" --enable-helm | kubectl apply -f -
+kubectl create namespace devops-tools || true
+
+kubectl kustomize --enable-helm "${argocd_dir}" | envsubst "${INFRA_DOMAIN} ${ENV}" | kubectl apply --wait -f -
 
 echo -e "Done!\n"
