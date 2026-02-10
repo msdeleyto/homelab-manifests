@@ -20,7 +20,6 @@ verify_requirements() {
   fi
 }
 
-sealed_secrets_certificates_dir="$1"
 vault_secrets="$2"
 vault_secret_files="$3"
 
@@ -29,6 +28,9 @@ project_path="$(dirname $0)/.."
 echo "[+] Verifying requirements..."
 verify_requirements "${project_path}"
 echo -e "    Everything ready!\\n"
+
+# Install cert-manager crds
+kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.19.2/cert-manager.yaml
 
 # Install storage
 echo "[1/4] Bootstraping storage..."
