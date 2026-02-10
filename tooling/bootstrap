@@ -20,8 +20,8 @@ verify_requirements() {
   fi
 }
 
-vault_secrets="$2"
-vault_secret_files="$3"
+vault_secrets="$1"
+vault_secret_files="$2"
 
 project_path="$(dirname $0)/.."
 
