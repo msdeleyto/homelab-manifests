@@ -62,14 +62,17 @@ repoServer:
     emptyDir: {}
   initContainers:
   - name: download-envsubst
-    image: alpine:3.23
+    image: debian:stable-slim
     command: [sh, -c]
     args:
       - |
         set -ex
 
-        wget "https://github.com/a8m/envsubst/releases/download/v1.2.0/envsubst-$(uname -s)-$(uname -m)" -O /envsubst/envsubst
-        chmod +x /envsubst/envsubst
+        apt-get update && apt-get download gettext-base
+        ar x gettext-base_*.deb
+
+        tar -xvf data.tar.xz ./usr/bin/envsubst
+        mv usr/bin/envsubst /envsubst/envsubst
     volumeMounts:
     - mountPath: /envsubst
       name: envsubst
