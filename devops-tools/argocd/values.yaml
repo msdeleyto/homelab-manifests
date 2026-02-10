@@ -70,8 +70,6 @@ repoServer:
           apt-get install -y binutils curl && \
           apt-get download gettext-base
 
-        sudo chown _apt gettext-base_*.deb
-
         ar x gettext-base_*.deb
         tar -xf data.tar.* ./usr/bin/envsubst
 
