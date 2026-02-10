@@ -51,8 +51,3 @@ providers:
   kubernetesCRD:
     enabled: true
     allowCrossNamespace: true
-experimental:
-  plugins:
-    bouncer:
-      moduleName: github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin
-      version: v1.4.2
