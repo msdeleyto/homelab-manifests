@@ -5,8 +5,10 @@ global:
 server:
   enabled: true
   livenessProbe:
+    enabled: true
     path: "/v1/sys/health?standbyok=true&sealedok=true"
   readinessProbe:
+    enabled: true
     path: "/v1/sys/health?standbyok=true&sealedok=true"
   standalone:
     enabled: true
@@ -25,10 +27,6 @@ server:
     enabled: true
     size: 8Gi
     storageClass: nfs-sc
-  readinessProbe:
-    enabled: true
-  livenessProbe:
-    enabled: true
   resources:
     requests:
       memory: 256Mi
