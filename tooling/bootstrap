@@ -48,7 +48,6 @@ echo -e "   Vault ready!\\n"
 # Install ESO
 echo "[3/4] Bootstraping ESO..."
 "${project_path}"/external-secrets/tooling/bootstrap
-"${project_path}"/vault/tooling/bootstrap-unsealer
 echo -e "   ESO ready!\\n"
 
 # Install ArgoCD
