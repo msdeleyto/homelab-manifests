@@ -12,6 +12,7 @@ server:
     path: /v1/sys/health?standbyok=true&sealedok=true
   readinessProbe:
     enabled: true
+    path: /v1/sys/health?standbyok=true&sealedok=true
   standalone:
     enabled: true
     config: |
