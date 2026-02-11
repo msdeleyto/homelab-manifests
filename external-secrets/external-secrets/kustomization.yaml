@@ -11,6 +11,8 @@ helmCharts:
     installCRDs: false
     genericTargets:
       enabled: true
+    deploymentAnnotations:
+      argocd.argoproj.io/sync-wave: '-2'
 
 resources:
 - secret-store.yaml

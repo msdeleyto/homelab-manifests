@@ -4,6 +4,8 @@ global:
 
 server:
   enabled: true
+  annotations:
+    argocd.argoproj.io/sync-wave: '-4'
   standalone:
     enabled: true
     config: |
@@ -44,6 +46,5 @@ server:
 
 injector:
   enabled: true
-
-ui:
-  enabled: true
+  annotations:
+    argocd.argoproj.io/sync-wave: '-4'
