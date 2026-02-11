@@ -1,0 +1,43 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: vault-unseal
+  namespace: vault
+  annotations:
+    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded
+    argocd.argoproj.io/sync-wave: "-2"
+spec:
+  ttlSecondsAfterFinished: 360
+  template:
+    spec:
+      containers:
+      - name: vault-unsealer
+        image: hashicorp/vault:1.21.2
+        command:
+          - /bin/sh
+          - -c
+          - |
+            echo "Waiting for the vault to be available..."
+            for i in {1..30}; do
+              vault status > /dev/null 2>&1 && break
+              sleep 5
+            done
+
+            if vault status | grep -q 'Sealed.*false'; then
+              echo "Vault already unsealed, exiting."
+              exit 0
+            fi
+
+            echo "Vault is sealed, unsealing..."
+            vault operator unseal "${KEY1}"
+            vault operator unseal "${KEY2}"
+            vault operator unseal "${KEY3}"
+        env:
+        - name: VAULT_ADDR
+          value: http://vault:8200
+        envFrom:
+        - secretRef:
+            name: vault-unseal-secret
+      restartPolicy: Never
+  backoffLimit: 1

@@ -8,12 +8,7 @@ server:
     argocd.argoproj.io/hook: PreSync
     argocd.argoproj.io/sync-wave: "-2"
   livenessProbe:
-    enabled: true
     path: /v1/sys/health?standbyok=true&sealedok=true
-  readinessProbe:
-    enabled: true
-    path: /v1/sys/health?standbyok=true&sealedok=true
-    initialDelaySeconds: 30
   standalone:
     enabled: true
     config: |

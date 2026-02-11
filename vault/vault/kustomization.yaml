@@ -8,3 +8,7 @@ helmCharts:
   releaseName: vault
   namespace: vault
   valuesFile: values.yaml
+
+resources:
+- external-secret.yaml
+- job.yaml
