@@ -4,6 +4,10 @@ global:
 
 server:
   enabled: true
+  livenessProbe:
+    path: "/v1/sys/health?standbyok=true&sealedok=true"
+  readinessProbe:
+    path: "/v1/sys/health?standbyok=true&sealedok=true"
   standalone:
     enabled: true
     config: |
