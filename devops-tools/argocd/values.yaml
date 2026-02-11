@@ -20,6 +20,9 @@ redis:
 
 controller:
   replicas: 1
+  env:
+  - name: ARGOCD_APPLICATIONSET_CONTROLLER_ENABLE_PROGRESSIVE_SYNCS
+    value: true
 
 server:
   replicas: 1
