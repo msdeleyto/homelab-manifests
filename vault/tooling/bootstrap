@@ -18,11 +18,8 @@ tooling_dir="$(dirname $0)"
 
 kubectl kustomize "${vault_dir}" --enable-helm | kubectl apply -f -
 
-# Wait for vault pod to be created
-kubectl --namespace vault wait --for=create pod/vault-0 --timeout=60s
-
-# Wait for vault pod to init
-sleep 30
+# Wait for vault pod to be READY
+kubectl --namespace vault wait --for=condition=Ready pod/vault-0 --timeout=60s
 
 kubectl --namespace vault exec vault-0 -- vault operator init -status > /dev/null || init_status=$?
 
