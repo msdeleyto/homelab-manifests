@@ -16,7 +16,7 @@ echo -e "\nDeploying vault..."
 vault_dir="$(dirname $0)/../vault"
 tooling_dir="$(dirname $0)"
 
-kubectl kustomize "${vault_dir}" --enable-helm | envsubst '${INFRA_DOMAIN}' | kubectl apply -f -
+kubectl kustomize "${vault_dir}" --enable-helm | kubectl apply -f -
 
 # Wait for vault pod to be created
 kubectl --namespace vault wait --for=create pod/vault-0 --timeout=60s
