@@ -48,11 +48,3 @@ controller:
     operator: "Equal"
     value: "cp"
     effect: "NoSchedule"
-
-ingress:
-  enabled: true
-  ingressClassName: traefik
-  annotations:
-    traefik.ingress.kubernetes.io/router.entrypoints: websecure
-  hosts:
-  - alloy.${INFRA_DOMAIN}
