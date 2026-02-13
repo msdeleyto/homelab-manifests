@@ -22,7 +22,7 @@ alloy:
       }
 
       loki.source.kubernetes "traefik" {
-        targets = discovery.kubernetes.pod.output
+        targets = discovery.kubernetes.pod.targets
         labels = {
           app = "traefik",
         }
