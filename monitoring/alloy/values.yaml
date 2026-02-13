@@ -64,6 +64,9 @@ alloy:
         client {
           endpoint = "http://tempo:4318"
         }
+        tls {
+          insecure = true
+        }
       }
 controller:
   resources:
