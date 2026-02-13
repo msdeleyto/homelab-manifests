@@ -48,7 +48,7 @@ alloy:
         output {
           metrics = []
           logs    = []
-          traces  = [otelcol.exporter.otlphttp.default.input]
+          traces  = [otelcol.processor.batch.default.input]
         }
       }
 
