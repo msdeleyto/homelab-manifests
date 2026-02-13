@@ -2,7 +2,7 @@
 
 set -eu
 
-secrets_file="${1}"
+secrets="${1}"
 secret_files="${2}"
 
 # Add helm repository
@@ -88,5 +88,5 @@ kubectl --namespace vault exec vault-0 -- vault write auth/kubernetes/role/eso-r
 kubectl --namespace vault exec vault-0 -- vault secrets enable -path=secret -version=2 kv || echo "Secrets path already enabled"
 
 echo "Loading secrets"
-"${tooling_dir}"/load-secrets "${secrets_file}"
+"${tooling_dir}"/load-secrets "${secrets}"
 "${tooling_dir}"/load-secret-files "${secret_files}"
