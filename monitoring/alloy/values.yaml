@@ -24,7 +24,7 @@ alloy:
       loki.source.kubernetes "traefik" {
         targets = discovery.relabel.pod_logs.output
         labels = {
-          app = "traefik"
+          app = "traefik",
         }
         forward_to = [loki.write.default.receiver]
       }
