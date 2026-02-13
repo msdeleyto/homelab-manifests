@@ -17,12 +17,21 @@ alloy:
         }
       }
 
-      discovery.kubernetes "pod" {
+      discovery.kubernetes "traefikPod" {
         role = "pod"
+
+        selectors {
+          role = "pod"
+          field = "spec.nodeName=" + coalesce(sys.env("HOSTNAME"), constants.hostname) + "label=app.kubernetes.io/name=traefik"
+        }
+
+        namespaces {
+          names = ["network"]
+        }
       }
 
       loki.source.kubernetes "traefik" {
-        targets = discovery.kubernetes.pod.targets
+        targets = discovery.kubernetes.traefikPod.targets
         forward_to = [loki.write.default.receiver]
       }
 controller:
