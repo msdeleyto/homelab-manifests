@@ -43,8 +43,11 @@ controller:
     limits:
       cpu: 300m
       memory: 512Mi
-  nodeSelector:
-    size: m
+  tolerations:
+  - key: "role"
+    operator: "Equal"
+    value: "cp"
+    effect: "NoSchedule"
 
 ingress:
   enabled: true
