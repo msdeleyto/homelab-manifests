@@ -50,7 +50,7 @@ dashboards:
     traefik_logs:
       url: https://grafana.com/api/dashboards/17347/revisions/9/download
     traefik_metrics:
-      url: https://grafana.com/api/dashboards/10906/revisions/1/download
+      url: https://grafana.com/api/dashboards/6293/revisions/2/download
     crowdsec:
       url: https://grafana.com/api/dashboards/21419/revisions/6/download
     falco:
