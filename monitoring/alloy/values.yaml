@@ -21,8 +21,9 @@ alloy:
         role = "pod"
 
         selectors {
-          role = "pod"
-          field = "spec.nodeName=" + coalesce(sys.env("HOSTNAME"), constants.hostname) + "label=app.kubernetes.io/name=traefik"
+          role  = "pod"
+          field = "spec.nodeName=" + coalesce(sys.env("HOSTNAME"), constants.hostname)
+          label = "app.kubernetes.io/name=traefik"
         }
 
         namespaces {
