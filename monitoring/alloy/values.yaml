@@ -17,7 +17,13 @@ alloy:
         }
       }
 
-      loki.source.kubernetes "pods" {
+
+      loki.source.kubernetes "traefik" {
+        namespaces = ["network"]
+        labels = {
+          app = "traefik"
+        }
+
         forward_to = [loki.write.default.receiver]
       }
   mounts:
