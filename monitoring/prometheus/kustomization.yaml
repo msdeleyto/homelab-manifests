@@ -8,3 +8,5 @@ helmCharts:
   releaseName: prometheus
   namespace: monitoring
   valuesFile: values.yaml
+  additionalValuesFiles:
+  - jobs.yaml

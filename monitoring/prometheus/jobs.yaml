@@ -1,0 +1,6 @@
+extraScrapeConfigs: |
+  - job_name: 'traefik'
+    metrics_path: /metrics
+    scrape_interval: 5s
+    static_configs:
+    - targets: ['traefik-metrics.network.svc.cluster.local:9100']
