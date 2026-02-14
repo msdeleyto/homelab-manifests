@@ -10,8 +10,8 @@ helmCharts:
   valuesFile: values.yaml
   additionalValuesFiles:
   - dashboards/kubernetes.yaml
-  - alerting.yaml
+  - alerting-policies.yaml
   - alerting-rules.yaml
 
 resources:
-- external-secret.yaml
+- external-secrets.yaml
