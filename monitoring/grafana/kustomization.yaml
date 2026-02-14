@@ -14,4 +14,4 @@ helmCharts:
   - alerting-rules.yaml
 
 resources:
-- external-secret.yaml
+- external-secrets.yaml

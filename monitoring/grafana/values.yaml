@@ -10,6 +10,9 @@ ingress:
 admin:
   existingSecret: grafana-secret
 
+smtp:
+  existingSecret: grafana-smtp-secret
+
 datasources:
   datasources.yaml:
     apiVersion: 1
