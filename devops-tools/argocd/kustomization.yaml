@@ -11,5 +11,4 @@ helmCharts:
 
 resources:
 - external-secrets.yaml
-- envsubst-plugin.yaml
 - application.yaml

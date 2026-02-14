@@ -11,6 +11,25 @@ configs:
     createSecret: false
   cmp:
     create: true
+    plugins:
+      infra-envsubst:
+        generate:
+          command:
+          - bash
+          - -c
+          - |
+            set -e
+            echo "Replacing env vars in manifests" >&2
+            if [[ -f kustomization.yaml ]]; then
+              kustomize build . --enable-helm | envsubst "$(printf '${%s} ' $(env | cut -d'=' -f1))"
+            else
+              echo "[!] Error during infra variables substitution" >&2
+              exit 1
+            fi
+        discover:
+          find:
+            command: [sh, -c, find . -name kustomization.yaml]
+
   cm:
     resource.customizations: |
       argoproj.io/Application:

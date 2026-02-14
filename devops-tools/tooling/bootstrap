@@ -17,7 +17,7 @@ argocd_dir="${project_path}/argocd"
 kubectl apply -f "${argocd_dir}/external-secrets.yaml" --wait
 
 # Deploy only once to not replace vars on it
-kubectl apply -f "${argocd_dir}/cmp.yaml"
+# kubectl apply -f "${argocd_dir}/envusbst-plugin.yaml"
 
 kubectl kustomize --enable-helm "${argocd_dir}" | envsubst '${INFRA_DOMAIN} ${INFRA_ENV}' | kubectl apply --wait -f -
 
