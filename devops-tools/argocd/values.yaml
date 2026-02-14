@@ -86,7 +86,7 @@ repoServer:
   extraContainers:
   - name: infra-envsubst
     command: [/var/run/argocd/argocd-cmp-server]
-    image: quay.io/argoproj/argocd:v3.2.5
+    image: quay.io/argoproj/argocd:v3.3.0
     securityContext:
       runAsNonRoot: true
       runAsUser: 999
