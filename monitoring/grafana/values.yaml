@@ -47,7 +47,7 @@ datasources:
         httpHeaderName1: 'X-Scope-OrgID'
       secureJsonData:
         httpHeaderValue1: 'homelab'
-    - name: Tempo
+    - name: tempo
       type: tempo
       uid: tempo
       url: http://tempo:3200
@@ -61,7 +61,11 @@ dashboards:
     traefik_logs:
       url: https://grafana.com/api/dashboards/17347/revisions/9/download
     traefik_metrics:
-      url: https://grafana.com/api/dashboards/6293/revisions/2/download
+      gnetId: 6293
+      revision: 2
+      datasource:
+      - name: DS_PROMETHEUS
+        value: prometheus
     crowdsec:
       url: https://grafana.com/api/dashboards/21419/revisions/6/download
     falco:
