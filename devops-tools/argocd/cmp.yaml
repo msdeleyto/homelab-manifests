@@ -22,7 +22,7 @@ data:
 
           echo "Replacing env vars in manifests" >&2
           if [[ -f kustomization.yaml ]]; then
-            kustomize build . --enable-helm | envsubst '${INFRA_ENV} ${INFRA_DOMAIN} ${INFRA_K8S_NFS} ${INFRA_DATA_NFS} ${INFRA_LB_IP} ${INFRA_LETS_ENCRYPT_EMAIL} ${INFRA_ADMIN_EMAIL}'
+            kustomize build . --enable-helm | envsubst '${INFRA_ENV} ${INFRA_DOMAIN} ${INFRA_K8S_NFS} ${INFRA_DATA_NFS} ${INFRA_LB_IP} ${INFRA_LETS_ENCRYPT_EMAIL} ${INFRA_ADMIN_EMAIL} ${INFRA_NOTIFICATIONS_EMAIL}'
           else
             echo "[!] Error during infra variables substitution" >&2
             exit 1

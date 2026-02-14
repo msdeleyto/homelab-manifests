@@ -1,6 +1,7 @@
 grafana.ini:
   smtp:
     enabled: true
+    from_address: ${INFRA_ADMIN_EMAIL}
 
 replicaCount: 1
 ingress:
