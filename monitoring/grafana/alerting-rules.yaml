@@ -5,7 +5,7 @@ alerting:
     - orgId: 1
       name: apps
       folder: infra
-      interval: 1d
+      interval: 1h
       rules:
         - uid: ffd8jyfaxl0qoe
           title: OutOfSync
@@ -52,7 +52,7 @@ alerting:
                 type: threshold
           noDataState: NoData
           execErrState: Error
-          for: 1d
+          for: 1h
           annotations: {}
           labels: {}
           isPaused: false
