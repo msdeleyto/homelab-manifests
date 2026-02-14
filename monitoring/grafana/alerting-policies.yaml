@@ -1,9 +1,0 @@
-alerting:
-  policies.yaml:
-    apiVersion: 1
-    policies:
-    - orgId: 1
-      receiver: admin
-      group_by:
-      - grafana_folder
-      - alertname
