@@ -7,7 +7,7 @@ helmGlobals:
 helmCharts:
 - name: traefik
   repo: "https://traefik.github.io/charts"
-  version: 38.0.2
+  version: 39.0.1
   releaseName: traefik
   namespace: network
   valuesFile: traefik-values.yaml
