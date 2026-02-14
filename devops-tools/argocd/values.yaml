@@ -89,6 +89,9 @@ repoServer:
     resources:
     - configmaps
   volumes:
+  - configMap:
+      name: argocd-cmp-cm
+    name: infra-envsubst
   - emptyDir: {}
     name: custom-tools
   initContainers:
