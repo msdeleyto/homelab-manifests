@@ -1,10 +1,3 @@
-deployment:
-  ingress:
-    class_name: traefik
-    override_yaml:
-      metadata:
-        annotations:
-          traefik.ingress.kubernetes.io/router.entrypoints: websecure
 cr:
   create: true
   namespace: network
@@ -18,5 +11,9 @@ cr:
       ingress:
         enabled: true
         class_name: traefik
+        override_yaml:
+          metadata:
+            annotations:
+              traefik.ingress.kubernetes.io/router.entrypoints: websecure
     server:
       web_fqdn: kiali.${INFRA_DOMAIN}
