@@ -6,25 +6,3 @@ metadata:
 spec:
   serverName: kiali.${INFRA_DOMAIN}
   insecureSkipVerify: true
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: kiali
-  namespace: network
-  annotations:
-    traefik.ingress.kubernetes.io/router.entrypoints: websecure
-    traefik.ingress.kubernetes.io/service.serverstransport: network-skip-verify@kubernetescrd
-spec:
-  ingressClassName: traefik
-  rules:
-  - host: kiali.${INFRA_DOMAIN}
-    http:
-      paths:
-      - backend:
-          service:
-            name: kiali
-            port:
-              number: 20001
-        path: /kiali
-        pathType: Prefix
