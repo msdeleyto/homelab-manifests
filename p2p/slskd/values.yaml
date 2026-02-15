@@ -6,4 +6,4 @@ slskd:
 vpn:
   image:
     repository: qmcgaw/gluetun
-    tag: v3.41.0
+    tag: v3.41.1
