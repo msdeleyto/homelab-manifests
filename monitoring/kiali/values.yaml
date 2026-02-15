@@ -15,6 +15,7 @@ cr:
           metadata:
             annotations:
               traefik.ingress.kubernetes.io/router.entrypoints: websecure
+              traefik.ingress.kubernetes.io/service.serverstransport: network-skip-verify@kubernetescrd
     server:
       web_fqdn: kiali.${INFRA_DOMAIN}
       web_root: ""
