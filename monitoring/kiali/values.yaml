@@ -15,6 +15,7 @@ cr:
           metadata:
             annotations:
               traefik.ingress.kubernetes.io/router.entrypoints: websecure
+              traefik.ingress.kubernetes.io/router.tls: "true"
     server:
       web_fqdn: kiali.${INFRA_DOMAIN}
       web_root: /kiali
