@@ -17,7 +17,7 @@ ports:
   web:
     http:
       middlewares:
-      - redirect-https@kubernetescrd
+      - network-redirect-https@kubernetescrd
 tracing:
   otlp:
     enabled: true
