@@ -8,6 +8,8 @@ cr:
       prometheus:
         url: "http://prometheus-server.monitoring.svc.cluster.local/"
     deployment:
+      network_policy:
+        enabled: false
       ingress:
         enabled: true
         class_name: traefik
