@@ -14,7 +14,7 @@ metadata:
   namespace: network
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: websecure
-    traefik.ingress.kubernetes.io/service.serverstransport: skip-verify@kubernetescrd
+    traefik.ingress.kubernetes.io/service.serverstransport: network-skip-verify@kubernetescrd
 spec:
   ingressClassName: traefik
   rules:
@@ -26,5 +26,5 @@ spec:
             name: kiali
             port:
               number: 20001
-        path: /
+        path: /kiali
         pathType: Prefix
