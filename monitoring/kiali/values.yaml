@@ -14,3 +14,9 @@ cr:
     external_services:
       prometheus:
         url: "http://prometheus-server.monitoring.svc.cluster.local/"
+    deployment:
+      ingress:
+        enabled: true
+        class_name: traefik
+    server:
+      web_fqdn: kiali.${INFRA_DOMAIN}
