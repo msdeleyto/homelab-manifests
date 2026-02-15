@@ -1,3 +1,43 @@
-domain: ${INFRA_DOMAIN}
-# bouncer:
-#   lapiKey: <path:secret/data/monitoring/crowdsec#traefik_bouncer_key>
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 250m
+    memory: 256Mi
+logs:
+  general:
+    format: json
+  access:
+    enabled: true
+podSecurityContext:
+  runAsUser: 1000
+  runAsGroup: 1000
+# ports:
+#   web:
+#     middlewares:
+#     - network-crowdsec@kubernetescrd
+#   websecure:
+#     middlewares:
+#     - network-crowdsec@kubernetescrd
+tracing:
+  otlp:
+    enabled: true
+    http:
+      enabled: true
+      endpoint: http://alloy.monitoring.svc.cluster.local:4318/v1/traces
+metrics:
+  prometheus:
+    service:
+      enabled: true
+nodeSelector:
+  role: cp
+tolerations:
+- key: "role"
+  operator: "Equal"
+  value: "cp"
+  effect: "NoSchedule"
+providers:
+  kubernetesCRD:
+    enabled: true
+    allowCrossNamespace: true

@@ -2,4 +2,4 @@ apiVersion: v2
 name: jellyfin
 description: Deploy Jellyfin (pvc, deployment, service and ingressroute)
 type: application
-version: 0.1.0
+version: 1.0.0
