@@ -47,3 +47,18 @@ helmCharts:
   valuesInline:
     global:
       istioNamespace: network
+
+- name: kiali
+  repo: https://kiali.org/helm-charts
+  version: 1.28.3
+  releaseName: kiali-server
+  valuesInline:
+    auth:
+      strategy: anonymous
+    deployment:
+      ingress:
+        class_name: traefik
+        override_yaml:
+          metadata:
+            annotations:
+              traefik.ingress.kubernetes.io/router.entrypoints: websecure
