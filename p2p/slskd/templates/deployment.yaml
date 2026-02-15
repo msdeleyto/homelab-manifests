@@ -106,4 +106,4 @@ spec:
       - name: logs
         nfs:
           server: ${INFRA_DATA_NFS}
-          path: /volume1/kubernetes/logs/slskd
+          path: /volume1/kubernetes/logs/prod/slskd

@@ -120,7 +120,7 @@ spec:
       - name: logs
         nfs:
           server: ${INFRA_DATA_NFS}
-          path: /volume1/kubernetes/logs/qbittorrent
+          path: /volume1/kubernetes/logs/prod/qbittorrent
       - name: qbittorrent-config
         persistentVolumeClaim:
           claimName: qbittorrent-config
