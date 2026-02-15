@@ -29,7 +29,7 @@ spec:
         - name: VPN_SERVICE_PROVIDER
           value: nordvpn
         - name: VPN_TYPE
-          value: openvpn
+          value: wireguard
         - name: DNS_KEEP_NAMESERVER
           value: "on"
         - name: FIREWALL_OUTBOUND_SUBNETS
