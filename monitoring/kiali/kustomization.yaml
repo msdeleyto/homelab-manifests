@@ -4,7 +4,7 @@ kind: Kustomization
 helmCharts:
 - name: kiali-operator
   repo: https://kiali.org/helm-charts
-  version: 2.7.0
+  version: 2.21.0
   releaseName: kiali-operator
   namespace: monitoring
   includeCRDs: true
