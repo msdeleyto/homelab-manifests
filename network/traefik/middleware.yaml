@@ -4,7 +4,10 @@ metadata:
   name: redirect-https
   namespace: network
 spec:
-  redirectRegex:
-    regex: ^http://(.*)
-    replacement: https://${1}
+#  redirectRegex:
+#    regex: ^http://(.*)
+#    replacement: https://${1}
+#    permanent: true
+  redirectScheme:
+    scheme: https
     permanent: true
