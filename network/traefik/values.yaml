@@ -1,3 +1,7 @@
+ingressRoute:
+  dashboard:
+    enabled: false
+    matchRule: Host(`traefik.${INFRA_DOMAIN}`) + PathPrefix(`/dashboard`) || PathPrefix(`/api`)
 resources:
   requests:
     cpu: 100m
