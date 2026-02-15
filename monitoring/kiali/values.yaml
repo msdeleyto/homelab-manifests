@@ -15,7 +15,6 @@ cr:
           metadata:
             annotations:
               traefik.ingress.kubernetes.io/router.entrypoints: web
-              traefik.ingress.kubernetes.io/service.serverstransport: network@kubernetescrd
     server:
       web_fqdn: kiali.${INFRA_DOMAIN}
       web_root: /kiali
