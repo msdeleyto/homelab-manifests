@@ -3,7 +3,7 @@ apiVersion: apps/v1
 metadata:
   name: cwa
 spec:
-  replicas: {{ .Values.deployment.replicas }}
+  replicas: 1
   selector:
     matchLabels:
       app: cwa
@@ -13,10 +13,8 @@ spec:
         app: cwa
     spec:
       automountServiceAccountToken: false
-      {{- with .Values.deployment.nodeSelector }}
       nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        size: s
       containers:
       - name: cwa
         image: {{ .Values.deployment.image.repository }}:{{ .Values.deployment.image.tag }}
@@ -48,13 +46,13 @@ spec:
       volumes:
       - name: config
         nfs:
-          server: {{ .Values.nfs }}
+          server: ${INFRA_DATA_NFS}
           path: /volume1/kubernetes/config/calibre
       - name: library
         nfs:
-          server: {{ .Values.nfs }}
+          server: ${INFRA_DATA_NFS}
           path: /volume1/data/media/books/library
       - name: new-books
         nfs:
-          server: {{ .Values.nfs }}
+          server: ${INFRA_DATA_NFS}
           path: /volume1/data/media/books/new

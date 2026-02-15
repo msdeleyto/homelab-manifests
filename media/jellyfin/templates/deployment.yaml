@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: jellyfin
 spec:
-  replicas: {{ .Values.deployment.replicas }}
+  replicas: 1
   selector:
     matchLabels:
       app: jellyfin
@@ -20,10 +20,8 @@ spec:
         seccompProfile:
           type: RuntimeDefault
       automountServiceAccountToken: false
-      {{- with .Values.deployment.nodeSelector }}
       nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
+        size: m
       containers:
       - name: jellyfin
         image: {{ .Values.deployment.image.repository }}:{{ .Values.deployment.image.tag }}
@@ -44,5 +42,5 @@ spec:
           claimName: jellyfin-config-pvc
       - name: data
         nfs:
-          server: {{ .Values.nfs }}
+          server: ${INFRA_DATA_NFS}
           path: /volume1/data/media

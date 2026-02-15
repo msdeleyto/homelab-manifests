@@ -1,21 +1,21 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: qbittorrent
-  namespace: p2p
+  name: cwa
+  namespace: media
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: websecure
     traefik.ingress.kubernetes.io/router.tls: true
 spec:
   ingressClassName: traefik
   rules:
-  - host: qb.${INFRA_DOMAIN}
+  - host: cwa.${INFRA_DOMAIN}
     http:
       paths:
       - backend:
           service:
-            name: qbittorrent
+            name: cwa
             port:
-              name: web
+              number: 8083
         path: /
         pathType: Prefix

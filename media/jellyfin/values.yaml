@@ -5,12 +5,9 @@ pvc:
   size: 10Gi
 
 deployment:
-  nodeSelector:
-    size: m
   image:
     repository: docker.io/jellyfin/jellyfin
     tag: "10.11.6"
-  replicas: 1
 
 backup:
   schedule: "0 15 * * *"
@@ -23,6 +20,3 @@ backup:
     echo "Backup completed at $(date)"
     echo "Removing backups older than 3 days"
     find /backup -maxdepth 1 -mtime +3 -type f -delete
-
-domain: ${INFRA_DOMAIN}
-nfs: ${INFRA_DATA_NFS}
