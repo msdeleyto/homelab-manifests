@@ -23,8 +23,10 @@ podSecurityContext:
 ports:
   web:
     http:
-      middlewares:
-      - network-redirect-https@kubernetescrd
+      redirections:
+        entryPoint:
+          scheme: https
+          to: websecure
 tracing:
   otlp:
     enabled: true
