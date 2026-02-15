@@ -75,7 +75,6 @@ server:
     ingressClassName: traefik
     annotations:
       traefik.ingress.kubernetes.io/router.entrypoints: websecure
-      traefik.ingress.kubernetes.io/router.tls: "true"
     tls: true
 
 repoServer:
