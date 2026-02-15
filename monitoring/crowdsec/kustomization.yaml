@@ -4,7 +4,7 @@ kind: Kustomization
 helmCharts:
 - name: crowdsec
   repo: https://crowdsecurity.github.io/helm-charts
-  version: 0.21.1
+  version: 0.22.0
   releaseName: crowdsec
   namespace: monitoring
   valuesFile: values.yaml
