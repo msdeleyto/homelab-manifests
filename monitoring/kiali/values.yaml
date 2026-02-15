@@ -9,3 +9,6 @@ cr:
         url: "http://prometheus-server.monitoring.svc.cluster.local/"
     server:
       web_fqdn: kiali.${INFRA_DOMAIN}
+      web_port: 8080
+      web_root: /kiali
+      web_schema: https
