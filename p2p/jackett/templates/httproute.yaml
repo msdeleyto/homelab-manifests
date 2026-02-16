@@ -5,7 +5,9 @@ metadata:
   namespace: p2p
 spec:
   parentRefs:
-  - name: cluster-gateway
+  - group: gateway.networking.k8s.io	
+    kind: Gateway
+    name: cluster-gateway
     namespace: network
     sectionName: https
   hostnames:
