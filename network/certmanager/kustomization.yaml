@@ -13,4 +13,3 @@ resources:
 - external-secret.yaml
 - issuer.yaml
 - certificate.yaml
-- tlsstore.yaml
