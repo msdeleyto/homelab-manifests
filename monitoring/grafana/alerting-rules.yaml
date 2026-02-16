@@ -50,7 +50,7 @@ alerting:
                 maxDataPoints: 43200
                 refId: C
                 type: threshold
-          noDataState: Ok
+          noDataState: OK
           execErrState: Error
           for: 1h
           annotations: {}
@@ -101,7 +101,7 @@ alerting:
                 maxDataPoints: 43200
                 refId: C
                 type: threshold
-          noDataState: Ok
+          noDataState: OK
           execErrState: Error
           for: 15m
           annotations: {}
