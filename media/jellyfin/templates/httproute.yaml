@@ -18,6 +18,7 @@ spec:
       kind: Service
       name: jellyfin
       port: 8096
+      weight: 1
     matches:
     - path:
         type: PathPrefix

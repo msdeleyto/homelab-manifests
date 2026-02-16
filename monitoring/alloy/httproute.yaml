@@ -18,6 +18,7 @@ spec:
       kind: Service
       name: alloy
       port: 12345
+      weight: 1
     matches:
     - path:
         type: PathPrefix
