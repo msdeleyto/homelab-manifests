@@ -1,0 +1,16 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: argocd-route
+  namespace: devops-tools
+spec:
+  parentRefs:
+  - name: istio-ingressgateway
+    namespace: network
+    sectionName: https
+  hostnames:
+  - "cd.${INFRA_DOMAIN}"
+  rules:
+  - backendRefs:
+    - name: argocd-server
+      port: 3000

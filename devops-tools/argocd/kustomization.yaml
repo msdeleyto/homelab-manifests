@@ -12,3 +12,4 @@ helmCharts:
 resources:
 - external-secrets.yaml
 - application.yaml
+- httproute.yaml
