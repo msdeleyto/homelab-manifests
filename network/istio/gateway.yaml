@@ -24,7 +24,7 @@ metadata:
   name: cluster-waypoint
   namespace: network
   labels:
-    istio.io/waypoint-for: service
+    istio.io/waypoint-for: all
 spec:
   gatewayClassName: istio-waypoint
   listeners:
