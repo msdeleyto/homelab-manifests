@@ -5,7 +5,7 @@ metadata:
   namespace: network
 spec:
   parentRefs:
-  - group: gateway.networking.k8s.io	
+  - group: gateway.networking.k8s.io
     kind: Gateway
     name: cluster-gateway
     namespace: network
@@ -14,5 +14,11 @@ spec:
   - "kiali.${INFRA_DOMAIN}"
   rules:
   - backendRefs:
-    - name: kiali
+    - group: ''
+      kind: Service
+      name: kiali
       port: 20001
+    matches:
+    - path:
+        type: PathPrefix
+        value: /
