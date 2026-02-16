@@ -6,14 +6,14 @@ metadata:
 spec:
   gatewayClassName: istio
   listeners:
-  - name: https
+  - name: http
     hostname: "*.${INFRA_DOMAIN}"
-    port: 443
-    protocol: HTTPS
-    tls:
-      mode: Terminate
-      certificateRefs:
-      - name: domain-tls-secret
+    port: 80
+    protocol: HTTP
+#    tls:
+#      mode: Terminate
+#      certificateRefs:
+#      - name: domain-tls-secret
     allowedRoutes:
       namespaces:
         from: All
