@@ -10,8 +10,6 @@ spec:
     hostname: "*.${INFRA_DOMAIN}"
     port: 80
     protocol: HTTP
-    tls:
-      httpsRedirect: true
     allowedRoutes:
       namespaces:
         from: All
