@@ -3,8 +3,6 @@ kind: Gateway
 metadata:
   name: istio-ingressgateway
   namespace: network
-  annotations:
-    metallb.universe.tf/loadBalancerIPs: ${INFRA_LB_IP}
 spec:
   gatewayClassName: istio
   listeners:
