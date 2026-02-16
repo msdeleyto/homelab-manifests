@@ -18,8 +18,7 @@ spec:
       - name: jackett
         image: {{ .Values.jackett.image.repository }}:{{ .Values.jackett.image.tag }}
         ports:
-        - name: web
-          containerPort: 9117
+        - containerPort: 9117
         env:
         - name: PUID
           value: "1000"
