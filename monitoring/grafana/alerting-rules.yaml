@@ -55,18 +55,11 @@ alerting:
           annotations:
             summary: |-
                 {{ `
-                Application: {{ index $labels "name" }}{{- "\n" -}}
-                {{- "\t" -}} · Health status: {{- if eq $labels.health_status "Healthy" -}}
-                 OK
-                {{- else -}}
-                 :x: {{ index $labels "health_status" }}
-                {{- end -}}
+                Application: {{ index $labels "name" }}
                 {{- "\n" -}}
-                {{- "\t" -}} · Sync status: {{- if eq $labels.sync_status "Synced" -}}
-                 OK
-                {{- else -}}
-                 :x: {{ index $labels "sync_status" }}
-                {{- end -}}
+                {{- "\t" -}} · Health: {{- if eq $labels.health_status "Healthy" -}}OK {{- else -}}:x: {{ index $labels "health_status" }}{{- end -}}
+                {{- "\n" -}}
+                {{- "\t" -}} · Sync: {{- if eq $labels.sync_status "Synced" -}}OK{{- else -}}:x: {{ index $labels "sync_status" }}{{- end -}}
                 ` }}
           labels: {}
           isPaused: false
