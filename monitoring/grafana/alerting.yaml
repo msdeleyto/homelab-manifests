@@ -31,16 +31,20 @@ alerting:
         {{ `
         {{ define "custom.standard" -}}
 
+        {{- if .Alerts.Resolved -}}
         {{ len .Alerts.Resolved }} resolved alert(s)
         {{ range .Alerts.Resolved -}}
           {{ template "alert.summary_and_description" . -}}
         {{ end }}
+        {{- end -}}
 
+        {{ if .Alerts.Firing -}}
         {{ len .Alerts.Firing }} firing alert(s)
         {{ range .Alerts.Firing -}}
           {{ template "alert.summary_and_description" . -}}
         {{ end -}}
         {{ end -}}
+        {{- end -}}
 
         {{ define "alert.summary_and_description" }}
         {{- "\n" -}}
