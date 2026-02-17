@@ -20,3 +20,9 @@ alerting:
           addresses: ${INFRA_ADMIN_EMAIL}
           singleEmail: true
         disableResolveMessage: false
+      - uid: afdinvmb9emtcf
+        type: slack
+        settings:
+          recipient: ${CONTACT_POINT_SLACK_RECIPIENT}
+          token: ${CONTACT_POINT_SLACK_TOKEN}
+        disableResolveMessage: false

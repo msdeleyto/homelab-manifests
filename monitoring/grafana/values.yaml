@@ -12,6 +12,8 @@ admin:
 smtp:
   existingSecret: grafana-smtp-secret
 
+envFromSecret: grafana-contact-points-secret
+
 datasources:
   datasources.yaml:
     apiVersion: 1
