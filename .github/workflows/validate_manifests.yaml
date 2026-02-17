@@ -25,4 +25,4 @@ jobs:
         webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
         webhook-type: incoming-webhook
         payload: |
-          text: "${{ github.event.head_commit.message }} finished with ${{ needs.validate-k8s-manifests.result }}"
+          text: "\"${{ github.event.head_commit.message }}\" was merged to main with result: *${{ needs.validate-k8s-manifests.result }}*"
