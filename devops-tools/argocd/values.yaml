@@ -70,12 +70,6 @@ server:
   replicas: 1
   metrics:
     enabled: true
-#  ingress:
-#    enabled: true
-#    ingressClassName: traefik
-#    annotations:
-#      traefik.ingress.kubernetes.io/router.entrypoints: websecure
-#      traefik.ingress.kubernetes.io/router.tls: "true"
 
 repoServer:
   replicas: 1
