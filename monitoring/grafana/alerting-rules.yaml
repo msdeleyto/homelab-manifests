@@ -70,7 +70,7 @@ alerting:
             ` }}
         summary: |
           {{ `
-          'Application: '{{ index $labels "name" }}'
+          Application: '{{ index $labels "name" }}'
           ` }}
       labels: {}
       isPaused: false
