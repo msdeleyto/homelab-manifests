@@ -17,7 +17,7 @@ alerting:
       - uid: admin-slack
         type: slack
         settings:
-          text: '{{ `{{ include "custom.standard" . }}` }}'
+          text: '{{ `{{ template "custom.standard" . }}` }}'
           recipient: ${CONTACT_POINT_SLACK_RECIPIENT}
           token: ${CONTACT_POINT_SLACK_TOKEN}
         disableResolveMessage: false
