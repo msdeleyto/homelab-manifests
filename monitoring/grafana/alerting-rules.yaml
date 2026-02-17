@@ -7,105 +7,72 @@ alerting:
       folder: infra
       interval: 15m
       rules:
-        - uid: ffd8jyfaxl0qoe
-          title: OutOfSync
-          condition: C
-          data:
-            - refId: A
-              relativeTimeRange:
-                from: 600
-                to: 0
-              datasourceUid: prometheus
-              model:
-                editorMode: code
-                expr: argocd_app_info{sync_status="OutOfSync"}
-                instant: true
-                intervalMs: 1000
-                legendFormat: __auto
-                maxDataPoints: 43200
-                range: false
-                refId: A
-            - refId: C
-              datasourceUid: __expr__
-              model:
-                conditions:
-                    - evaluator:
-                        params:
-                            - 0
-                        type: gt
-                      operator:
-                        type: and
-                      query:
-                        params:
-                            - C
-                      reducer:
-                        params: []
-                        type: last
-                      type: query
-                datasource:
-                    type: __expr__
-                    uid: __expr__
-                expression: A
-                intervalMs: 1000
-                maxDataPoints: 43200
-                refId: C
-                type: threshold
-          noDataState: OK
-          execErrState: Error
-          for: 1h
-          annotations: {}
-          labels: {}
-          isPaused: false
-          notification_settings:
-            receiver: admin
-        - uid: ffd8jyfsojaijf
-          title: Degraded
-          condition: C
-          data:
-            - refId: A
-              relativeTimeRange:
-                from: 600
-                to: 0
-              datasourceUid: prometheus
-              model:
-                editorMode: code
-                expr: argocd_app_info{health_status="Degraded"}
-                instant: true
-                intervalMs: 1000
-                legendFormat: __auto
-                maxDataPoints: 43200
-                range: false
-                refId: A
-            - refId: C
-              datasourceUid: __expr__
-              model:
-                conditions:
-                    - evaluator:
-                        params:
-                            - 0
-                        type: gt
-                      operator:
-                        type: and
-                      query:
-                        params:
-                            - C
-                      reducer:
-                        params: []
-                        type: last
-                      type: query
-                datasource:
-                    type: __expr__
-                    uid: __expr__
-                expression: A
-                intervalMs: 1000
-                maxDataPoints: 43200
-                refId: C
-                type: threshold
-          noDataState: OK
-          execErrState: Error
-          for: 15m
-          annotations: {}
-          labels: {}
-          isPaused: false
-          notification_settings:
-            receiver: admin
+      - uid: cfdir7e7b8h6ob
+        title: ApplicationsHealth
+        condition: C
+        data:
+        - refId: A
+          relativeTimeRange:
+            from: 600
+            to: 0
+          datasourceUid: prometheus
+          model:
+            editorMode: builder
+            expr: argocd_app_info{health_status="Healthy", sync_status="Synced"}
+            instant: true
+            intervalMs: 1000
+            legendFormat: __auto
+            maxDataPoints: 43200
+            range: false
+            refId: A
+        - refId: C
+          datasourceUid: __expr__
+          model:
+            conditions:
+            - evaluator:
+                params:
+                - 0
+                type: gt
+              operator:
+                type: and
+              query:
+                params:
+                - C
+              reducer:
+                params: []
+                type: last
+              type: query
+            datasource:
+                type: __expr__
+                uid: __expr__
+            expression: A
+            intervalMs: 1000
+            maxDataPoints: 43200
+            refId: C
+            type: threshold
+      noDataState: OK
+      execErrState: Error
+      for: 15m
+      annotations:
+        description: |-
+            {{ `
+            {{- "\t" -}} · Health status: {{- if eq $labels.health_status "Healthy" -}}
+            OK
+            {{- else -}}
+            :x: {{ index $labels "health_status" }}
+            {{- end -}}
+            {{- "\n" -}}
+            {{- "\t" -}} · Sync status: {{- if eq $labels.sync_status "Synced" -}}
+            OK
+            {{- else -}}
+            :x: {{ index $labels "sync_status" }}
+            {{- end -}}
+            ` }}
+        summary: |
+          {{ `
+          'Application: '{{ index $labels "name" }}'
+          ` }}
+      labels: {}
+      isPaused: false
+      notification_settings:
+        receiver: admin

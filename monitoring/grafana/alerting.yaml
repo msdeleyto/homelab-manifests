@@ -8,6 +8,33 @@ alerting:
       - grafana_folder
       - alertname
 
+  templates.yaml:
+    apiVersion: 1
+    templates:
+    - orgId: 1
+      name: standard
+      template: |
+        {{ `
+        {{ define "custom.standard" -}}
+
+        {{ len .Alerts.Resolved }} resolved alert(s)
+        {{ range .Alerts.Resolved -}}
+          {{ template "alert.summary_and_description" . -}}
+        {{ end }}
+
+        {{ len .Alerts.Firing }} firing alert(s)
+        {{ range .Alerts.Firing -}}
+          {{ template "alert.summary_and_description" . -}}
+        {{ end -}}
+        {{ end -}}
+
+        {{ define "alert.summary_and_description" }}
+        {{- "\n" -}}
+        {{.Annotations.summary}}{{- "\n" -}}
+        {{.Annotations.description}}
+        {{ end -}}
+        ` }}
+
   contactpoints.yaml:
     apiVersion: 1
     contactPoints:
@@ -17,6 +44,7 @@ alerting:
       - uid: admin-slack
         type: slack
         settings:
+          # text: '{{ template "custom.standard" . }}'
           recipient: ${CONTACT_POINT_SLACK_RECIPIENT}
           token: ${CONTACT_POINT_SLACK_TOKEN}
         disableResolveMessage: false
