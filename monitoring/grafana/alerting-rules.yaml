@@ -5,7 +5,7 @@ alerting:
     - orgId: 1
       name: apps
       folder: infra
-      interval: 15m
+      interval: 1m
       rules:
         - uid: cfdir7e7b8h6ob
           title: ApplicationsHealth
