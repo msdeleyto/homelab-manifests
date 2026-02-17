@@ -57,15 +57,15 @@ alerting:
                 {{ `
                 Application: {{ index $labels "name" }}{{- "\n" -}}
                 {{- "\t" -}} · Health status: {{- if eq $labels.health_status "Healthy" -}}
-                OK
+                 OK
                 {{- else -}}
-                :x: {{ index $labels "health_status" }}
+                 :x: {{ index $labels "health_status" }}
                 {{- end -}}
                 {{- "\n" -}}
                 {{- "\t" -}} · Sync status: {{- if eq $labels.sync_status "Synced" -}}
-                OK
+                 OK
                 {{- else -}}
-                :x: {{ index $labels "sync_status" }}
+                 :x: {{ index $labels "sync_status" }}
                 {{- end -}}
                 ` }}
           labels: {}
