@@ -14,13 +14,7 @@ alerting:
     - orgId: 1
       name: admin
       receivers:
-      - uid: admin
-        type: email
-        settings:
-          addresses: ${INFRA_ADMIN_EMAIL}
-          singleEmail: true
-        disableResolveMessage: false
-      - uid: afdinvmb9emtcf
+      - uid: admin-slack
         type: slack
         settings:
           recipient: ${CONTACT_POINT_SLACK_RECIPIENT}

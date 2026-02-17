@@ -1,16 +1,7 @@
-grafana.ini:
-  smtp:
-    enabled: true
-    host: smtp.gmail.com:587
-    from_address: ${INFRA_NOTIFICATIONS_EMAIL}
-
 replicaCount: 1
 
 admin:
   existingSecret: grafana-secret
-
-smtp:
-  existingSecret: grafana-smtp-secret
 
 envFromSecret: grafana-contact-points-secret
 
