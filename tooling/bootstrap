@@ -31,7 +31,7 @@ verify_requirements "${project_path}"
 echo -e "    Everything ready!\\n"
 
 # Install gateway crds
-kubectl apply --server-side -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.4.1/standard-install.yaml
+kubectl apply --server-side -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.4.1/standard-install.yaml > /dev/null
 
 # Install storage
 echo "[1/5] Bootstraping storage..."
