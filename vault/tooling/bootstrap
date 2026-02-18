@@ -46,12 +46,8 @@ if [[ $init_status -eq 2 ]]; then
   unseal_keys="$(echo "${initialize_output}" | grep "Unseal Key" | sed -r 's/^Unseal Key [1-5]\: (.*)$/\1/g')"
   needed_unseal_keys="$(echo "${unseal_keys}" | head -n3)"
 
-  echo "Unseal keys:"
-  echo "${unseal_keys}"
-
   count=1
   while read key; do
-    kubectl --namespace vault exec vault-0 -- vault operator unseal "${key}"
     KEY="key${count}" VALUE="${key}" yq -Yi '.vault.unsealer.[$ENV.KEY] = $ENV.VALUE' "${secrets_file}"
     count=$((count + 1))
   done <<< "${needed_unseal_keys}"
@@ -59,6 +55,18 @@ if [[ $init_status -eq 2 ]]; then
   # Login
   root_token="$(echo "${initialize_output}" | grep "Initial Root Token" | sed 's/ //g' | cut -d: -f2)"
   kubectl --namespace vault exec vault-0 -- vault login "${root_token}" || exit 1
+fi
+
+sealed_status=0
+kubectl --namespace vault exec vault-0 -- vault status > /dev/null || sealed_status=$?
+
+if [[ $sealed_status -eq 2 ]]; then
+  echo "Unsealing vault..."
+
+  unseal_keys="$(yq -r '.cluster.secrets.vault.unsealer[]' "${secrets_file}")"
+  while read key; do
+    kubectl --namespace vault exec vault-0 -- vault operator unseal "${key}"
+  done <<< "${unseal_keys}"
 fi
 
 # Enable auth engines
