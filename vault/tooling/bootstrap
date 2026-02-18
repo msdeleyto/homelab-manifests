@@ -55,7 +55,7 @@ if [[ $init_status -eq 2 ]]; then
 
   # Extract root token
   root_token="$(echo "${initialize_output}" | grep "Initial Root Token" | sed 's/ //g' | cut -d: -f2)"
-  KEY="key${count}" VALUE="${key}" yq -Yi '.cluster.secrets.vault.unsealer.rootToken' "${secrets_file}"
+  yq -Yi ".cluster.secrets.vault.unsealer.rootToken = \"${root_token}\"" "${secrets_file}"
 fi
 
 sealed_status=0
