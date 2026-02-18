@@ -10,6 +10,6 @@ kubectl apply --server-side -f "https://raw.githubusercontent.com/external-secre
 kubectl create namespace external-secrets 2>/dev/null || true
 
 # Install ESO
-kubectl kustomize "${project_path}/external-secrets" --enable-helm | kubectl apply --server-side -f - > /dev/null
+kubectl kustomize "${project_path}/external-secrets" --enable-helm | kubectl apply --server-side --force-conflicts -f - > /dev/null
 
 kubectl --namespace external-secrets wait --for condition=available deploy/external-secrets-webhook --timeout=120s
