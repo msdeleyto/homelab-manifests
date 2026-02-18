@@ -49,15 +49,13 @@ if [[ $init_status -eq 2 ]]; then
   # Extract unseal keys
   count=1
   while read key; do
-    key="key${count}"
-    value="${key}"
-    yq -i ".cluster.secrets.vault.unsealer[${key}] = \"${value}\" | .cluster.secrets.vault.unsealer[${key}] style=\"double\"" "${secrets_file}"
+    KEY="key${count}" VALUE="${key}" yq -Yi '.cluster.secrets.vault.unsealer[$ENV.KEY] = $ENV.VALUE' "${secrets_file}"
     count=$((count + 1))
   done <<< "${needed_unseal_keys}"
 
   # Extract root token
   root_token="$(echo "${initialize_output}" | grep "Initial Root Token" | sed 's/ //g' | cut -d: -f2)"
-  yq -i ".cluster.secrets.vault.vault.rootToken = \"${root_token}\" | .cluster.secrets.vault.vault.rootToken style=\"double\"" "${secrets_file}"
+  ROOT_TOKEN="${root_token}" yq -Yi '.cluster.secrets.vault.vault.rootToken = $ENV.ROOT_TOKEN' "${secrets_file}"
 fi
 
 sealed_status=0
