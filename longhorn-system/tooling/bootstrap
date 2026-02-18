@@ -9,6 +9,10 @@ kubectl create namespace longhorn-system || true
 kubectl kustomize --enable-helm "${project_path}/longhorn-system" | envsubst '${INFRA_DOMAIN}' | kubectl apply -f -
 
 kubectl wait --namespace longhorn-system \
+  --for=create daemonset/longhorn-csi-plugin \
+  --timeout=300s
+
+kubectl wait --namespace longhorn-system \
   --for=condition=Ready pod \
   --selector=app=longhorn-csi-plugin \
   --timeout=300s
