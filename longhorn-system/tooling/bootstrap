@@ -12,3 +12,13 @@ kubectl wait --namespace longhorn-system \
   --for=condition=ready pod \
   --selector=app=longhorn-manager \
   --timeout=300s
+
+kubectl wait --namespace longhorn-system \
+  --for=condition=ready pod \
+  --selector=longhorn-binary=longhorn-driver-deployer \
+  --timeout=300s
+
+until kubectl get storageclass longhorn >/dev/null 2>&1; do
+  echo "Waiting for 'longhorn' StorageClass to be created..."
+  sleep 5
+done
