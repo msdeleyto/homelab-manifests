@@ -1,0 +1,33 @@
+global:
+  enabled: true
+  tlsDisable: true
+
+server:
+  enabled: true
+  readinessProbe:
+    path: /v1/sys/health?standbyok=true&sealedcode=204
+  standalone:
+    enabled: true
+    config: |
+      storage "file" {
+        path = "/vault/data"
+      }
+
+      listener "tcp" {
+        address     = "0.0.0.0:8200"
+        tls_disable = 1
+      }
+  dataStorage:
+    enabled: true
+    size: 8Gi
+    storageClass: longhorn
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 250m
+    limits:
+      memory: 256Mi
+      cpu: 250m
+
+injector:
+  enabled: false

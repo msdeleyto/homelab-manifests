@@ -13,7 +13,12 @@ kubectl create namespace vault || true
 
 # vault
 echo -e "\nDeploying vault..."
-vault_dir="$(dirname $0)/../vault"
+
+if [[ ${INFRA_ENV} == "prod" ]]; then
+  vault_dir="$(dirname $0)/../vault"
+else
+  vault_dir="$(dirname $0)/../vault-test"
+fi
 tooling_dir="$(dirname $0)"
 
 kubectl kustomize "${vault_dir}" --enable-helm | kubectl apply -f -
