@@ -2,7 +2,6 @@ preUpgradeChecker:
   jobEnabled: false
 
 defaultSettings:
-  deletingConfirmationFlag: true
   defaultReplicaCount: 2
 
 longhornManager:
