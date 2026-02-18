@@ -51,7 +51,7 @@ if [[ $init_status -eq 2 ]]; then
   while read key; do
     key="key${count}"
     value="${key}"
-    yq -i ".cluster.secrets.vault.unsealer[$key] = \"$value\" | .cluster.secrets.vault.unsealer[$key] style=\"double\"" "${secrets_file}"
+    yq -i ".cluster.secrets.vault.unsealer[${key}] = \"${value}\" | .cluster.secrets.vault.unsealer[${key}] style=\"double\"" "${secrets_file}"
     count=$((count + 1))
   done <<< "${needed_unseal_keys}"
 
@@ -72,7 +72,7 @@ if [[ $sealed_status -eq 2 ]]; then
   done <<< "${unseal_keys}"
 
   # Login
-  root_token="$(yq -r '.cluster.secrets.vault.unsealer.rootToken' "${secrets_file}")"
+  root_token="$(yq -r '.cluster.secrets.vault.vault.rootToken' "${secrets_file}")"
   kubectl --namespace vault exec vault-0 -- vault login "${root_token}" || exit 1
 fi
 
