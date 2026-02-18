@@ -5,4 +5,4 @@ set -euo pipefail
 project_dir="$(dirname $0)/.."
 unsealer_dir="${project_dir}/unsealer"
 
-kubectl kustomize "${unsealer_dir}" --enable-helm | kubectl apply --server-side -f - > /dev/null
+kubectl kustomize "${unsealer_dir}" --enable-helm | kubectl apply --server-side --force-conflicts-f - > /dev/null
