@@ -2,9 +2,6 @@
 
 # Verify requirements
 verify_requirements() {
-  local project_dir=""
-  project_dir="$1"
-
   if ! which kubectl 2>&1 > /dev/null; then
     echo "    [!] kubect not detected!"
     error="1"
@@ -34,7 +31,11 @@ kubectl apply --server-side -f https://github.com/kubernetes-sigs/gateway-api/re
 
 # Install storage
 echo "[1/5] Bootstraping storage..."
-"${project_path}"/default/tooling/bootstrap
+if [[ "${INFRA_ENV}" == "prod" ]]; then
+  "${project_path}"/default/tooling/bootstrap
+else
+  "${project_path}"/longhorn-system/tooling/bootstrap
+fi
 echo -e "   Storage ready!\\n"
 
 # Install Vault
