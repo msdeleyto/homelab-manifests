@@ -9,12 +9,12 @@ helm repo add argo https://argoproj.github.io/argo-helm > /dev/null && \
 # Install CRDs
 kubectl apply --server-side -k https://github.com/argoproj/argo-cd/manifests/crds\?ref\=stable > /dev/null
 
-kubectl create namespace devops-tools || true
+kubectl create namespace devops-tools 2>/dev/null || true
 
 project_path="$(dirname $0)/.."
 argocd_dir="${project_path}/argocd"
 
-kubectl apply -f "${argocd_dir}/external-secrets.yaml"
+kubectl apply --server-side -f "${argocd_dir}/external-secrets.yaml"
 
 # Deploy only once to not replace vars on it
 # kubectl apply -f "${argocd_dir}/envusbst-plugin.yaml"

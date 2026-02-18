@@ -6,10 +6,10 @@ secrets_file="${1}"
 secret_files="${2}"
 
 # Add helm repository
-helm repo add hashicorp https://helm.releases.hashicorp.com && \
-  helm repo update
+helm repo add hashicorp https://helm.releases.hashicorp.com > /dev/null && \
+  helm repo update > /dev/null
 
-kubectl create namespace vault || true
+kubectl create namespace vault 2>/dev/null || true
 
 # vault
 echo -e "\nDeploying vault..."
@@ -75,8 +75,8 @@ if [[ $sealed_status -eq 2 ]]; then
 fi
 
 # Enable auth engines
-kubectl --namespace vault exec vault-0 -- vault auth enable userpass || echo "Userpass auth already enabled"
-kubectl --namespace vault exec vault-0 -- vault auth enable kubernetes || echo "Kubernetes auth already enabled"
+kubectl --namespace vault exec vault-0 -- vault auth enable userpass 2>/dev/null || echo "Userpass auth already enabled"
+kubectl --namespace vault exec vault-0 -- vault auth enable kubernetes 2>/dev/null || echo "Kubernetes auth already enabled"
 
 # Create policies
 policies_dir="${tooling_dir}/policies"

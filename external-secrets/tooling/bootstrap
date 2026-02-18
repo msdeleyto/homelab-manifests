@@ -5,11 +5,11 @@ set -eu
 project_path="$(dirname $0)/.."
 
 # Install ESO CRDs
-kubectl apply -f "https://raw.githubusercontent.com/external-secrets/external-secrets/v2.0.0/deploy/crds/bundle.yaml" --server-side
+kubectl apply --server-side -f "https://raw.githubusercontent.com/external-secrets/external-secrets/v2.0.0/deploy/crds/bundle.yaml" > /dev/null
 
-kubectl create namespace external-secrets || true
+kubectl create namespace external-secrets 2>/dev/null || true
 
 # Install ESO
-kubectl kustomize "${project_path}/external-secrets" --enable-helm | kubectl apply --wait -f - > /dev/null
+kubectl kustomize "${project_path}/external-secrets" --enable-helm | kubectl apply --server-side -f - > /dev/null
 
 kubectl --namespace external-secrets wait --for condition=available deploy/external-secrets-webhook --timeout=120s
