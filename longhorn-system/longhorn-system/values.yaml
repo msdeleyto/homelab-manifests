@@ -1,4 +1,19 @@
 preUpgradeChecker:
   jobEnabled: false
+
 defaultSettings:
   deletingConfirmationFlag: true
+
+longhornManager:
+  tolerations:
+  - key: "role"
+    operator: "Equal"
+    value: "cp"
+    effect: "NoSchedule"
+
+longhornDriver:
+  tolerations:
+  - key: "role"
+    operator: "Equal"
+    value: "cp"
+    effect: "NoSchedule"
