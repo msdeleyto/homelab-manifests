@@ -3,6 +3,7 @@ preUpgradeChecker:
 
 defaultSettings:
   deletingConfirmationFlag: true
+  defaultReplicaCount: 2
 
 longhornManager:
   tolerations:
