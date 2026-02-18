@@ -3,22 +3,22 @@
 set -euo pipefail
 
 # Add helm repository for argocd
-helm repo add argo https://argoproj.github.io/argo-helm && \
-  helm repo update
+helm repo add argo https://argoproj.github.io/argo-helm > /dev/null && \
+  helm repo update > /dev/null
 
 # Install CRDs
-kubectl apply --server-side -k https://github.com/argoproj/argo-cd/manifests/crds\?ref\=stable
+kubectl apply --server-side -k https://github.com/argoproj/argo-cd/manifests/crds\?ref\=stable > /dev/null
 
 kubectl create namespace devops-tools || true
 
 project_path="$(dirname $0)/.."
 argocd_dir="${project_path}/argocd"
 
-kubectl apply -f "${argocd_dir}/external-secrets.yaml" --wait
+kubectl apply -f "${argocd_dir}/external-secrets.yaml"
 
 # Deploy only once to not replace vars on it
 # kubectl apply -f "${argocd_dir}/envusbst-plugin.yaml"
 
-kubectl kustomize --enable-helm "${argocd_dir}" | envsubst '${INFRA_DOMAIN} ${INFRA_ENV}' | kubectl apply --wait -f - > /dev/null
+kubectl kustomize --enable-helm "${argocd_dir}" | envsubst '${INFRA_DOMAIN} ${INFRA_ENV}' | kubectl apply --server-side -f - > /dev/null
 
 echo -e "Done!\n"
