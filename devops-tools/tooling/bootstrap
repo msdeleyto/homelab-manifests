@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -eu
+set -euo pipefail
 
 # Add helm repository for argocd
 helm repo add argo https://argoproj.github.io/argo-helm && \
