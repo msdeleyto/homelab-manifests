@@ -14,7 +14,7 @@ kubectl create namespace devops-tools 2>/dev/null || true
 project_path="$(dirname $0)/.."
 argocd_dir="${project_path}/argocd"
 
-kubectl apply --server-side -f "${argocd_dir}/external-secrets.yaml" > /dev/null
-kubectl kustomize --enable-helm "${argocd_dir}" | envsubst '${INFRA_DOMAIN} ${INFRA_ENV}' | kubectl apply --server-side -f - > /dev/null
+# kubectl apply --server-side -f "${argocd_dir}/external-secrets.yaml" > /dev/null
+kubectl kustomize --enable-helm "${argocd_dir}" | envsubst '${INFRA_DOMAIN} ${INFRA_ENV}' | kubectl apply --server-side --force-conflicts -f - > /dev/null
 
 echo -e "Done!\n"
