@@ -26,6 +26,7 @@ kubectl kustomize "${vault_dir}" --enable-helm | kubectl apply -f -
 # Wait for vault pod to be READY
 kubectl --namespace vault wait --for=condition=Ready pod/vault-0 --timeout=180s
 
+init_status=0
 kubectl --namespace vault exec vault-0 -- vault operator init -status > /dev/null || init_status=$?
 
 if [[ $init_status -eq 0 ]]; then
