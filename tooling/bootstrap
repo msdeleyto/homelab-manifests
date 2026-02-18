@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -eu
+
 # Verify requirements
 verify_requirements() {
   if ! which kubectl 2>&1 > /dev/null; then
