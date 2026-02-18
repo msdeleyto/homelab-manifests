@@ -4,4 +4,6 @@ set -eu
 
 project_path="$(dirname $0)/.."
 
+kubectl create namespace longhorn-system || true
+
 kubectl kustomize --enable-helm "${project_path}/longhorn-system" | envsubst '${INFRA_DOMAIN}' | kubectl apply --wait -f -
