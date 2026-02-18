@@ -1,10 +1,4 @@
 preUpgradeChecker:
   jobEnabled: false
-httproute:
-  enabled: true
-  parentRefs:
-  - name: cluster-gateway
-    namespace: network
-    sectionName: https
-  hostnames:
-  - "longhorn.${INFRA_DOMAIN}"
+defaultSettings:
+  deletingConfirmationFlag: true
