@@ -9,12 +9,12 @@ kubectl create namespace longhorn-system || true
 kubectl kustomize --enable-helm "${project_path}/longhorn-system" | envsubst '${INFRA_DOMAIN}' | kubectl apply -f -
 
 kubectl wait --namespace longhorn-system \
-  --for=condition=ready pod \
+  --for=condition=Ready pod \
   --selector=app=longhorn-manager \
   --timeout=300s
 
 kubectl wait --namespace longhorn-system \
-  --for=condition=ready pod \
+  --for=condition=Ready pod \
   --selector=longhorn-binary=longhorn-driver-deployer \
   --timeout=300s
 
