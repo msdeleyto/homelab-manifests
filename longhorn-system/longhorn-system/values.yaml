@@ -1,3 +1,5 @@
+preUpgradeChecker:
+  jobEnabled: false
 httproute:
   enabled: true
   parentRefs:
