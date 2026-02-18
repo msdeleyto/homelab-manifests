@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/home-kops/argocd-config.git
+    repoURL: https://github.com/msdeleyto/homelab-apps.git
     targetRevision: main
     path: ./${INFRA_ENV}
     directory:
