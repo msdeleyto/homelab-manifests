@@ -2,8 +2,104 @@
 
 set -euo pipefail
 
-secrets_file="${1}"
-secret_files="${2}"
+SECRETS_FILE="${1}"
+SECRET_FILES="${2}"
+
+initialize() {
+  init_status=0
+  kubectl --namespace vault exec vault-0 -- vault operator init -status > /dev/null || init_status=$?
+
+  if [[ $init_status -eq 0 ]]; then
+    echo "Vault already initialized"
+  fi
+
+  if [[ $init_status -eq 1 ]]; then
+    echo "[!] Error checking vault init status"
+    exit 1
+  fi
+
+  if [[ $init_status -eq 2 ]]; then
+    echo "Initializing vault..."
+
+    initialize_output="$(kubectl --namespace vault exec vault-0 -- vault operator init)"
+
+    unseal_keys="$(echo "${initialize_output}" | grep "Unseal Key" | sed -r 's/^Unseal Key [1-5]\: (.*)$/\1/g')"
+    needed_unseal_keys="$(echo "${unseal_keys}" | head -n3)"
+
+    # Extract unseal keys
+    count=1
+    while read key; do
+      KEY="key${count}" VALUE="${key}" yq -Yi '.cluster.secrets.vault.unsealer[$ENV.KEY] = $ENV.VALUE' "${SECRETS_FILE}"
+      count=$((count + 1))
+    done <<< "${needed_unseal_keys}"
+
+    # Extract root token
+    root_token="$(echo "${initialize_output}" | grep "Initial Root Token" | sed 's/ //g' | cut -d: -f2)"
+    ROOT_TOKEN="${root_token}" yq -Yi '.cluster.secrets.vault.vault.rootToken = $ENV.ROOT_TOKEN' "${SECRETS_FILE}"
+  fi
+}
+
+unseal() {
+  sealed_status=0
+  kubectl --namespace vault exec vault-0 -- vault status > /dev/null || sealed_status=$?
+
+  if [[ $sealed_status -eq 2 ]]; then
+    echo "Unsealing vault..."
+
+    unseal_keys="$(yq -r '.cluster.secrets.vault.unsealer[]' "${SECRETS_FILE}")"
+    while read key; do
+      kubectl --namespace vault exec vault-0 -- vault operator unseal "${key}"
+    done <<< "${unseal_keys}"
+
+    # Login
+    root_token="$(yq -r '.cluster.secrets.vault.vault.rootToken' "${SECRETS_FILE}")"
+    kubectl --namespace vault exec vault-0 -- vault login "${root_token}" || exit 1
+  fi
+}
+
+configure_auth() {
+  # Enable auth engines
+  kubectl --namespace vault exec vault-0 -- vault auth enable userpass 2>/dev/null || echo "Userpass auth already enabled"
+  kubectl --namespace vault exec vault-0 -- vault auth enable kubernetes 2>/dev/null || echo "Kubernetes auth already enabled"
+
+  # Create policies
+  policies_dir="${tooling_dir}/policies"
+
+  echo "Creating policies..."
+  cat "${policies_dir}/admin.hcl" | kubectl --namespace vault exec -i vault-0 -- vault policy write admin -
+  cat "${policies_dir}/read-only.hcl" | kubectl --namespace vault exec -i vault-0 -- vault policy write read-only -
+
+  # Config Userpass auth for secrets loading
+  echo "Configuring userpass auth..."
+  kubectl --namespace vault exec vault-0 -- vault write auth/userpass/users/admin \
+    password="${VAULT_ADMIN_PASSWORD}" \
+    policies=admin
+
+  # Config k8s auth for ArgoCD
+  echo "Configuring k8s auth..."
+  cluster_host="$(kubectl config view --minify --raw -o jsonpath='{.clusters[0].cluster.server}')"
+  kubectl --namespace vault exec vault-0 -- vault write auth/kubernetes/config \
+    kubernetes_host="${cluster_host}"
+
+  kubectl --namespace vault exec vault-0 -- vault write auth/kubernetes/role/eso-reader \
+    bound_service_account_names=external-secrets \
+    bound_service_account_namespaces=external-secrets \
+    policies=read-only \
+    ttl=24h
+}
+
+load_secrets() {
+  # Enable kv2 engine
+  kubectl --namespace vault exec vault-0 -- vault secrets enable -path=secret -version=2 kv 2>/dev/null ||\
+    echo "Secrets path already enabled"
+
+  echo "Loading secrets"
+
+  secrets="$(cat "${SECRETS_FILE}" | yq '.cluster.secrets')"
+
+  "${tooling_dir}"/load-secrets "${secrets}"
+  "${tooling_dir}"/load-secret-files "${SECRET_FILES}"
+}
 
 # Add helm repository
 helm repo add hashicorp https://helm.releases.hashicorp.com > /dev/null && \
@@ -21,94 +117,12 @@ else
 fi
 tooling_dir="$(dirname $0)"
 
-kubectl kustomize "${vault_dir}" --enable-helm | kubectl apply -f - > /dev/null
+kubectl kustomize "${vault_dir}" --enable-helm | kubectl apply --server-side -f - > /dev/null
 
 # Wait for vault pod to be READY
 kubectl --namespace vault wait --for=condition=Ready pod/vault-0 --timeout=180s
 
-init_status=0
-kubectl --namespace vault exec vault-0 -- vault operator init -status > /dev/null || init_status=$?
-
-if [[ $init_status -eq 0 ]]; then
-  echo "Vault already initialized"
-fi
-
-if [[ $init_status -eq 1 ]]; then
-  echo "[!] Error checking vault init status"
-  exit 1
-fi
-
-if [[ $init_status -eq 2 ]]; then
-  echo "Initializing vault..."
-
-  initialize_output="$(kubectl --namespace vault exec vault-0 -- vault operator init)"
-
-  unseal_keys="$(echo "${initialize_output}" | grep "Unseal Key" | sed -r 's/^Unseal Key [1-5]\: (.*)$/\1/g')"
-  needed_unseal_keys="$(echo "${unseal_keys}" | head -n3)"
-
-  # Extract unseal keys
-  count=1
-  while read key; do
-    KEY="key${count}" VALUE="${key}" yq -Yi '.cluster.secrets.vault.unsealer[$ENV.KEY] = $ENV.VALUE' "${secrets_file}"
-    count=$((count + 1))
-  done <<< "${needed_unseal_keys}"
-
-  # Extract root token
-  root_token="$(echo "${initialize_output}" | grep "Initial Root Token" | sed 's/ //g' | cut -d: -f2)"
-  ROOT_TOKEN="${root_token}" yq -Yi '.cluster.secrets.vault.vault.rootToken = $ENV.ROOT_TOKEN' "${secrets_file}"
-fi
-
-sealed_status=0
-kubectl --namespace vault exec vault-0 -- vault status > /dev/null || sealed_status=$?
-
-if [[ $sealed_status -eq 2 ]]; then
-  echo "Unsealing vault..."
-
-  unseal_keys="$(yq -r '.cluster.secrets.vault.unsealer[]' "${secrets_file}")"
-  while read key; do
-    kubectl --namespace vault exec vault-0 -- vault operator unseal "${key}"
-  done <<< "${unseal_keys}"
-
-  # Login
-  root_token="$(yq -r '.cluster.secrets.vault.vault.rootToken' "${secrets_file}")"
-  kubectl --namespace vault exec vault-0 -- vault login "${root_token}" || exit 1
-fi
-
-# Enable auth engines
-kubectl --namespace vault exec vault-0 -- vault auth enable userpass 2>/dev/null || echo "Userpass auth already enabled"
-kubectl --namespace vault exec vault-0 -- vault auth enable kubernetes 2>/dev/null || echo "Kubernetes auth already enabled"
-
-# Create policies
-policies_dir="${tooling_dir}/policies"
-
-echo "Creating policies..."
-cat "${policies_dir}/admin.hcl" | kubectl --namespace vault exec -i vault-0 -- vault policy write admin -
-cat "${policies_dir}/read-only.hcl" | kubectl --namespace vault exec -i vault-0 -- vault policy write read-only -
-
-# Config Userpass auth for secrets loading
-echo "Configuring userpass auth..."
-kubectl --namespace vault exec vault-0 -- vault write auth/userpass/users/admin \
-  password="${VAULT_ADMIN_PASSWORD}" \
-  policies=admin
-
-# Config k8s auth for ArgoCD
-echo "Configuring k8s auth..."
-cluster_host="$(kubectl config view --minify --raw -o jsonpath='{.clusters[0].cluster.server}')"
-kubectl --namespace vault exec vault-0 -- vault write auth/kubernetes/config \
-  kubernetes_host="${cluster_host}"
-
-kubectl --namespace vault exec vault-0 -- vault write auth/kubernetes/role/eso-reader \
-  bound_service_account_names=external-secrets \
-  bound_service_account_namespaces=external-secrets \
-  policies=read-only \
-  ttl=24h
-
-# Enable kv2 engine
-kubectl --namespace vault exec vault-0 -- vault secrets enable -path=secret -version=2 kv || echo "Secrets path already enabled"
-
-echo "Loading secrets"
-
-secrets="$(cat "${secrets_file}" | yq '.cluster.secrets')"
-
-"${tooling_dir}"/load-secrets "${secrets}"
-"${tooling_dir}"/load-secret-files "${secret_files}"
+initialize
+unseal
+configure_auth
+load_secrets
