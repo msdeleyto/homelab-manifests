@@ -4,8 +4,10 @@ set -euo pipefail
 
 # Verify requirements
 verify_requirements() {
+  error="0"
+
   if ! which kubectl 2>&1 > /dev/null; then
-    echo "    [!] kubect not detected!"
+    echo "    [!] kubectl not detected!"
     error="1"
   fi
 
@@ -14,7 +16,7 @@ verify_requirements() {
     error="1"
   fi
 
-  if [[ $error ]]; then
+  if [[ "${error}" == "1" ]]; then
     exit 1
   fi
 }
