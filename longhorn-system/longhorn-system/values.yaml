@@ -17,3 +17,6 @@ longhornDriver:
     operator: "Equal"
     value: "cp"
     effect: "NoSchedule"
+
+defaultBackupStore:
+  backupTarget: "nfs://nas.homelab:/volume1/${INFRA_ENV}/backup/longhorn"
