@@ -1,15 +1,25 @@
-global:
+preUpgradeChecker:
+  jobEnabled: false
+
+persistence:
+  defaultClassReplicaCount: 2
+
+longhornManager:
   tolerations:
   - key: "role"
     operator: "Equal"
     value: "cp"
     effect: "NoSchedule"
 
-preUpgradeChecker:
-  jobEnabled: false
+longhornDriver:
+  tolerations:
+  - key: "role"
+    operator: "Equal"
+    value: "cp"
+    effect: "NoSchedule"
 
-persistence:
-  defaultClassReplicaCount: 2
+defaultSettings:
+  taintToleration: role=cp:NoSchedule
 
 defaultBackupStore:
   backupTarget: "nfs://nas.homelab:/volume1/${INFRA_ENV}/backup/longhorn"
