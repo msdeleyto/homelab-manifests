@@ -43,5 +43,5 @@ spec:
           claimName: jellyfin-config-pvc
       - name: data
         nfs:
-          server: ${INFRA_DATA_NFS}
+          server: nas.homelab
           path: /volume1/data/media
