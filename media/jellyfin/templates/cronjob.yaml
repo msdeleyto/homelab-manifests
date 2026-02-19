@@ -29,5 +29,5 @@ spec:
               claimName: jellyfin-config-pvc
           - name: backup
             nfs:
-              server: ${INFRA_DATA_NFS}
+              server: nas.homelab
               path: /volume1/prod/backup/jellyfin

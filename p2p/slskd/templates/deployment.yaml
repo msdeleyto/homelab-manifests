@@ -97,13 +97,13 @@ spec:
           claimName: slskd-config
       - name: shares
         nfs:
-          server: ${INFRA_DATA_NFS}
+          server: nas.homelab
           path: /volume1/data/media/shares
       - name: downloads
         nfs:
-          server: ${INFRA_DATA_NFS}
+          server: nas.homelab
           path: /volume1/data/media/downloads
       - name: logs
         nfs:
-          server: ${INFRA_DATA_NFS}
-          path: /volume1/kubernetes/logs/prod/slskd
+          server: nas.homelab
+          path: /volume1/prod/logs/slskd

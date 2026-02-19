@@ -115,12 +115,12 @@ spec:
       volumes:
       - name: downloads
         nfs:
-          server: ${INFRA_DATA_NFS}
+          server: nas.homelab
           path: /volume1/data/media/downloads
       - name: logs
         nfs:
-          server: ${INFRA_DATA_NFS}
-          path: /volume1/kubernetes/logs/prod/qbittorrent
+          server: nas.homelab
+          path: /volume1/prod/logs/qbittorrent
       - name: qbittorrent-config
         persistentVolumeClaim:
           claimName: qbittorrent-config

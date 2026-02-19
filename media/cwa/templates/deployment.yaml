@@ -48,9 +48,9 @@ spec:
           claimName: calibre-config-pvc
       - name: library
         nfs:
-          server: ${INFRA_DATA_NFS}
+          server: nas.homelab
           path: /volume1/data/media/books/library
       - name: new-books
         nfs:
-          server: ${INFRA_DATA_NFS}
+          server: nas.homelab
           path: /volume1/data/media/books/new
