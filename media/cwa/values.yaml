@@ -1,3 +1,9 @@
+pvc:
+  storageClassName: longhorn
+  accessModes:
+  - ReadWriteOnce
+  size: 4Gi
+
 deployment:
   image:
     repository: crocodilestick/calibre-web-automated

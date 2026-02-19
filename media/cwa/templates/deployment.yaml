@@ -44,9 +44,8 @@ spec:
           mountPath: /cwa-book-ingest
       volumes:
       - name: config
-        nfs:
-          server: ${INFRA_DATA_NFS}
-          path: /volume1/kubernetes/config/calibre
+        persistentVolumeClaim:
+          claimName: calibre-config-pvc
       - name: library
         nfs:
           server: ${INFRA_DATA_NFS}
