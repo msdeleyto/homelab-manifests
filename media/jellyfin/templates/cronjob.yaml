@@ -30,4 +30,4 @@ spec:
           - name: backup
             nfs:
               server: ${INFRA_DATA_NFS}
-              path: /volume1/kubernetes/backup/jellyfin
+              path: /volume1/prod/backup/jellyfin
