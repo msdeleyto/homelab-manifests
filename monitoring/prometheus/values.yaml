@@ -13,7 +13,7 @@ server:
       cpu: 1000m
       memory: 2Gi
   nodeSelector:
-    size: m
+    role: worker
 
 alertmanager:
   enabled: false

@@ -23,12 +23,12 @@ loki:
 chunksCache:
   enabled: true
   nodeSelector:
-    size: m
+    role: worker
 
 resultsCache:
   enabled: true
   nodeSelector:
-    size: m
+    role: worker
 
 gateway:
   enabled: false
@@ -48,7 +48,7 @@ singleBinary:
       cpu: 500m
       memory: 1Gi
   nodeSelector:
-    size: m
+    role: worker
 
 backend:
   replicas: 0

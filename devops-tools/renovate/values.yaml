@@ -17,4 +17,4 @@ resources:
     cpu: 1000m
     memory: 4Gi
 nodeSelector:
-  size: s
+  role: worker

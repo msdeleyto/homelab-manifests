@@ -49,7 +49,7 @@ lapi:
       cpu: 300m
       memory: 512Mi
   nodeSelector:
-    size: m
+    role: worker
   env:
   - name: BOUNCER_KEY_traefik
     value: ""
