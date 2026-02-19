@@ -35,11 +35,7 @@ kubectl apply --server-side -f https://github.com/kubernetes-sigs/gateway-api/re
 
 # Install storage
 echo "[1/5] Bootstraping storage..."
-if [[ "${INFRA_ENV}" == "prod" ]]; then
-  "${project_path}"/default/tooling/bootstrap
-else
-  "${project_path}"/longhorn-system/tooling/bootstrap
-fi
+"${project_path}"/longhorn-system/tooling/bootstrap
 echo -e "   Storage ready!\\n"
 
 # Install Vault

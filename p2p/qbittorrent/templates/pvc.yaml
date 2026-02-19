@@ -4,7 +4,7 @@ metadata:
   name: qbittorrent-config
   namespace: p2p
 spec:
-  storageClassName: nfs-sc
+  storageClassName: longhorn
   accessModes:
   - ReadWriteOnce
   resources:

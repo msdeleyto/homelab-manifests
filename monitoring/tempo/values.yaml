@@ -1,7 +1,7 @@
 persistence:
   enabled: true
   enableStatefulSetAutoDeletePVC: false
-  storageClassName: nfs-sc
+  storageClassName: longhorn
   accessModes:
     - ReadWriteOnce
   size: 10Gi

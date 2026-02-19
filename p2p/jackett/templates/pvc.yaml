@@ -3,7 +3,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: jackett-config
 spec:
-  storageClassName: nfs-sc
+  storageClassName: longhorn
   accessModes:
   - ReadWriteOnce
   resources:

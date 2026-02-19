@@ -39,7 +39,7 @@ singleBinary:
   persistence:
     enabled: true
     size: 10Gi
-    storageClassName: nfs-sc
+    storageClassName: longhorn
   resources:
     requests:
       cpu: 200m

@@ -1,5 +1,5 @@
 pvc:
-  storageClassName: nfs-sc
+  storageClassName: longhorn
   accessModes:
   - ReadWriteOnce
   size: 10Gi

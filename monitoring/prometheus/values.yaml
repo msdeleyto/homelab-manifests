@@ -2,7 +2,7 @@ server:
   persistentVolume:
     enabled: true
     size: 8Gi
-    storageClass: nfs-sc
+    storageClass: longhorn
   extraArgs:
     web.enable-remote-write-receiver: ""
   resources:
