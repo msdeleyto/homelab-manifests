@@ -6,7 +6,7 @@ project_path="$(dirname $0)/.."
 
 kubectl create namespace longhorn-system 2>/dev/null || true
 
-kubectl kustomize --enable-helm "${project_path}/longhorn-system" | envsubst '${INFRA_DOMAIN}' | kubectl apply --server-side -f - > /dev/null
+kubectl kustomize --enable-helm "${project_path}/longhorn-system" | envsubst '${INFRA_DOMAIN} ${INFRA_ENV}' | kubectl apply --server-side -f - > /dev/null
 
 kubectl wait --namespace longhorn-system \
   --for=create daemonset/longhorn-csi-plugin \
