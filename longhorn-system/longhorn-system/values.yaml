@@ -1,8 +1,8 @@
 preUpgradeChecker:
   jobEnabled: false
 
-defaultSettings:
-  defaultReplicaCount: 2
+persistence:
+  defaultClassReplicaCount: 2
 
 longhornManager:
   tolerations:
