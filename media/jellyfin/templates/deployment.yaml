@@ -21,7 +21,7 @@ spec:
           type: RuntimeDefault
       automountServiceAccountToken: false
       nodeSelector:
-        size: m
+        role: worker
       containers:
       - name: jellyfin
         image: {{ .Values.deployment.image.repository }}:{{ .Values.deployment.image.tag }}

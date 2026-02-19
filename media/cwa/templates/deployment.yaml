@@ -14,7 +14,7 @@ spec:
     spec:
       automountServiceAccountToken: false
       nodeSelector:
-        size: s
+        role: worker
       containers:
       - name: cwa
         image: {{ .Values.deployment.image.repository }}:{{ .Values.deployment.image.tag }}
