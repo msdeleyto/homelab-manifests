@@ -69,6 +69,7 @@ spec:
           mountPath: /var/log/cerberus
         - name: jackett-config
           mountPath: /config/jackett
+          readOnly: true
         - name: qbittorrent-config
           mountPath: /config/qBittorrent
         resources:
