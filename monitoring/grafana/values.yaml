@@ -49,7 +49,9 @@ dashboards:
     falco:
       url: https://grafana.com/api/dashboards/17319/revisions/7/download
     proxmox:
-      url: https://grafana.com/api/dashboards/10347/revisions/5/download
+      gnetId: 10347
+      revision: 5
+      datasource: prometheus
 
 dashboardProviders:
   dashboardproviders.yaml:
