@@ -48,6 +48,8 @@ dashboards:
       url: https://grafana.com/api/dashboards/21419/revisions/6/download
     falco:
       url: https://grafana.com/api/dashboards/17319/revisions/7/download
+    proxmox:
+      url: https://grafana.com/api/dashboards/10347/revisions/5/download
 
 dashboardProviders:
   dashboardproviders.yaml:

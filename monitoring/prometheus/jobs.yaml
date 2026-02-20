@@ -1,4 +1,14 @@
 extraScrapeConfigs: |
+  - job_name: 'pve'
+    static_configs:
+      - targets:
+        - pve01.lab:9221
+        - pve02.lab:9221
+    metrics_path: /metrics
+    params:
+      module: [default]
+      cluster: ['1']
+      node: ['1']
   - job_name: 'argocd-repo-server'
     metrics_path: /metrics
     scrape_interval: 5s
