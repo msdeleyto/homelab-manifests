@@ -8,6 +8,7 @@ renovate:
       }
     }
   existingSecret: renovate-secret
+  mendRnvGithubBotUserId: 'renovate[bot]'
   mendRnvCronJobSchedulerAll: '0 * * * *'
 resources:
   requests:
