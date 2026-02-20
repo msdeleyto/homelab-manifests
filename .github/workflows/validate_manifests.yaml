@@ -19,6 +19,9 @@ jobs:
     needs: validate-k8s-manifests
     if: ${{ always() && github.event_name == 'push' }}
     steps:
+    - name: Who triggered the event?
+      run: echo "The event was triggered by ${{ github.event.sender.login }}"
+
     - name: Send job result to slack
       uses: slackapi/slack-github-action@v2.1.1
       with:
