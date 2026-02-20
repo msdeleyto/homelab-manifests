@@ -1,81 +1,50 @@
-# k8s-homelab
+# Homelab Manifests
 
-GitOps-managed Kubernetes homelab infrastructure using ArgoCD, Kustomize, and Helm.
+GitOps-managed Kubernetes homelab services using ArgoCD, Kustomize, and Helm.
+
+## Overview
+
+This repository contains Kubernetes manifests for a homelab cluster, serving two purposes:
+
+1. **GitOps Source** — ArgoCD monitors this repo via the App of Apps pattern
+2. **Cluster Bootstrap** — Initial cluster setup via `tooling/bootstrap`
 
 ## Repository Structure
-
 ```
-├── storage/      # NFS storage class provisioner
-├── network/      # MetalLB, Traefik, cert-manager
-├── vault/        # HashiCorp Vault for secrets
+├── longhorn-system/ # Distributed block storage
+├── network/ # Istio, MetalLB, cert-manager
+├── vault/ # HashiCorp Vault + auto-unsealer
+├── external-secrets/ # External Secrets Operator
 ├── devops-tools/ # ArgoCD, Renovate, GitHub runners
-├── monitoring/   # Grafana, Prometheus, Loki, Tempo
-├── media/        # Application workloads (Jellyfin, CWA)
-└── sec/          # Security tools (Falco, kube-bench)
+├── monitoring/ # Grafana, Prometheus, Loki, Tempo, Alloy, CrowdSec
+├── media/ # Application workloads
+├── p2p/ # P2P applications
+├── sec/ # Security tools (Falco, kube-bench)
+└── tooling/ # Bootstrap orchestration
 ```
+
+## Core Pillars
+
+| Area | Components |
+|------|------------|
+| **GitOps / IaC** | ArgoCD, Kustomize + Helm hybrid, Renovate |
+| **Secret Management** | HashiCorp Vault, External Secrets Operator |
+| **Networking** | Istio, MetalLB, cert-manager |
+| **Storage** | Longhorn distributed storage |
+| **Observability** | Grafana, Prometheus, Loki, Tempo, Alloy, Kiali |
+| **Security** | Falco, kube-bench, CrowdSec |
 
 ## Bootstrap
 
-1. Copy and configure environment variables:
-   ```bash
-   cp .env.example .env
-   # Edit .env with your values
-   source .env
-   ```
+```bash
+# Ensure the environment variables listed in .env.example are available
+./tooling/bootstrap <secrets.yaml> <secret-files.yaml>
+```
 
-2. Run bootstrap scripts in order:
-   ```bash
-   ./storage/tooling/bootstrap
-   ./network/tooling/bootstrap
-   ./vault/tooling/bootstrap
-   # Unseal Vault, then:
-   ./vault/tooling/configure
-   ./vault/tooling/load-secrets <secrets.yaml>
-   ./devops-tools/tooling/bootstrap
-   ```
+Secrets Management
+Manual secret updates via Vault:
 
-After bootstrap, ArgoCD manages all deployments via the [App of Apps](https://argo-cd.readthedocs.io/en/stable/operator-manual/cluster-bootstrapping/) pattern from the `argocd-config` repository.
-
-## Adding New Services
-
-1. Create directory under appropriate domain:
-   ```
-   media/myapp/
-   ├── Chart.yaml
-   ├── kustomization.yaml
-   ├── values.yaml
-   └── templates/
-       ├── deployment.yaml
-       ├── service.yaml
-       └── ingressroute.yaml
-   ```
-
-2. Add secrets to Vault:
-   ```bash
-   kubectl -n vault exec -it vault-0 -- vault kv put secret/media/myapp key=value
-   ```
-
-3. **Update `argocd-config` repo** to include the new application for deployment.
-
-## Guidelines
-
-| Aspect | Convention |
-|--------|------------|
-| **Config management** | Kustomize + Helm hybrid ([example](monitoring/grafana/kustomization.yaml)) |
-| **Ingress** | Traefik `IngressRoute` CRD, not standard Ingress |
-| **Secrets** | Vault placeholders: `<path:secret/data/namespace/app#key>` |
-| **Storage** | `storageClassName: nfs-sc` |
-| **Namespaces** | Match directory names (`media/`, `monitoring/`, etc.) |
-| **Image tags** | Explicit versions; Renovate handles updates |
-
-## Secrets Format
-
-Secrets YAML for `load-secrets` script:
-```yaml
-infra:
-  domain: home.example.com
-  nfs: 192.168.1.100
-media:
-  jellyfin:
-    api_key: xxx
+```bash
+./vault/tooling/load-secrets <secrets.yaml>
+./vault/tooling/load-secret-files <secret-files.yaml>
 ```
