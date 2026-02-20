@@ -16,7 +16,7 @@ spec:
         args:
         - "--benchmark"
         - "k3s-cis-1.7"
-        image: docker.io/aquasec/kube-bench:v0.14.1
+        image: docker.io/aquasec/kube-bench:v0.15.0
         name: kube-bench
         volumeMounts:
         - name: etc-systemd
