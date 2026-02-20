@@ -4,7 +4,7 @@ extraScrapeConfigs: |
       - targets:
         - pve01.lab:9221
         - pve02.lab:9221
-    metrics_path: /metrics
+    metrics_path: /pve
     params:
       module: [default]
       cluster: ['1']
