@@ -115,8 +115,13 @@ tooling_dir="$(dirname $0)"
 
 kubectl kustomize "${vault_dir}" --enable-helm | kubectl apply --server-side --force-conflicts -f - > /dev/null
 
-# Wait for vault pod to be READY
-kubectl --namespace vault wait --for=condition=Ready pod/vault-0 --timeout=180s
+kubectl wait --namespace vault \
+  --for=create statefulset.apps/vault \
+  --timeout=60s
+
+kubectl --namespace vault wait \
+  --for=condition=Ready pod/vault-0 \
+  --timeout=180s
 
 initialize
 unseal
