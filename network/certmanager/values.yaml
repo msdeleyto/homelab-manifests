@@ -8,12 +8,9 @@ resources:
   limits:
     cpu: 200m
     memory: 256Mi
-nodeSelector:
-  role: cp
 tolerations:
-- key: "role"
-  operator: "Equal"
-  value: "cp"
+- key: node-role.kubernetes.io/control-plane
+  operator: "Exists"
   effect: "NoSchedule"
 
 webhook:
@@ -24,13 +21,10 @@ webhook:
     limits:
       cpu: 100m
       memory: 128Mi
-  nodeSelector:
-    role: cp
   tolerations:
-  - key: "role"
-    operator: "Equal"
-    value: "cp"
-    effect: "NoSchedule"
+    - key: node-role.kubernetes.io/control-plane
+      operator: "Exists"
+      effect: "NoSchedule"
 
 cainjector:
   resources:
@@ -40,12 +34,9 @@ cainjector:
     limits:
       cpu: 100m
       memory: 128Mi
-  nodeSelector:
-    role: cp
   tolerations:
-  - key: "role"
-    operator: "Equal"
-    value: "cp"
+  - key: node-role.kubernetes.io/control-plane
+    operator: "Exists"
     effect: "NoSchedule"
 
 startupapicheck:
@@ -56,10 +47,7 @@ startupapicheck:
     limits:
       cpu: 100m
       memory: 128Mi
-  nodeSelector:
-    role: cp
   tolerations:
-  - key: "role"
-    operator: "Equal"
-    value: "cp"
+  - key: node-role.kubernetes.io/control-plane
+    operator: "Exists"
     effect: "NoSchedule"

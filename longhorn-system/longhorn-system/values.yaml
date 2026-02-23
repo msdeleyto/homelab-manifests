@@ -10,16 +10,14 @@ persistence:
 
 longhornManager:
   tolerations:
-  - key: "role"
-    operator: "Equal"
-    value: "cp"
+  - key: node-role.kubernetes.io/control-plane
+    operator: "Exists"
     effect: "NoSchedule"
 
 longhornDriver:
   tolerations:
-  - key: "role"
-    operator: "Equal"
-    value: "cp"
+  - key: node-role.kubernetes.io/control-plane
+    operator: "Exists"
     effect: "NoSchedule"
 
 defaultSettings:

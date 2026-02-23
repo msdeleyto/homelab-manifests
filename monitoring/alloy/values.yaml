@@ -69,7 +69,6 @@ controller:
       cpu: 300m
       memory: 512Mi
   tolerations:
-  - key: "role"
-    operator: "Equal"
-    value: "cp"
+  - key: node-role.kubernetes.io/control-plane
+    operator: "Exists"
     effect: "NoSchedule"
