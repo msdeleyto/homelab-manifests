@@ -34,9 +34,9 @@ echo -e "    Everything ready!\\n"
 kubectl apply --server-side -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.4.1/standard-install.yaml > /dev/null
 
 # Install CNI
-# echo "[1/6] Bootstraping CNI..."
-# "${project_path}"/network/tooling/bootstrap
-# echo -e "   CNI ready!\\n"
+echo "[1/6] Bootstraping CNI..."
+"${project_path}"/network/tooling/bootstrap
+echo -e "   CNI ready!\\n"
 
 # Install storage
 echo "[2/6] Bootstraping storage..."

@@ -6,3 +6,6 @@ socketLB:
 
 cni:
   exclusive: false
+
+operator:
+  replicas: 1
