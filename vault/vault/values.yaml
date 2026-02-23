@@ -20,7 +20,7 @@ server:
   dataStorage:
     enabled: true
     size: 8Gi
-    storageClass: local-path # longhorn
+    storageClass: longhorn
   resources:
     requests:
       memory: 256Mi
