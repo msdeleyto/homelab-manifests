@@ -20,10 +20,11 @@ resources:
     cpu: 1000m
     memory: 4Gi
 affinity:
-  requiredDuringSchedulingIgnoredDuringExecution:
-    nodeSelectorTerms:
-    - matchExpressions:
-      - key: node-role.kubernetes.io/control-plane
-        operator: NotIn
-        values:
-        - "true"
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: node-role.kubernetes.io/control-plane
+          operator: NotIn
+          values:
+          - "true"

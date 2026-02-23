@@ -23,24 +23,26 @@ loki:
 chunksCache:
   enabled: true
   affinity:
-    requiredDuringSchedulingIgnoredDuringExecution:
-      nodeSelectorTerms:
-      - matchExpressions:
-        - key: node-role.kubernetes.io/control-plane
-          operator: NotIn
-          values:
-          - "true"
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: node-role.kubernetes.io/control-plane
+            operator: NotIn
+            values:
+            - "true"
 
 resultsCache:
   enabled: true
   affinity:
-    requiredDuringSchedulingIgnoredDuringExecution:
-      nodeSelectorTerms:
-      - matchExpressions:
-        - key: node-role.kubernetes.io/control-plane
-          operator: NotIn
-          values:
-          - "true"
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: node-role.kubernetes.io/control-plane
+            operator: NotIn
+            values:
+            - "true"
 
 gateway:
   enabled: false
@@ -60,13 +62,14 @@ singleBinary:
       cpu: 500m
       memory: 1Gi
   affinity:
-    requiredDuringSchedulingIgnoredDuringExecution:
-      nodeSelectorTerms:
-      - matchExpressions:
-        - key: node-role.kubernetes.io/control-plane
-          operator: NotIn
-          values:
-          - "true"
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: node-role.kubernetes.io/control-plane
+            operator: NotIn
+            values:
+            - "true"
 
 backend:
   replicas: 0
