@@ -16,9 +16,10 @@ tolerations:
   value: "cp"
   effect: "NoSchedule"
 
-#envoy:
-#  tolerations:
-#  - key: "role"
-#    operator: "Equal"
-#    value: "cp"
-#    effect: "NoSchedule"
+envoy:
+  tolerations:
+  - operator: "Exists"
+  - key: "role"
+    operator: "Equal"
+    value: "cp"
+    effect: "NoSchedule"
