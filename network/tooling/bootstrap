@@ -23,5 +23,5 @@ kubectl wait --namespace network \
 
 kubectl wait --namespace network \
   --for=condition=Ready pod \
-  --selector=name=cilium-agent \
+  --selector=app.kubernetes.io/name=cilium-agent \
   --timeout=300s
