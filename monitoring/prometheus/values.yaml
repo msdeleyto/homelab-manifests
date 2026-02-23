@@ -12,8 +12,14 @@ server:
     limits:
       cpu: 1000m
       memory: 2Gi
-  nodeSelector:
-    role: worker
+  affinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: node.kubernetes.io/instance-type
+          operator: In
+          values:
+          - k3s
 
 alertmanager:
   enabled: false
