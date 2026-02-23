@@ -21,7 +21,7 @@ longhornDriver:
     effect: "NoSchedule"
 
 defaultSettings:
-  taintToleration: role=cp:NoSchedule
+  taintToleration: node-role.kubernetes.io/control-plane:NoSchedule
 
 defaultBackupStore:
   backupTarget: "nfs://nas.homelab:/volume1/${INFRA_ENV}/backup/longhorn"
