@@ -7,6 +7,12 @@ kubeProxyReplacement: false
 cni:
   exclusive: false
 
+tolerations:
+- key: "role"
+  operator: "Equal"
+  value: "cp"
+  effect: "NoSchedule"
+
 operator:
   replicas: 1
   tolerations:
