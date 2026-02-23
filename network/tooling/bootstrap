@@ -9,10 +9,19 @@ kubectl create namespace network 2>/dev/null || true
 kubectl kustomize --enable-helm "${project_path}/cilium" | kubectl apply --server-side -f - > /dev/null
 
 kubectl wait --namespace network \
+  --for=create daemonset.apps/cilium-envoy \
+  --timeout=300s
+
+kubectl wait --namespace network \
+  --for=condition=Ready pod \
+  --selector=name=cilium-envoy \
+  --timeout=300s
+
+kubectl wait --namespace network \
   --for=create daemonset.apps/cilium \
   --timeout=300s
 
 kubectl wait --namespace network \
   --for=condition=Ready pod \
-  --selector=app.kubernetes.io/name=cilium-agent \
+  --selector=name=cilium-agent \
   --timeout=300s
