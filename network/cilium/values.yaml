@@ -9,3 +9,9 @@ cni:
 
 operator:
   replicas: 1
+
+tolerations:
+- key: "role"
+  operator: "Equal"
+  value: "cp"
+  effect: "NoSchedule"
