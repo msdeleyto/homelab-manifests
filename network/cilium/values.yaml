@@ -15,3 +15,5 @@ tolerations:
   operator: "Equal"
   value: "cp"
   effect: "NoSchedule"
+
+namespaceOverride: network
