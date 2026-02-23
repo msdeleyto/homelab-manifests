@@ -1,8 +1,8 @@
 kubeProxyReplacement: false
 
-# socketLB:
-#   enabled: false
-#   hostNamespaceOnly: true
+socketLB:
+  enabled: false
+  hostNamespaceOnly: true
 
 cni:
   exclusive: false
