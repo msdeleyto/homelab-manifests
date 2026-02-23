@@ -16,10 +16,10 @@ server:
     requiredDuringSchedulingIgnoredDuringExecution:
       nodeSelectorTerms:
       - matchExpressions:
-        - key: node.kubernetes.io/instance-type
-          operator: In
+        - key: node-role.kubernetes.io/control-plane
+          operator: NotIn
           values:
-          - k3s
+          - "true"
 
 alertmanager:
   enabled: false

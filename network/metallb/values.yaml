@@ -6,8 +6,14 @@ controller:
     limits:
       cpu: 100m
       memory: 128Mi
-  nodeSelector:
-    role: cp
+  affinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: node-role.kubernetes.io/control-plane
+          operator: NotIn
+          values:
+          - "true"
   tolerations:
   - key: node-role.kubernetes.io/control-plane
     operator: "Exists"
@@ -21,8 +27,14 @@ speaker:
     limits:
       cpu: 100m
       memory: 128Mi
-  nodeSelector:
-    role: cp
+  affinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: node-role.kubernetes.io/control-plane
+          operator: NotIn
+          values:
+          - "true"
   tolerations:
   - key: node-role.kubernetes.io/control-plane
     operator: "Exists"
