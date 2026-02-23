@@ -7,3 +7,12 @@ project_path="$(dirname $0)/.."
 kubectl create namespace network 2>/dev/null || true
 
 kubectl kustomize --enable-helm "${project_path}/cilium" | kubectl apply --server-side -f - > /dev/null
+
+kubectl wait --namespace network \
+  --for=create daemonset/cilium-envoy \
+  --timeout=300s
+
+kubectl wait --namespace network \
+  --for=condition=Ready pod \
+  --selector=app=cilium-envoy \
+  --timeout=300s
