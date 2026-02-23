@@ -1,6 +1,9 @@
 preUpgradeChecker:
   jobEnabled: false
 
+networkPolicies:
+  enabled: true
+
 persistence:
   defaultClassReplicaCount: 2
   defaultDataLocality: "best-effort"
