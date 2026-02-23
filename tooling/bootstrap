@@ -40,7 +40,7 @@ echo -e "   CNI ready!\\n"
 
 # Install storage
 echo "[2/6] Bootstraping storage..."
-# "${project_path}"/longhorn-system/tooling/bootstrap
+"${project_path}"/longhorn-system/tooling/bootstrap
 echo -e "   Storage ready!\\n"
 
 # Install Vault
