@@ -1,26 +1,7 @@
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
-  name: http-gateway
-  namespace: network
-spec:
-  addresses:
-  - type: IPAddress
-    value: ${INFRA_LB_IP}
-  gatewayClassName: cilium
-  listeners:
-  - name: http
-    hostname: "*.${INFRA_DOMAIN}"
-    port: 80
-    protocol: HTTP
-    allowedRoutes:
-      namespaces:
-        from: All
----
-apiVersion: gateway.networking.k8s.io/v1
-kind: Gateway
-metadata:
-  name: https-gateway
+  name: cluster-gateway
   namespace: network
 spec:
   addresses:
