@@ -22,6 +22,7 @@ spec:
               mountPath: /backup
             - name: config
               mountPath: /config
+              readOnly: true
           restartPolicy: OnFailure
           volumes:
           - name: config
@@ -31,3 +32,13 @@ spec:
             nfs:
               server: nas.homelab
               path: /volume1/prod/backup/jellyfin
+          affinity:
+            podAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+              - labelSelector:
+                  matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                    - jellyfin
+                topologyKey: kubernetes.io/hostname
