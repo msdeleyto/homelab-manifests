@@ -9,7 +9,7 @@ spec:
     kind: Gateway
     name: cluster-gateway
     namespace: network
-    sectionName: https
+    sectionName: http
   hostnames:
   - "cd.${INFRA_DOMAIN}"
   rules:
