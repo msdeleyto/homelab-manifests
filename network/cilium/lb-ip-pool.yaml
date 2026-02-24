@@ -6,3 +6,17 @@ metadata:
 spec:
   blocks:
   - cidr: ${INFRA_LB_IP}/32
+---
+apiVersion: "cilium.io/v2alpha1"
+kind: CiliumL2AnnouncementPolicy
+metadata:
+  name: default-policy
+  namespace: network
+spec:
+  serviceSelector:
+    matchLabels:
+      io.cilium.gateway/owning-gateway: cluster-gateway
+  interfaces:
+    - eth0
+  externalIPs: true
+  loadBalancerIPs: true
