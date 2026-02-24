@@ -19,6 +19,8 @@ l2announcements:
 externalIPs:
   enabled: true
 
+devices: "eth0"
+
 k8sClientRateLimit:
   qps: 32
   burst: 64
