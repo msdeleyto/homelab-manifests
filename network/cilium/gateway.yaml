@@ -16,16 +16,16 @@ spec:
     allowedRoutes:
       namespaces:
         from: All
-#  - name: https
-#    hostname: "*.${INFRA_DOMAIN}"
-#    port: 443
-#    protocol: HTTPS
-#    tls:
-#      mode: Terminate
-#      certificateRefs:
-#      - group: ''
-#        kind: Secret
-#        name: domain-tls-secret
-#    allowedRoutes:
-#      namespaces:
-#        from: All
+  - name: https
+    hostname: "*.${INFRA_DOMAIN}"
+    port: 443
+    protocol: HTTPS
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - group: ''
+        kind: Secret
+        name: domain-tls-secret
+    allowedRoutes:
+      namespaces:
+        from: All

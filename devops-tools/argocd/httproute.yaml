@@ -9,6 +9,11 @@ spec:
     kind: Gateway
     name: cluster-gateway
     namespace: network
+    sectionName: https
+  - group: gateway.networking.k8s.io
+    kind: Gateway
+    name: cluster-gateway
+    namespace: network
     sectionName: http
   hostnames:
   - "cd.${INFRA_DOMAIN}"
