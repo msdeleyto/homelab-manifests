@@ -5,4 +5,4 @@ metadata:
   namespace: network
 spec:
   blocks:
-  - cidr: ${INFRA_LB_IP}
+  - cidr: ${INFRA_LB_IP}/32

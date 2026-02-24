@@ -12,3 +12,4 @@ helmCharts:
 
 resources:
 - lb-ip-pool.yaml
+- gateway.yaml
