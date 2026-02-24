@@ -7,14 +7,14 @@ spec:
   parentRefs:
   - group: gateway.networking.k8s.io
     kind: Gateway
-    name: cluster-gateway
-    namespace: network
-    sectionName: https
-  - group: gateway.networking.k8s.io
-    kind: Gateway
-    name: cluster-gateway
+    name: http-gateway
     namespace: network
     sectionName: http
+  - group: gateway.networking.k8s.io
+    kind: Gateway
+    name: https-gateway
+    namespace: network
+    sectionName: https
   hostnames:
   - "cd.${INFRA_DOMAIN}"
   rules:
