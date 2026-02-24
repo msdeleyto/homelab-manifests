@@ -1,0 +1,8 @@
+apiVersion: "cilium.io/v2"
+kind: CiliumLoadBalancerIPPool
+metadata:
+  name: lb-ip-pool
+  namespace: network
+spec:
+  blocks:
+  - cidr: ${INFRA_LB_IP}

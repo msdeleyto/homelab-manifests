@@ -8,3 +8,6 @@ helmCharts:
   releaseName: cilium
   namespace: network
   valuesFile: values.yaml
+
+resources:
+- lb-ip-pool.yaml
