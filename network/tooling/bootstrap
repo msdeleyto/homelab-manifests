@@ -6,7 +6,7 @@ project_path="$(dirname $0)/.."
 
 kubectl create namespace network 2>/dev/null || true
 
-kubectl kustomize --enable-helm "${project_path}/cilium" | kubectl apply --server-side -f - > /dev/null
+kubectl kustomize --enable-helm "${project_path}/cilium" | envsubst '${INFRA_LB_IP}' | kubectl apply --server-side -f - > /dev/null
 
 kubectl wait --namespace network \
   --for=create daemonset.apps/cilium-envoy \
