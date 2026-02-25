@@ -11,5 +11,5 @@ helmCharts:
   valuesFile: values.yaml
 
 resources:
-- lb-ip-pool.yaml
+- gateway-lb-pool.yaml
 - gateway.yaml

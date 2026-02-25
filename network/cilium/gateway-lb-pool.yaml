@@ -1,7 +1,7 @@
 apiVersion: "cilium.io/v2"
 kind: CiliumLoadBalancerIPPool
 metadata:
-  name: lb-ip-pool
+  name: gateway-lb-pool
   namespace: network
 spec:
   blocks:
