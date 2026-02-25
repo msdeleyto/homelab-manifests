@@ -15,7 +15,7 @@ metadata:
 spec:
   serviceSelector:
     matchLabels:
-      io.cilium.gateway/owning-gateway: cluster-gateway
+      cilium:gateway.networking.k8s.io/Gateway: network/cluster-gateway
   interfaces:
     - eth0
   externalIPs: true
