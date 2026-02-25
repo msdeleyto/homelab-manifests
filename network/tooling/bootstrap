@@ -29,4 +29,6 @@ kubectl wait --namespace network \
   --selector=app.kubernetes.io/name=cilium-agent \
   --timeout=300s
 
-kubectl kustomize --enable-helm "${project_path}/cilium" | envsubst '${INFRA_DOMAIN} ${INFRA_LB_IP} ${INFRA_HA_VIP}' | kubectl apply --server-side -f - > /dev/null
+kubectl kustomize --enable-helm "${project_path}/cilium" |\
+  envsubst '${INFRA_DOMAIN} ${INFRA_LB_IP} ${INFRA_HA_VIP}' |\
+  kubectl apply --server-side --force-conflicts -f - > /dev/null
