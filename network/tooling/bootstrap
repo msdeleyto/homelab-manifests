@@ -4,9 +4,10 @@ set -euo pipefail
 
 project_path="$(dirname $0)/.."
 
-kubectl create namespace network 2>/dev/null || true
-
-kubectl kustomize --enable-helm "${project_path}/cilium" | envsubst '${INFRA_DOMAIN} ${INFRA_LB_IP} ${INFRA_HA_VIP}' | kubectl apply --server-side -f - > /dev/null
+cat "${project_path}/cilium/values.yaml" | envsubst '${INFRA_LB_IP}' | helm install cilium oci://quay.io/cilium/charts/cilium --version 1.19.1 \
+  --namespace network \
+  --create-namespace \
+  --values - > /dev/null
 
 kubectl wait --namespace network \
   --for=create daemonset.apps/cilium-envoy \
@@ -25,3 +26,5 @@ kubectl wait --namespace network \
   --for=condition=Ready pod \
   --selector=app.kubernetes.io/name=cilium-agent \
   --timeout=300s
+
+kubectl kustomize --enable-helm "${project_path}/cilium" | envsubst '${INFRA_DOMAIN} ${INFRA_LB_IP} ${INFRA_HA_VIP}' | kubectl apply --server-side -f - > /dev/null
