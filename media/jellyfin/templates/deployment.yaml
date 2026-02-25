@@ -44,6 +44,11 @@ spec:
           name: config
         - name: data
           mountPath: /data/media
+        resources:
+          limits:
+            ephemeral-storage: 32Gi
+          requests:
+            ephemeral-storage: 16Gi
       volumes:
       - name: config
         persistentVolumeClaim:

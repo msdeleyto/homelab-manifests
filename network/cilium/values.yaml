@@ -27,7 +27,5 @@ k8sClientRateLimit:
 
 gatewayAPI:
   enabled: true
-  hostNetwork:
-    enabled: true
   gatewayClass:
     create: "true"
