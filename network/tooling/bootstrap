@@ -4,10 +4,12 @@ set -euo pipefail
 
 project_path="$(dirname $0)/.."
 
-cat "${project_path}/cilium/values.yaml" | envsubst '${INFRA_LB_IP}' | helm install cilium oci://quay.io/cilium/charts/cilium --version 1.19.1 \
+cat "${project_path}/cilium/values.yaml" | envsubst '${INFRA_LB_IP}' > /tmp/cilium-values.yaml
+
+helm upgrade --install cilium oci://quay.io/cilium/charts/cilium --version 1.19.1 \
   --namespace network \
   --create-namespace \
-  --values - > /dev/null
+  --values /tmp/cilium-values.yaml > /dev/null
 
 kubectl wait --namespace network \
   --for=create daemonset.apps/cilium-envoy \
