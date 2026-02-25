@@ -4,7 +4,7 @@ set -euo pipefail
 
 project_path="$(dirname $0)/.."
 
-cat "${project_path}/cilium/values.yaml" | envsubst '${INFRA_LB_IP}' > /tmp/cilium-values.yaml
+cat "${project_path}/cilium/values.yaml" | envsubst '${INFRA_LB_VIP}' > /tmp/cilium-values.yaml
 
 helm upgrade --install cilium oci://quay.io/cilium/charts/cilium --version 1.19.1 \
   --namespace network \
