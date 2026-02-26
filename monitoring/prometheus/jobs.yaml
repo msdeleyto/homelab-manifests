@@ -26,5 +26,15 @@ extraScrapeConfigs: |
     - targets: ['argocd-application-controller-metrics.devops-tools.svc.cluster.local:8082']
   - job_name: 'longhorn'
     metrics_path: /metrics
-    static_configs:
-    - targets: ['longhorn-backend.longhorn-system.svc.cluster.local:9500']
+    kubernetes_sd_configs:
+    - role: pod
+      namespaces:
+        names:
+        - longhorn-system
+    relabel_configs:
+    - source_labels: [__meta_kubernetes_pod_label_app]
+      regex: longhorn-manager
+      action: keep
+    - source_labels: [__meta_kubernetes_pod_container_port_number]
+      regex: 9500
+      action: keep
