@@ -17,7 +17,7 @@ jobs:
   notify-result:
     runs-on: ubuntu-latest
     needs: validate-k8s-manifests
-    if: ${{ always() && github.event_name == 'push' && github.event.sender.login == 'homelab-renovate-app' }}
+    if: ${{ always() && github.event_name == 'push' && github.event.sender.login == 'homelab-renovate-app[bot]' }}
     steps:
     - name: Send job result to slack
       uses: slackapi/slack-github-action@v2.1.1
