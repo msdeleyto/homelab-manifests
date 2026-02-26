@@ -29,3 +29,11 @@ gatewayAPI:
   enabled: true
   gatewayClass:
     create: "true"
+
+hubble:
+  relay:
+    enabled: true
+    prometheus:
+      enabled: true
+  ui:
+    enabled: true
