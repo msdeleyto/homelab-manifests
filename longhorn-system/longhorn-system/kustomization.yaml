@@ -11,3 +11,4 @@ helmCharts:
 
 resources:
 - httproute.yaml
+- network-policy.yaml
