@@ -12,3 +12,4 @@ helmCharts:
 resources:
 - gateway-lb-pool.yaml
 - gateway.yaml
+- httproute.yaml
