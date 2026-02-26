@@ -43,17 +43,21 @@ datasources:
 dashboards:
   default:
     argocd:
-      url: https://grafana.com/api/dashboards/14584/revisions/1/download
-    crowdsec:
-      url: https://grafana.com/api/dashboards/21419/revisions/6/download
-    falco:
-      url: https://grafana.com/api/dashboards/17319/revisions/7/download
+      gnetId: 14584
+      revision: 1
+    longhorn:
+      gnetId: 16888
+      revision: 5
     proxmox:
       gnetId: 10347
       revision: 5
       datasource:
       - name: DS_PROMETHEUS
         value: prometheus
+    # crowdsec:
+    #   url: https://grafana.com/api/dashboards/21419/revisions/6/download
+    # falco:
+    #   url: https://grafana.com/api/dashboards/17319/revisions/7/download
 
 dashboardProviders:
   dashboardproviders.yaml:
