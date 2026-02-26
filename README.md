@@ -12,7 +12,7 @@ This repository contains Kubernetes manifests for a homelab cluster, serving two
 ## Repository Structure
 ```
 ├── longhorn-system/ # Distributed block storage
-├── network/ # Istio, MetalLB, cert-manager
+├── network/ # Cilium, Istio, cert-manager
 ├── vault/ # HashiCorp Vault + auto-unsealer
 ├── external-secrets/ # External Secrets Operator
 ├── devops-tools/ # ArgoCD, Renovate, GitHub runners
@@ -29,12 +29,17 @@ This repository contains Kubernetes manifests for a homelab cluster, serving two
 |------|------------|
 | **GitOps / IaC** | ArgoCD, Kustomize + Helm hybrid, Renovate |
 | **Secret Management** | HashiCorp Vault, External Secrets Operator |
-| **Networking** | Istio, MetalLB, cert-manager |
+| **Networking** | Cilium, Istio, cert-manager |
 | **Storage** | Longhorn distributed storage |
 | **Observability** | Grafana, Prometheus, Loki, Tempo, Alloy, Kiali |
 | **Security** | Falco, kube-bench, CrowdSec |
 
 ## Bootstrap
+
+```bash
+# Cilium is replacing the CNI and kube-proxy on this setup, run on control plane before more control planes join the cluster
+./network/tooling/bootstrap
+```
 
 ```bash
 # Ensure the environment variables listed in .env.example are available
