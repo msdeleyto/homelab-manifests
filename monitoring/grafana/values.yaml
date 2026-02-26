@@ -48,6 +48,9 @@ dashboards:
     longhorn:
       gnetId: 16888
       revision: 5
+      datasource:
+      - name: DS_PROMETHEUS
+        value: prometheus
     proxmox:
       gnetId: 10347
       revision: 5
