@@ -4,6 +4,9 @@ set -euo pipefail
 
 project_path="$(dirname $0)/.."
 
+# Install gateway crds
+kubectl apply --server-side -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.4.1/standard-install.yaml > /dev/null
+
 cat "${project_path}/cilium/values.yaml" | envsubst '${INFRA_HA_VIP}' > /tmp/cilium-values.yaml
 
 helm upgrade --install cilium oci://quay.io/cilium/charts/cilium --version 1.19.1 \
