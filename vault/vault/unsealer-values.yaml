@@ -10,10 +10,6 @@ server:
     secretName: vault-unsealer-keys
     secretKey: KEY3
   postStart:
-  - exec:
-      command:
-      - "/bin/sh"
-      - "-c"
-      - "vault operator unseal ${KEY1} &&"
-      - "vault operator unseal ${KEY2} &&"
-      - "vault operator unseal ${KEY3}"
+  - "/bin/sh"
+  - "-c"
+  - "vault operator unseal ${KEY1} && vault operator unseal ${KEY2} && vault operator unseal ${KEY3}"
