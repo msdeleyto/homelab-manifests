@@ -12,3 +12,4 @@ helmCharts:
 resources:
 - httproute.yaml
 - network-policy.yaml
+- recurring-job.yaml
