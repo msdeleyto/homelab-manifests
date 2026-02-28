@@ -12,4 +12,18 @@ server:
   postStart:
   - "/bin/sh"
   - "-c"
-  - "vault operator unseal ${KEY1} && vault operator unseal ${KEY2} && vault operator unseal ${KEY3}"
+  - |
+    echo "Waiting for the vault to be available..."
+    for i in {1..30}; do
+      vault status > /dev/null 2>&1 && break
+      sleep 5
+    done
+
+    if vault status | grep -q 'Sealed.*false'; then
+      echo "Vault already unsealed, exiting."
+      exit 0
+    fi
+
+    vault operator unseal "${KEY1}"
+    vault operator unseal "${KEY2}"
+    vault operator unseal "${KEY3}"
