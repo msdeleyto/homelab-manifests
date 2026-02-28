@@ -1,11 +1,11 @@
 apiVersion: longhorn.io/v1beta2
 kind: RecurringJob
 metadata:
-  name: snapshot
+  name: backup
   namespace: longhorn-system
 spec:
   cron: "0 20 * * *"
-  task: "snapshot"
+  task: "backup"
   groups:
   - default
   retain: 1
