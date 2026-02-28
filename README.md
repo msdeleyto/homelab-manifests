@@ -13,7 +13,7 @@ This repository contains Kubernetes manifests for a homelab cluster, serving two
 ```
 ├── longhorn-system/ # Distributed block storage
 ├── network/ # Cilium, Istio, cert-manager
-├── vault/ # HashiCorp Vault + auto-unsealer
+├── vault/ # HashiCorp Vault
 ├── external-secrets/ # External Secrets Operator
 ├── devops-tools/ # ArgoCD, Renovate, GitHub runners
 ├── monitoring/ # Grafana, Prometheus, Loki, Tempo, Alloy, CrowdSec
