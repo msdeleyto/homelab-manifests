@@ -31,31 +31,27 @@ verify_requirements "${project_path}"
 echo -e "    Everything ready!\\n"
 
 # Install CNI
-echo "[1/6] Bootstraping CNI..."
+echo "[1/5] Bootstraping CNI..."
 "${project_path}"/network/tooling/bootstrap
 echo -e "   CNI ready!\\n"
 
 # Install storage
-echo "[2/6] Bootstraping storage..."
+echo "[2/5] Bootstraping storage..."
 "${project_path}"/longhorn-system/tooling/bootstrap
 echo -e "   Storage ready!\\n"
 
 # Install Vault
-echo "[3/6] Bootstraping vault..."
+echo "[3/5] Bootstraping vault..."
 "${project_path}"/vault/tooling/bootstrap "${vault_secrets}" "${vault_secret_files}"
 echo -e "   Vault ready!\\n"
 
 # Install ESO
-echo "[4/6] Bootstraping ESO..."
+echo "[4/5] Bootstraping ESO..."
 "${project_path}"/external-secrets/tooling/bootstrap
 echo -e "   ESO ready!\\n"
 
-echo "[5/6] Bootstraping Vault unsealer..."
-"${project_path}"/vault/tooling/bootstrap-unsealer
-echo -e "   Unsealer ready!\\n"
-
 # Install ArgoCD
-echo "[6/6] Bootstraping ArgoCD..."
+echo "[5/5] Bootstraping ArgoCD..."
 "${project_path}"/devops-tools/tooling/bootstrap
 echo -e "   Devops-tools ready!\\n"
 

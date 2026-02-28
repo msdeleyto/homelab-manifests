@@ -113,7 +113,9 @@ echo -e "\nDeploying vault..."
 vault_dir="$(dirname $0)/../vault"
 tooling_dir="$(dirname $0)"
 
-kubectl kustomize "${vault_dir}" --enable-helm | kubectl apply --server-side --force-conflicts -f - > /dev/null
+helm upgrade --install vault hashicorp/vault \
+  --namespace vault \
+  --values "${vault_dir}/values.yaml" > /dev/null
 
 kubectl wait --namespace vault \
   --for=create statefulset.apps/vault \

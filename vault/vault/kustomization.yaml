@@ -8,3 +8,8 @@ helmCharts:
   releaseName: vault
   namespace: vault
   valuesFile: values.yaml
+  additionalValuesFiles:
+  - unsealer-values.yaml
+
+resources:
+- external-secret.yaml

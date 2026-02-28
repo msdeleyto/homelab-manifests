@@ -1,0 +1,19 @@
+server:
+  extraSecretEnvironmentVars:
+  - envName: KEY1
+    secretName: vault-unsealer-keys
+    secretKey: KEY1
+  - envName: KEY2
+    secretName: vault-unsealer-keys
+    secretKey: KEY2
+  - envName: KEY3
+    secretName: vault-unsealer-keys
+    secretKey: KEY3
+  postStart:
+  - exec:
+      command:
+      - "/bin/sh"
+      - "-c"
+      - "vault operator unseal ${KEY1} &&"
+      - "vault operator unseal ${KEY2} &&"
+      - "vault operator unseal ${KEY3}"
