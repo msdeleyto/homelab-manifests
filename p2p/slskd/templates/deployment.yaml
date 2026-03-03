@@ -34,7 +34,9 @@ spec:
         - name: DNS_KEEP_NAMESERVER
           value: "on"
         - name: FIREWALL_OUTBOUND_SUBNETS
-          value: "10.42.0.0/15"
+          value: "10.0.0.0/16"
+        - name: FIREWALL_INPUT_PORTS
+          value: "5030"
       - name: verify-vpn
         image: busybox
         command:
