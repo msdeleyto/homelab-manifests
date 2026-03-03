@@ -34,6 +34,8 @@ spec:
           value: "on"
         - name: FIREWALL_OUTBOUND_SUBNETS
           value: "10.0.0.0/8"
+        - name: FIREWALL_DEBUG
+          value: "on"  
       - name: verify-vpn
         image: busybox
         command:
