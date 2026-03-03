@@ -6,4 +6,4 @@ qbittorrent:
 vpn:
   image:
     repository: qmcgaw/gluetun
-    tag: pr-2970
+    tag: v3.41.1
