@@ -105,8 +105,6 @@ load_secrets() {
 helm repo add hashicorp https://helm.releases.hashicorp.com > /dev/null && \
   helm repo update > /dev/null
 
-kubectl create namespace vault 2>/dev/null || true
-
 # vault
 echo -e "\nDeploying vault..."
 
@@ -115,6 +113,7 @@ tooling_dir="$(dirname $0)"
 
 helm upgrade --install vault hashicorp/vault \
   --namespace vault \
+  --create-namespace \
   --values "${vault_dir}/values.yaml" > /dev/null
 
 kubectl wait --namespace vault \

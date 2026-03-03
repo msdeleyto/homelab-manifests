@@ -4,9 +4,16 @@ set -euo pipefail
 
 project_path="$(dirname $0)/.."
 
-kubectl create namespace longhorn-system 2>/dev/null || true
+# Add helm repository
+helm repo add longhorn https://charts.longhorn.io > /dev/null && \
+  helm repo update > /dev/null
 
-kubectl kustomize --enable-helm "${project_path}/longhorn-system" | envsubst '${INFRA_DOMAIN} ${INFRA_ENV}' | kubectl apply --server-side -f - > /dev/null
+cat "${project_path}/longhorn-system/values.yaml" | envsubst '${INFRA_ENV}' > /tmp/longhorn-system-values.yaml
+
+helm upgrade --install longhorn longhorn/longhorn --version 1.11.0 \
+  --namespace longhorn-system \
+  --create-namespace \
+  --values "/tmp/longhorn-system-values.yaml" > /dev/null
 
 kubectl wait --namespace longhorn-system \
   --for=create daemonset/longhorn-csi-plugin \
