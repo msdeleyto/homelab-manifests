@@ -11,9 +11,6 @@ metadata:
   name: envoy-cluster-gateway
 spec:
   gatewayClassName: envoy-gateway-class
-  addresses:
-  - type: IPAddress
-    value: 192.168.10.10 # Test tmp IP
   listeners:
   - name: http
     hostname: "*.envoy.${INFRA_DOMAIN}"
