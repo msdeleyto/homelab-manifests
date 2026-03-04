@@ -15,8 +15,8 @@ metadata:
   namespace: network
 spec:
   serviceSelector:
-    matchLabels:
-      io.cilium.gateway/owning-gateway: cluster-gateway
+    matchExpressions:
+    - {key: gateway.networking.k8s.io/gateway-name, operator: Exists}
   interfaces:
     - eth0
   externalIPs: true
