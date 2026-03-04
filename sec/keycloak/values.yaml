@@ -3,6 +3,7 @@ command:
   - "start"
   - "--http-port=8080"
   - "--hostname-strict=false"
+  - "--optimized"
 
 extraEnvFrom: |
   - secretRef:
