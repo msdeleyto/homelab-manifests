@@ -16,6 +16,9 @@ spec:
     hostname: "*.envoy.${INFRA_DOMAIN}"
     protocol: HTTP
     port: 80
+    allowedRoutes:
+      namespaces:
+        from: All
   #- name: https
   #  hostname: "*.${INFRA_DOMAIN}"
   #  port: 443
