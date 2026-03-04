@@ -1,0 +1,34 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: GatewayClass
+metadata:
+  name: envoy-gateway-class
+spec:
+  controllerName: gateway.envoyproxy.io/gatewayclass-controller
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: envoy-cluster-gateway
+spec:
+  gatewayClassName: envoy-gateway-class
+  addresses:
+  - type: IPAddress
+    value: 192.168.10.10 # Test tmp IP
+  listeners:
+  - name: http
+    hostname: "*.envoy.${INFRA_DOMAIN}"
+    protocol: HTTP
+    port: 80
+  #- name: https
+  #  hostname: "*.${INFRA_DOMAIN}"
+  #  port: 443
+  #  protocol: HTTPS
+  #  tls:
+  #    mode: Terminate
+  #    certificateRefs:
+  #    - group: ''
+  #      kind: Secret
+  #      name: domain-tls-secret
+  #  allowedRoutes:
+  #    namespaces:
+  #      from: All
