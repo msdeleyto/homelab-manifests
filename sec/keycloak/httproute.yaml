@@ -1,7 +1,7 @@
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
-  name: dex-route
+  name: keycloak-route
 spec:
   parentRefs:
   - group: gateway.networking.k8s.io
@@ -10,13 +10,13 @@ spec:
     namespace: network
     sectionName: https
   hostnames:
-  - "dex.${INFRA_DOMAIN}"
+  - "keycloak.${INFRA_DOMAIN}"
   rules:
   - backendRefs:
     - group: ''
       kind: Service
-      name: dex
-      port: 5556
+      name: keycloak-http
+      port: 80
       weight: 1
     matches:
     - path:
