@@ -12,9 +12,9 @@ metadata:
   labels:
     gateway.networking.k8s.io/gateway-name: envoy-cluster-gateway
 spec:
-  addresses:
-  - type: IPAddress
-    value: 192.168.10.10
+#  addresses:
+#  - type: IPAddress
+#    value: 192.168.10.10
   gatewayClassName: envoy-gateway-class
   listeners:
   - name: http
