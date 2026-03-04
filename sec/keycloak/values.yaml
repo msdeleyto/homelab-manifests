@@ -1,3 +1,9 @@
+command:
+  - "/opt/keycloak/bin/kc.sh"
+  - "start"
+  - "--http-port=8080"
+  - "--hostname-strict=false"
+
 extraEnvFrom: |
   - secretRef:
       name: keycloak-admin-credentials
