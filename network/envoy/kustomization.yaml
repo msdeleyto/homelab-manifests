@@ -9,5 +9,6 @@ helmCharts:
   valuesFile: values.yaml
 
 resources:
+- envoyproxy.yaml
 - gateway.yaml
 - httproute.yaml
