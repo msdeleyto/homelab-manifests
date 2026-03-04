@@ -21,4 +21,4 @@ spec:
     matches:
     - path:
         type: PathPrefix
-        value: /auth/
+        value: /
