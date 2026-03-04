@@ -12,14 +12,3 @@ extraEnv: |
 extraEnvFrom: |
   - secretRef:
       name: keycloak-admin-credentials
-
-httpRoute:
-  enabled: true
-  parentRefs:
-  - group: gateway.networking.k8s.io
-    kind: Gateway
-    name: cluster-gateway
-    namespace: network
-    sectionName: https
-  hostnames:
-  - "keycloak.${INFRA_DOMAIN}"
