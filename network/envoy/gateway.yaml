@@ -8,9 +8,7 @@ spec:
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
-  name: envoy-cluster-gateway
-  labels:
-    gateway.networking.k8s.io/gateway-name: envoy-cluster-gateway
+  name: cluster-gateway
 spec:
   gatewayClassName: envoy-gateway-class
   infrastructure:
@@ -19,23 +17,16 @@ spec:
       kind: EnvoyProxy
       name: envoy-proxy-config
   listeners:
-  - name: http
-    hostname: "*.envoy.${INFRA_DOMAIN}"
-    protocol: HTTP
-    port: 80
+  - name: https
+    hostname: "*.${INFRA_DOMAIN}"
+    port: 443
+    protocol: HTTPS
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - group: ''
+        kind: Secret
+        name: domain-tls-secret
     allowedRoutes:
       namespaces:
         from: All
-  #- name: https
-  #  hostname: "*.${INFRA_DOMAIN}"
-  #  port: 443
-  #  protocol: HTTPS
-  #  tls:
-  #    mode: Terminate
-  #    certificateRefs:
-  #    - group: ''
-  #      kind: Secret
-  #      name: domain-tls-secret
-  #  allowedRoutes:
-  #    namespaces:
-  #      from: All

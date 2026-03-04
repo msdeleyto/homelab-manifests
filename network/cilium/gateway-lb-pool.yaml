@@ -5,7 +5,6 @@ metadata:
 spec:
   blocks:
   - cidr: ${INFRA_LB_IP}/32
-  - cidr: 192.168.10.10/32 # Test tmp IP
 ---
 apiVersion: "cilium.io/v2alpha1"
 kind: CiliumL2AnnouncementPolicy
@@ -13,11 +12,8 @@ metadata:
   name: lb-policy
 spec:
   serviceSelector:
-    matchExpressions:
-      - key: "io.kubernetes.service.name"
-        operator: In
-        values: 
-          - envoy-network-envoy-cluster-gateway-ee3860bc
+    matchLabels:
+      gateway.envoyproxy.io/owning-gateway-name: cluster-gateway
   interfaces:
   - eth0
   externalIPs: true
