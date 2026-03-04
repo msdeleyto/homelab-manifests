@@ -4,6 +4,11 @@ command:
   - "--http-port=8080"
   - "--hostname-strict=false"
 
+extraEnv: |
+  - name: JAVA_OPTS_APPEND
+    value: >-
+      -Djgroups.dns.query=keycloak-keycloakx-headless
+
 extraEnvFrom: |
   - secretRef:
       name: keycloak-admin-credentials
