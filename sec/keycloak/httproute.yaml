@@ -15,7 +15,7 @@ spec:
   - backendRefs:
     - group: ''
       kind: Service
-      name: keycloak-keycloakx-http
+      name: keycloak-keycloakx-headless
       port: 80
       weight: 1
     matches:
