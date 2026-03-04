@@ -13,7 +13,7 @@ spec:
   gatewayClassName: envoy-gateway-class
   listeners:
   - name: http
-    # hostname: "*.envoy.${INFRA_DOMAIN}"
+    hostname: "*.envoy.${INFRA_DOMAIN}"
     protocol: HTTP
     port: 80
     allowedRoutes:
