@@ -1,0 +1,3 @@
+configSecret:
+  create: false
+  name: dex-config
