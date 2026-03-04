@@ -35,7 +35,7 @@ spec:
         - name: DNS_SERVER
           value: "off"
         - name: FIREWALL_OUTBOUND_SUBNETS
-          value: "10.0.0.0/16"
+          value: "10.0.0.0/16,10.43.0.0/16"
         - name: FIREWALL_INPUT_PORTS
           value: "8080"
       - name: verify-vpn
