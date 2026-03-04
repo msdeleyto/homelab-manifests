@@ -1,1 +1,3 @@
-extraEnvFrom: keycloak-admin-credentials
+extraEnvFrom: |
+  - secretRef:
+      name: keycloak-admin-credentials
