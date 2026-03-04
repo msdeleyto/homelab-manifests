@@ -16,6 +16,11 @@ spec:
 #  - type: IPAddress
 #    value: 192.168.10.10
   gatewayClassName: envoy-gateway-class
+  infrastructure:
+    parametersRef:
+      group: gateway.envoyproxy.io
+      kind: EnvoyProxy
+      name: envoy-proxy-config
   listeners:
   - name: http
     hostname: "*.envoy.${INFRA_DOMAIN}"
