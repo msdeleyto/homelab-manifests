@@ -2,7 +2,7 @@ command:
   - "/opt/keycloak/bin/kc.sh"
   - "start"
   - "--http-port=8080"
-  - "--hostname=https://keycloak.${INFRA_DOMAIN}"
+  - "--hostname=keycloak.${INFRA_DOMAIN}"
   - "--proxy-headers=xforwarded"
   - "--hostname-strict=false"
 
@@ -10,6 +10,8 @@ extraEnv: |
   - name: JAVA_OPTS_APPEND
     value: >-
       -Djgroups.dns.query=keycloak-keycloakx-headless
+  - name: KC_PROXY
+    value: "passthrough"
 
 extraEnvFrom: |
   - secretRef:
