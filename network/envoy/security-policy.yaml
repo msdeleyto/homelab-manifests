@@ -6,9 +6,7 @@ spec:
   targetRefs:
   - group: gateway.networking.k8s.io
     kind: Gateway
-    name: envoy-cluster-gateway
-    namespace: network
-    sectionName: http
+    name: cluster-gateway
   oidc:
     provider:
       issuer: "http://keycloak.sec.svc.cluster.local/auth/realms/test"
