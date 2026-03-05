@@ -42,7 +42,7 @@ spec:
       name: hubble-route
   oidc:
     provider:
-      issuer: "https://keycloak.${INFRA_DOMAIN}/realms/test"
+      issuer: "https://keycloak.${INFRA_DOMAIN}/auth/realms/test"
     clientID: test
     clientSecret:
       name: client-secret
