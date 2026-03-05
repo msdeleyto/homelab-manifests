@@ -29,4 +29,4 @@ kind: Secret
 metadata:
   name: client-secret
 stringData:
-  client-secret: TzcaNqomofnkLbsNGlFzWoVA67rRVqG3
+  client-secret: xrgSj8lG9WbAGcaVJg4nbtoGnkUamT4Q
