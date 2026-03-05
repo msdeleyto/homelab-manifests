@@ -40,7 +40,6 @@ spec:
     - group: gateway.networking.k8s.io
       kind: HTTPRoute
       name: hubble-route
-      namespace: network
   oidc:
     provider:
       issuer: "https://keycloak.${INFRA_DOMAIN}/auth/realms/test"
