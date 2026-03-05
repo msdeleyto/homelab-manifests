@@ -16,4 +16,4 @@ helmCharts:
 resources:
 - envoyproxy.yaml
 - gateway.yaml
-- httproute.yaml
+- security-policy.yaml

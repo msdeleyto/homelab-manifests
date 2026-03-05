@@ -30,21 +30,3 @@ metadata:
   name: client-secret
 stringData:
   client-secret: GdqkY5b99E96JBTrQRsmCekdP0P1Q8ei
----
-apiVersion: gateway.envoyproxy.io/v1alpha1
-kind: SecurityPolicy
-metadata:
-  name: oidc-test
-spec:
-  targetRefs:
-    - group: gateway.networking.k8s.io
-      kind: HTTPRoute
-      name: hubble-route
-  oidc:
-    provider:
-      issuer: "https://keycloak.${INFRA_DOMAIN}/auth/realms/test"
-    clientID: test
-    clientSecret:
-      name: client-secret
-    redirectURL: "https://hubble.${INFRA_DOMAIN}/oauth2/callback"
-    logoutPath: "/logout"
