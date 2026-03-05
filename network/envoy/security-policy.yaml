@@ -9,7 +9,7 @@ spec:
     name: cluster-gateway
   oidc:
     provider:
-      issuer: "http://keycloak-keycloakx-http.sec.svc.cluster.local/auth/realms/test"
+      issuer: "https://keycloak-keycloakx-http.sec.svc.cluster.local:8443/auth/realms/test"
     clientID: test
     clientSecret:
       name: client-secret
