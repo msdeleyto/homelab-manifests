@@ -46,5 +46,5 @@ spec:
     clientID: test
     clientSecret:
       name: client-secret
-    redirectURL: "https://hubble.${INFRA_DOMAIN}"
+    redirectURL: "https://hubble.${INFRA_DOMAIN}/oauth2/callback"
     logoutPath: "/logout"
