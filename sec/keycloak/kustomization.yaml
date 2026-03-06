@@ -10,5 +10,5 @@ helmCharts:
   valuesFile: values.yaml
 
 resources:
-- external-secret.yaml
+- external-secrets.yaml
 - httproute.yaml
