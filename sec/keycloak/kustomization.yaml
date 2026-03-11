@@ -4,7 +4,7 @@ kind: Kustomization
 helmCharts:
 - name: keycloakx
   repo: oci://ghcr.io/codecentric/helm-charts
-  version: 7.1.8
+  version: 7.1.9
   releaseName: keycloak
   namespace: sec
   valuesFile: values.yaml
