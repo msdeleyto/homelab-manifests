@@ -32,7 +32,7 @@ extraContainers: |
     image: adorsys/keycloak-config-cli:latest
     env:
       - name: KEYCLOAK_URL
-        value: "http://localhost:8080"
+        value: "http://localhost:9000"
       - name: KEYCLOAK_USER
         valueFrom:
           secretKeyRef:
