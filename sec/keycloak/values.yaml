@@ -25,6 +25,8 @@ extraContainers: |
         value: "true"
       - name: KEYCLOAK_AVAILABILITYCHECK_TIMEOUT
         value: "120s"
+      - name: KEYCLOAK_CONNECTTIMEOUT
+        value: "120s"
       - name: KEYCLOAK_USER
         valueFrom:
           secretKeyRef:
