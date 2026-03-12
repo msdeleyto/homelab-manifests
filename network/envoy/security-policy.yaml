@@ -12,7 +12,7 @@ spec:
     name: hubble-route
   oidc:
     provider:
-      issuer: "http://keycloak-keycloakx-http.sec.svc.cluster.local/auth/realms/test"
+      issuer: "http://keycloak-keycloakx-http.sec.svc.cluster.local/auth/realms/cluster"
     clientID: gateway
     clientSecret:
       name: client-secret
