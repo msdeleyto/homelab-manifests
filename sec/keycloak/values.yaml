@@ -4,7 +4,7 @@ command:
   - "--http-port=8080"
   - "--hostname=keycloak.${INFRA_DOMAIN}"
   - "--proxy-headers=xforwarded"
-  - "--hostname-strict=true"
+  - "--hostname-strict=false"
 
 dbchecker:
   enabled: true
