@@ -6,5 +6,34 @@ data:
   cluster-realm.json: |
     {
       "enabled": true,
-      "realm": "cluster"
+      "realm": "cluster",
+      "users": [
+        {
+          "username": "admin",
+          "email": "admin@mail.de",
+          "enabled": true,
+          "firstName": "Admin",
+          "lastName": "User",
+          "credentials": [
+            {
+              "type": "password",
+              "value": "test"
+            }
+          ]
+        }
+      ],
+      "clients": [
+        {
+          "clientId": "gateway",
+          "name": "gateway",
+          "description": "Gateway Client",
+          "enabled": true,
+          "clientAuthenticatorType": "client-secret",
+          "secret": "secret",
+          "redirectUris": [
+            "https://hubble.${INFRA_DOMAIN}/*"
+          ],
+          "webOrigins": ["*"]
+        }
+      ]
     }
