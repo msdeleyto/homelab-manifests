@@ -10,12 +10,10 @@ spec:
         image: adorsys/keycloak-config-cli:latest
         env:
         - name: KEYCLOAK_URL
-          value: "http://keycloak-keycloakx-http.sec.svc.cluster.local:9000/auth"
-        #- name: KEYCLOAK_AVAILABILITYCHECK_ENABLED
-        #  value: "true"
-        #- name: KEYCLOAK_AVAILABILITYCHECK_TIMEOUT
-        #  value: "120s"
-        - name: KEYCLOAK_CONNECTTIMEOUT
+          value: "https://keycloak.${INFRA_DOMAIN}/auth"
+        - name: KEYCLOAK_AVAILABILITYCHECK_ENABLED
+          value: "true"
+        - name: KEYCLOAK_AVAILABILITYCHECK_TIMEOUT
           value: "120s"
         - name: KEYCLOAK_USER
           valueFrom:
