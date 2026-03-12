@@ -22,7 +22,7 @@ extraContainers: |
       - name: KEYCLOAK_URL
         value: "http://localhost:8080/auth"
       - name: KEYCLOAK_AVAILABILITYCHECK_ENABLED
-        value: true
+        value: "true"
       - name: KEYCLOAK_AVAILABILITYCHECK_TIMEOUT
         value: "120s"
       - name: KEYCLOAK_USER
