@@ -13,7 +13,7 @@ spec:
   oidc:
     provider:
       issuer: "http://keycloak-keycloakx-http.sec.svc.cluster.local/auth/realms/test"
-    clientID: test
+    clientID: gateway
     clientSecret:
       name: client-secret
     logoutPath: "/logout"
