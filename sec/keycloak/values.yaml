@@ -37,12 +37,12 @@ extraContainers: |
         valueFrom:
           secretKeyRef:
             name: keycloak-admin-credentials
-            key: KC_BOOTSTRAP_ADMIN_USERNAME
+            key: KEYCLOAK_ADMIN
       - name: KEYCLOAK_PASSWORD
         valueFrom:
           secretKeyRef:
             name: keycloak-admin-credentials
-            key: KC_BOOTSTRAP_ADMIN_PASSWORD
+            key: KEYCLOAK_ADMIN_PASSWORD
     volumeMounts:
       - name: config
         mountPath: /config
