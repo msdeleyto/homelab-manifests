@@ -4,19 +4,7 @@ command:
   - "--http-port=8080"
   - "--hostname=keycloak.${INFRA_DOMAIN}"
   - "--proxy-headers=xforwarded"
-  - "--hostname-strict=false"
-
-dbchecker:
-  enabled: true
-
-database:
-  existingSecret: keycloak-db-secret
-  existingSecretKey: password
-  vendor: postgres
-  hostname: keycloak-db-rw.sec.svc.cluster.local
-  port: 5432
-  username: keycloak
-  database: keycloak
+  - "--hostname-strict=true"
 
 extraEnv: |
   - name: JAVA_OPTS_APPEND

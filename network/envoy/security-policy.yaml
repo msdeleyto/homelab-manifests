@@ -15,5 +15,5 @@ spec:
       issuer: "https://keycloak.${INFRA_DOMAIN}/auth/realms/cluster"
     clientID: gateway
     clientSecret:
-      name: client-secret
+      name: gateway-client-secret
     logoutPath: "/logout"

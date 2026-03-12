@@ -23,10 +23,3 @@ spec:
     - path:
         type: PathPrefix
         value: /
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: client-secret
-stringData:
-  client-secret: secret
