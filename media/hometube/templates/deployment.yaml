@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hometube
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hometube
+  template:
+    metadata:
+      labels:
+        app: hometube
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 100
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      automountServiceAccountToken: false
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: node-role.kubernetes.io/control-plane
+                operator: NotIn
+                values:
+                - "true"
+      containers:
+      - name: hometube
+        image: {{ .Values.deployment.image.repository }}:{{ .Values.deployment.image.tag }}
+        livenessProbe:
+          httpGet:
+            path: /_stcore/health
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: [ALL]
+        ports:
+        - name: http
+          containerPort: 8501
+        env:
+        - name: STREAMLIT_SERVER_HEADLESS
+          value: "true"
+        volumeMounts:
+        - mountPath: /config
+          name: config
+        - name: videos
+          mountPath: /data/videos
+        - name: temp
+          mountPath: /data/temp
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: hometube-config
+      - name: videos
+        nfs:
+          server: nas.homelab
+          path: /volume1/data/hometube/videos
+      - name: temp
+        nfs:
+          server: nas.homelab
+          path: /volume1/data/hometube/temp
