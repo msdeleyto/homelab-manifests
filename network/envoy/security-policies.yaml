@@ -21,6 +21,7 @@ spec:
       action: Allow
       principal:
         jwt:
+          provider: keycloak
           claims:
           - name: roles
             valueType: "StringArray"
@@ -50,6 +51,7 @@ spec:
       action: Allow
       principal:
         jwt:
+          provider: keycloak
           claims:
           - name: roles
             valueType: "StringArray"
