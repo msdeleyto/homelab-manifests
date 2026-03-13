@@ -15,7 +15,41 @@ extraEnvFrom: |
   - secretRef:
       name: keycloak-admin-credentials
 
+extraInitContainers: |
+  - name: download-keycloak-config-cli
+    image: busybox
+    command:
+    - sh
+    - -c
+    - |
+      wget -O /keycloak-config-cli/cli.jar https://github.com/adorsys/keycloak-config-cli/releases/download/v6.5.0/keycloak-config-cli-25.0.1.jar
+    volumeMounts:
+    - name: keycloak-config-cli
+      mountPath: /keycloak-config-cli
+
+lifecycleHooks: |
+  postStart:
+    exec:
+      command:
+      - /bin/sh
+      - -c
+      - |
+        java -jar /opt/keycloak/lib/keycloak-config-cli.jar \
+          --keycloak http://localhost:8080/auth \
+          --admin-user ${KEYCLOAK_ADMIN_USERNAME} \
+          --admin-password ${KEYCLOAK_ADMIN_PASSWORD} \
+          --import.files.locations=/config
+
 extraVolumes: |
+  - name: keycloak-config-cli
+    emptyDir: {}
   - name: config
     configMap:
       name: keycloak-config
+
+extraVolumeMounts: |
+  - name: keycloak-config-cli
+    mountPath: /opt/keycloak/lib/keycloak-config-cli.jar
+    subPath: cli.jar
+  - name: config
+    mountPath: /config
