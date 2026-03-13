@@ -14,7 +14,8 @@ spec:
     clientSecret:
       name: gateway-client-secret
     logoutPath: "/logout"
-    cookieName: "access-token"
+    cookieNames:
+      accessToken: "keycloak-access-token"
   authorization:
     defaultAction: Deny
     rules:
@@ -37,7 +38,7 @@ spec:
         uri: https://keycloak.${INFRA_DOMAIN}/auth/realms/cluster/protocol/openid-connect/certs
       extractFrom:
         cookies:
-        - "access-token"
+        - "keycloak-access-token"
 ---
 apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: SecurityPolicy
@@ -55,7 +56,8 @@ spec:
     clientSecret:
       name: gateway-client-secret
     logoutPath: "/logout"
-    cookieName: "access-token"
+    cookieNames:
+      accessToken: "keycloak-access-token"
   authorization:
     defaultAction: Deny
     rules:
@@ -79,4 +81,4 @@ spec:
         uri: https://keycloak.${INFRA_DOMAIN}/auth/realms/cluster/protocol/openid-connect/certs
       extractFrom:
         cookies:
-        - "access-token"
+        - "keycloak-access-token"
