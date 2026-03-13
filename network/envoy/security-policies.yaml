@@ -1,0 +1,58 @@
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: admin-security-policy
+spec:
+  targetRefs:
+  - group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: hubble-route
+  oidc:
+    provider:
+      issuer: "https://keycloak.${INFRA_DOMAIN}/auth/realms/cluster"
+    clientID: gateway
+    clientSecret:
+      name: gateway-client-secret
+    logoutPath: "/logout"
+  authorization:
+    defaultAction: Deny
+    rules:
+    - name: "allow-admin-role"
+      action: Allow
+      principal:
+        jwt:
+          claims:
+          - name: roles
+            valueType: "StringArray"
+            values:
+            - "admin"
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: media-security-policy
+spec:
+  targetRefs:
+  - group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: jellyfin-route
+  oidc:
+    provider:
+      issuer: "https://keycloak.${INFRA_DOMAIN}/auth/realms/cluster"
+    clientID: gateway
+    clientSecret:
+      name: gateway-client-secret
+    logoutPath: "/logout"
+  authorization:
+    defaultAction: Deny
+    rules:
+    - name: "allow-admin-and-media-roles"
+      action: Allow
+      principal:
+        jwt:
+          claims:
+          - name: roles
+            valueType: "StringArray"
+            values:
+            - "admin"
+            - "media"
