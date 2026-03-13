@@ -6,6 +6,18 @@ command:
   - "--proxy-headers=xforwarded"
   - "--hostname-strict=true"
 
+dbchecker:
+  enabled: true
+
+database:
+  existingSecret: keycloak-db-secret
+  existingSecretKey: password
+  vendor: postgres
+  hostname: keycloak-db-postgresql
+  port: 5432
+  username: keycloak
+  database: keycloak
+
 extraEnv: |
   - name: JAVA_OPTS_APPEND
     value: >-

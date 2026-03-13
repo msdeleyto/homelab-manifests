@@ -1,14 +1,22 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
+namespace: sec
+
 helmCharts:
+- name: cnpg
+  repo: https://cloudnative-pg.github.io/charts
+  version: 0.27.1
+  releaseName: postgresql-operator
+  valuesFile: cnpg-values.yaml
+
 - name: keycloakx
   repo: oci://ghcr.io/codecentric/helm-charts
   version: 7.1.9
   releaseName: keycloak
-  namespace: sec
   valuesFile: values.yaml
 
 resources:
+- db-cluster.yaml
 - external-secrets.yaml
 - httproute.yaml
