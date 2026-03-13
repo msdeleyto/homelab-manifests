@@ -32,6 +32,7 @@ spec:
     - name: keycloak
       issuer: https://keycloak.${INFRA_DOMAIN}/auth/realms/cluster
       remoteJWKS:
+        cacheDuration: 300s
         uri: https://keycloak.${INFRA_DOMAIN}/auth/realms/cluster/protocol/openid-connect/certs
 ---
 apiVersion: gateway.envoyproxy.io/v1alpha1
@@ -69,4 +70,5 @@ spec:
     - name: keycloak
       issuer: https://keycloak.${INFRA_DOMAIN}/auth/realms/cluster
       remoteJWKS:
+        cacheDuration: 300s
         uri: https://keycloak.${INFRA_DOMAIN}/auth/realms/cluster/protocol/openid-connect/certs
