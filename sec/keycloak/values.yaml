@@ -36,7 +36,7 @@ lifecycleHooks: |
       - |
         java -jar /opt/keycloak/lib/keycloak-config-cli.jar \
           --keycloak.url=http://localhost:8080/auth \
-          --keycloak.user=${KEYCLOAK_ADMIN_USERNAME} \
+          --keycloak.user=${KEYCLOAK_ADMIN} \
           --keycloak.password=${KEYCLOAK_ADMIN_PASSWORD} \
           --keycloak.availability-check.enabled=true \
           --keycloak.availability-check.timeout=120s \
