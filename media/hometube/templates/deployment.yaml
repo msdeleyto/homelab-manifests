@@ -60,8 +60,8 @@ spec:
       - name: videos
         nfs:
           server: nas.homelab
-          path: /volume1/data/hometube/videos
+          path: /volume1/data/media/hometube/videos
       - name: temp
         nfs:
           server: nas.homelab
-          path: /volume1/data/hometube/temp
+          path: /volume1/data/media/hometube/temp
