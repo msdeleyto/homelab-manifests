@@ -38,10 +38,10 @@ lifecycleHooks: |
           --keycloak.url=http://localhost:8080/auth \
           --keycloak.user=${KEYCLOAK_ADMIN_USERNAME} \
           --keycloak.password=${KEYCLOAK_ADMIN_PASSWORD} \
-          --import.files.locations=/config \
           --keycloak.availability-check.enabled=true \
           --keycloak.availability-check.timeout=120s \
-          --keycloak.connect-timeout=120s
+          --keycloak.connect-timeout=120s \
+          --import.files.locations=/config/*.json
 
 extraVolumes: |
   - name: keycloak-config-cli
