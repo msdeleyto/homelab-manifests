@@ -38,7 +38,8 @@ lifecycleHooks: |
           --keycloak.url=http://localhost:8080/auth \
           --keycloak.user=${KC_BOOTSTRAP_ADMIN_USERNAME} \
           --keycloak.password=${KC_BOOTSTRAP_ADMIN_PASSWORD} \
-          --keycloak.connect-timeout=120s \
+          --keycloak.availability-check.enabled=true \
+          --keycloak.availability-check.timeout=120s \
           --import.files.locations=/config/*.json
 
 extraVolumes: |
