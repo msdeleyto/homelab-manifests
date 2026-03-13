@@ -36,7 +36,7 @@ spec:
         uri: https://keycloak.${INFRA_DOMAIN}/auth/realms/cluster/protocol/openid-connect/certs
       extractFrom:
         cookies:
-        - "AccessToken-c8595934"
+        - "AccessToken-*"
 ---
 apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: SecurityPolicy
@@ -75,3 +75,6 @@ spec:
       remoteJWKS:
         cacheDuration: 300s
         uri: https://keycloak.${INFRA_DOMAIN}/auth/realms/cluster/protocol/openid-connect/certs
+      extractFrom:
+        cookies:
+        - "AccessToken-*"
