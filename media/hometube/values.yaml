@@ -1,4 +1,4 @@
 deployment:
   image:
-    repository: ghcr.io/EgalitarianMonkey/hometube
+    repository: ghcr.io/egalitarianmonkey/hometube
     tag: "2.9"
