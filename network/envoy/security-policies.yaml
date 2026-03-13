@@ -9,7 +9,7 @@ spec:
     name: hubble-route
   oidc:
     provider:
-      issuer: "https://keycloak.${INFRA_DOMAIN}/auth/realms/cluster"
+      issuer: https://keycloak.${INFRA_DOMAIN}/auth/realms/cluster
     clientID: gateway
     clientSecret:
       name: gateway-client-secret
@@ -27,6 +27,12 @@ spec:
             valueType: "StringArray"
             values:
             - "admin"
+  jwt:
+    providers:
+    - name: keycloak
+      issuer: https://keycloak.${INFRA_DOMAIN}/auth/realms/cluster
+      remoteJWKS:
+        uri: https://keycloak.${INFRA_DOMAIN}/auth/realms/cluster/protocol/openid-connect/certs
 ---
 apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: SecurityPolicy
@@ -39,7 +45,7 @@ spec:
     name: jellyfin-route
   oidc:
     provider:
-      issuer: "https://keycloak.${INFRA_DOMAIN}/auth/realms/cluster"
+      issuer: https://keycloak.${INFRA_DOMAIN}/auth/realms/cluster
     clientID: gateway
     clientSecret:
       name: gateway-client-secret
@@ -58,3 +64,9 @@ spec:
             values:
             - "admin"
             - "media"
+  jwt:
+    providers:
+    - name: keycloak
+      issuer: https://keycloak.${INFRA_DOMAIN}/auth/realms/cluster
+      remoteJWKS:
+        uri: https://keycloak.${INFRA_DOMAIN}/auth/realms/cluster/protocol/openid-connect/certs
