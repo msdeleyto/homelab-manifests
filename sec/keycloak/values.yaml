@@ -40,7 +40,7 @@ lifecycleHooks: |
           --keycloak.password=${KEYCLOAK_ADMIN_PASSWORD} \
           --import.files.locations=/config \
           --keycloak.availability-check.enabled=true \
-          --keycloak.availability-check.timeout=120s
+          --keycloak.availability-check.timeout=120s &
 
 extraVolumes: |
   - name: keycloak-config-cli
