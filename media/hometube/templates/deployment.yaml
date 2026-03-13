@@ -35,6 +35,7 @@ spec:
         livenessProbe:
           httpGet:
             path: /_stcore/health
+            port: 8501
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
