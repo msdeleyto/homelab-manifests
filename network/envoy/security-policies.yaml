@@ -7,6 +7,9 @@ spec:
   - group: gateway.networking.k8s.io
     kind: HTTPRoute
     name: hubble-route
+  - group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: grafana-route
   oidc:
     provider:
       issuer: https://keycloak.${INFRA_DOMAIN}/auth/realms/cluster
