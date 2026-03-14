@@ -46,6 +46,10 @@ spec:
         env:
         - name: STREAMLIT_SERVER_HEADLESS
           value: "true"
+        - name: VIDEOS_FOLDER
+          value: /data/videos
+        - name: TMP_DOWNLOAD_FOLDER
+          value: /data/temp
         volumeMounts:
         - mountPath: /config
           name: config
