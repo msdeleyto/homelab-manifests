@@ -49,6 +49,9 @@ spec:
   - group: gateway.networking.k8s.io
     kind: HTTPRoute
     name: jellyfin-route
+  - group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: hometube-route
   oidc:
     provider:
       issuer: https://keycloak.${INFRA_DOMAIN}/auth/realms/cluster
