@@ -60,6 +60,7 @@ spec:
     clientID: gateway
     clientSecret:
       name: gateway-client-secret
+      namespace: network
     logoutPath: "/logout"
     cookieNames:
       accessToken: "keycloak-access-token"
