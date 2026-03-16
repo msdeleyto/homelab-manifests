@@ -3,6 +3,8 @@ grafana.ini:
     enabled: true
     header_name: keycloak-access-token
     jwk_set_url: https://keycloak.${INFRA_DOMAIN}/auth/realms/cluster/protocol/openid-connect/certs
+    username_claim: username
+    email_claim: email
     role_attribute_path: contains(roles[*], 'admin') && 'Admin'
 
 replicaCount: 1
