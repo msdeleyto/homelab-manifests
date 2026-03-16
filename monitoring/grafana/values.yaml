@@ -1,13 +1,18 @@
-grafana.ini:
-  auth.jwt:
-    enabled: true
-    header_name: keycloak-access-token
-    jwk_set_url: https://keycloak.${INFRA_DOMAIN}/auth/realms/cluster/protocol/openid-connect/certs
-    username_claim: username
-    email_claim: email
-    role_attribute_path: contains(roles[*], 'admin') && 'Admin'
-    allow_assign_grafana_admin: true
-    enable_login_token: true
+# grafana.ini:
+#   auth.generic_oauth:
+#     enabled: true
+#     name: keycloak
+#     header_name: keycloak-access-token
+#     client_id: gateway
+#     client_secret: {{ .Values.admin.existingSecret }}
+#     scopes: openid email profile offline_access roles
+#     email_attribute_path: email
+#     login_attribute_path: username
+#     name_attribute_path: username
+#     auth_url: https://keycloak.${INFRA_DOMAIN}/auth/realms/cluster/protocol/openid-connect/auth
+#     token_url: https://keycloak.${INFRA_DOMAIN}/auth/realms/cluster/protocol/openid-connect/token
+#     api_url: https://keycloak.${INFRA_DOMAIN}/auth/realms/cluster/protocol/openid-connect/userinfo
+#     role_attribute_path: contains(roles[*], 'admin') && 'Admin'
 
 replicaCount: 1
 
