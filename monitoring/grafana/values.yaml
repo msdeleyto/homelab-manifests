@@ -6,6 +6,7 @@ grafana.ini:
     username_claim: username
     email_claim: email
     role_attribute_path: contains(roles[*], 'admin') && 'Admin'
+    allow_assign_grafana_admin: true
 
 replicaCount: 1
 
