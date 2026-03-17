@@ -11,7 +11,7 @@ spec:
   oidc:
     provider:
       issuer: https://keycloak.${INFRA_DOMAIN}/auth/realms/cluster
-    clientID: gateway
+    clientID: oauth2-proxy
     clientSecret:
       name: gateway-client-secret
     logoutPath: "/logout"
@@ -57,7 +57,7 @@ spec:
   oidc:
     provider:
       issuer: https://keycloak.${INFRA_DOMAIN}/auth/realms/cluster
-    clientID: gateway
+    clientID: oauth2-proxy
     clientSecret:
       name: gateway-client-secret
     logoutPath: "/logout"
@@ -106,7 +106,7 @@ spec:
   oidc:
     provider:
       issuer: https://keycloak.${INFRA_DOMAIN}/auth/realms/cluster
-    clientID: gateway
+    clientID: oauth2-proxy
     clientSecret:
       name: gateway-client-secret
     logoutPath: "/logout"

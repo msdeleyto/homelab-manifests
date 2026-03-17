@@ -1,0 +1,17 @@
+proxyVarsAsSecrets: false
+
+config:
+  existingConfig: oauth2-proxy-config
+
+gatewayApi:
+  enabled: true
+  gatewayRef:
+    name: cluster-gateway
+    namespace: network
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /
+  hostnames:
+  - oauth2-proxy.${INFRA_DOMAIN}
