@@ -59,7 +59,7 @@ spec:
       backendRefs:
       - name: oauth2-proxy.sec.svc.cluster.local
         port: 44180
-      headersToBackend: ["oauth2_proxy"]
+      headersToBackend: ["_oauth2_proxy"]
 ---
 apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: SecurityPolicy
