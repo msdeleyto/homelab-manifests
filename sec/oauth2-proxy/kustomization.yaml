@@ -11,3 +11,4 @@ helmCharts:
 
 resources:
 - external-secrets.yaml
+- ref-grant.yaml
