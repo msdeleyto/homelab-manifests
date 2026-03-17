@@ -61,7 +61,7 @@ spec:
         kind: Service
         name: oauth2-proxy
         namespace: sec
-        port: 44180
+        port: 80
         weight: 1
       headersToBackend: ["_oauth2_proxy"]
       path: /oauth2/callback
