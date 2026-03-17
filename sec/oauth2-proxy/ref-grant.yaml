@@ -1,12 +1,12 @@
 apiVersion: gateway.networking.k8s.io/v1beta1
 kind: ReferenceGrant
 metadata:
-  name: allow-ext-auth-from-envoy
+  name: allow-ext-auth-from-monitoring
 spec:
   from:
   - group: gateway.envoyproxy.io
     kind: SecurityPolicy
-    namespace: network
+    namespace: monitoring
   to:
   - group: ""
     kind: Service
