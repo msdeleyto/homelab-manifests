@@ -44,22 +44,23 @@ spec:
 apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: SecurityPolicy
 metadata:
-  name: oauth2-proxy-security-policy
-  namespace: sec
+  name: monitoring-security-policy
+  namespace: monitoring
 spec:
   targetRefs:
   - group: gateway.networking.k8s.io
     kind: HTTPRoute
     name: grafana-route
-    namespace: monitoring
   - group: gateway.networking.k8s.io
     kind: HTTPRoute
     name: prometheus-route
-    namespace: monitoring
   extAuth:
     http:
       backendRefs:
-      - name: oauth2-proxy
+      - group: ""
+        kind: Service
+        name: oauth2-proxy
+        namespace: sec
         port: 44180
       headersToBackend: ["_oauth2_proxy"]
 ---
