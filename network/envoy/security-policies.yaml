@@ -64,7 +64,6 @@ spec:
         port: 80
         weight: 1
       headersToBackend: ["_oauth2_proxy"]
-      path: /oauth2/auth
 ---
 apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: SecurityPolicy
