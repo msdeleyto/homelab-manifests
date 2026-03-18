@@ -55,6 +55,13 @@ spec:
     kind: HTTPRoute
     name: prometheus-route
   extAuth:
+    headersToExtAuth:
+    - Cookie
+    - X-Auth-Request-User
+    - X-Auth-Request-Groups
+    - X-Auth-Request-Email
+    - X-Auth-Request-Preferred-Username
+    - X-Auth-Request-Redirect
     http:
       backendRefs:
       - group: ""
@@ -63,7 +70,8 @@ spec:
         namespace: sec
         port: 80
         weight: 1
-      headersToBackend: ["_oauth2_proxy"]
+      headersToBackend:
+      - _oauth2_proxy
 ---
 apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: SecurityPolicy
