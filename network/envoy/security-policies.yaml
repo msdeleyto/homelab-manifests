@@ -70,8 +70,6 @@ spec:
         namespace: sec
         port: 80
         weight: 1
-      headersToBackend:
-      - _oauth2_proxy
 ---
 apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: SecurityPolicy
