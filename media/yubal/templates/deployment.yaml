@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: yubal
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: yubal
+  template:
+    metadata:
+      labels:
+        app: yubal
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 100
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      automountServiceAccountToken: false
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: node-role.kubernetes.io/control-plane
+                operator: NotIn
+                values:
+                - "true"
+      containers:
+      - name: yubal
+        image: {{ .Values.deployment.image.repository }}:{{ .Values.deployment.image.tag }}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: [ALL]
+        ports:
+        - name: http
+          containerPort: 8000
+        env:
+        - name: YUBAL_TZ
+          value: "UTC"
+        volumeMounts:
+        - name: config
+          mountPath: /app/config
+        - name: data
+          mountPath: /app/data
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: yubal-config
+      - name: data
+        nfs:
+          server: nas.homelab
+          path: /volume1/data/media/music

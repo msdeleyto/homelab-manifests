@@ -1,0 +1,4 @@
+deployment:
+  image:
+    repository: ghcr.io/guillevc/yubal
+    tag: "0.7.2"
