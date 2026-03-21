@@ -39,6 +39,41 @@ spec:
         ports:
         - name: http
           containerPort: 8000
+        env:
+        - name: YUBAL_AUDIO_FORMAT
+          value: "opus"
+        - name: YUBAL_AUDIO_QUALITY
+          value: "0"
+        - name: YUBAL_SCHEDULER_ENABLED
+          value: "true"
+        - name: YUBAL_SCHEDULER_CRON
+          value: "0 0 * * *"
+        - name: YUBAL_FETCH_LYRICS
+          value: "false"
+        - name: YUBAL_DOWNLOAD_UGC
+          value: "false"
+        - name: YUBAL_REPLAYGAIN
+          value: "true"
+        - name: YUBAL_JOB_TIMEOUT_SECONDS
+          value: "1800"
+        - name: YUBAL_TZ
+          value: "UTC"
+        - name: YUBAL_HOST
+          value: "127.0.0.1"
+        - name: YUBAL_PORT
+          value: "8000"
+        - name: YUBAL_DATA
+          value: "/app/data"
+        - name: YUBAL_CONFIG
+          value: "/app/config"
+        - name: YUBAL_LOG_LEVEL
+          value: "INFO"
+        - name: YUBAL_ASCII_FILENAMES
+          value: "false"
+        - name: YUBAL_CORS_ORIGINS
+          value: "[*]"
+        - name: YUBAL_TEMP
+          value: "/tmp"
         volumeMounts:
         - name: config
           mountPath: /app/config
