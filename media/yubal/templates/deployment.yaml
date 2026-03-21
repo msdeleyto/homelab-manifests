@@ -71,7 +71,7 @@ spec:
         - name: YUBAL_ASCII_FILENAMES
           value: "false"
         - name: YUBAL_CORS_ORIGINS
-          value: "[*]"
+          value: "[\"*\"]"
         - name: YUBAL_TEMP
           value: "/tmp"
         volumeMounts:
