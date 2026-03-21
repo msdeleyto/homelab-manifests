@@ -42,8 +42,8 @@ spec:
         env:
         - name: YUBAL_TZ
           value: "UTC"
-        - name: YUBAL_LOG_LEVEL
-          value: "DEBUG"
+        - name: YUBAL_AUDIO_QUALITY
+          value: 0
         volumeMounts:
         - name: config
           mountPath: /app/config
