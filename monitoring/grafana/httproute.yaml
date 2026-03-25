@@ -2,7 +2,6 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
   name: grafana-route
-  namespace: monitoring
 spec:
   parentRefs:
   - group: gateway.networking.k8s.io
@@ -23,3 +22,29 @@ spec:
     - path:
         type: PathPrefix
         value: /
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: grafana-auth-route
+spec:
+  parentRefs:
+  - group: gateway.networking.k8s.io
+    kind: Gateway
+    name: cluster-gateway
+    namespace: network
+    sectionName: https
+  hostnames:
+  - "grafana.${INFRA_DOMAIN}"
+  rules:
+  - backendRefs:
+    - group: ''
+      kind: Service
+      name: oauth2-proxy
+      namespace: sec
+      port: 80
+      weight: 1
+    matches:
+    - path:
+        type: PathPrefix
+        value: /oauth2
