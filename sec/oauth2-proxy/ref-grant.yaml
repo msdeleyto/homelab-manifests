@@ -4,6 +4,9 @@ metadata:
   name: allow-ext-auth-from-other-namespaces
 spec:
   from:
+  - group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    namespace: network
   - group: gateway.envoyproxy.io
     kind: SecurityPolicy
     namespace: devops-tools
@@ -13,14 +16,14 @@ spec:
   - group: gateway.envoyproxy.io
     kind: SecurityPolicy
     namespace: media
-  - group: gateway.networking.k8s.io
-    kind: HTTPRoute
+  - group: gateway.envoyproxy.io
+    kind: SecurityPolicy
     namespace: monitoring
-  - group: gateway.networking.k8s.io
-    kind: HTTPRoute
+  - group: gateway.envoyproxy.io
+    kind: SecurityPolicy
     namespace: network
-  - group: gateway.networking.k8s.io
-    kind: HTTPRoute
+  - group: gateway.envoyproxy.io
+    kind: SecurityPolicy
     namespace: p2p
   to:
   - group: ""
