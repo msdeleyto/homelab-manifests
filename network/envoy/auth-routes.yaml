@@ -10,7 +10,18 @@ spec:
     namespace: network
     sectionName: https
   hostnames:
-  - "*.${INFRA_DOMAIN}"
+  - "cd.${INFRA_DOMAIN}"
+  - "longhorn.${INFRA_DOMAIN}"
+  - "cwa.${INFRA_DOMAIN}"
+  - "hometube.${INFRA_DOMAIN}"
+  - "jellyfin.${INFRA_DOMAIN}"
+  - "yubal.${INFRA_DOMAIN}"
+  - "grafana.${INFRA_DOMAIN}"
+  - "prometheus.${INFRA_DOMAIN}"
+  - "hubble.${INFRA_DOMAIN}"
+  - "jackett.${INFRA_DOMAIN}"
+  - "qb.${INFRA_DOMAIN}"
+  - "slskd.${INFRA_DOMAIN}"
   rules:
   - backendRefs:
     - group: ''
