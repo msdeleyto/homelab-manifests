@@ -18,3 +18,4 @@ resources:
 - envoyproxy.yaml
 - gateway.yaml
 - security-policies.yaml
+- auth-routes.yaml
