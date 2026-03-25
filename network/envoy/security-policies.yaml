@@ -23,38 +23,27 @@ spec:
   - group: gateway.networking.k8s.io
     kind: HTTPRoute
     name: hubble-route
-  oidc:
-    provider:
-      issuer: https://keycloak.${INFRA_DOMAIN}/auth/realms/cluster
-    clientID: oauth2-proxy
-    clientSecret:
-      name: gateway-client-secret
-    logoutPath: "/logout"
-    cookieNames:
-      accessToken: "keycloak-access-token"
-  authorization:
-    defaultAction: Deny
-    rules:
-    - name: "allow-admin-role"
-      action: Allow
-      principal:
-        jwt:
-          provider: keycloak
-          claims:
-          - name: roles
-            valueType: "StringArray"
-            values:
-            - "admin"
-  jwt:
-    providers:
-    - name: keycloak
-      issuer: https://keycloak.${INFRA_DOMAIN}/auth/realms/cluster
-      remoteJWKS:
-        cacheDuration: 300s
-        uri: https://keycloak.${INFRA_DOMAIN}/auth/realms/cluster/protocol/openid-connect/certs
-      extractFrom:
-        cookies:
-        - "keycloak-access-token"
+  extAuth:
+    headersToExtAuth:
+    - Cookie
+    - X-Auth-Request-User
+    - X-Auth-Request-Groups
+    - X-Auth-Request-Email
+    - X-Auth-Request-Preferred-Username
+    - X-Forwarded-Proto
+    - X-Forwarded-Host
+    - X-Forwarded-Uri
+    - X-Auth-Request-Access-Token
+    - X-Auth-Request-Redirect
+    http:
+      backendRefs:
+      - group: ""
+        kind: Service
+        name: oauth2-proxy
+        namespace: sec
+        port: 80
+        weight: 1
+      path: /oauth2/auth
 ---
 apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: SecurityPolicy
@@ -104,36 +93,24 @@ spec:
   - group: gateway.networking.k8s.io
     kind: HTTPRoute
     name: hometube-route
-  oidc:
-    provider:
-      issuer: https://keycloak.${INFRA_DOMAIN}/auth/realms/cluster
-    clientID: oauth2-proxy
-    clientSecret:
-      name: gateway-client-secret
-    logoutPath: "/logout"
-    cookieNames:
-      accessToken: "keycloak-access-token"
-  authorization:
-    defaultAction: Deny
-    rules:
-    - name: "allow-admin-and-media-roles"
-      action: Allow
-      principal:
-        jwt:
-          provider: keycloak
-          claims:
-          - name: roles
-            valueType: "StringArray"
-            values:
-            - "admin"
-            - "media"
-  jwt:
-    providers:
-    - name: keycloak
-      issuer: https://keycloak.${INFRA_DOMAIN}/auth/realms/cluster
-      remoteJWKS:
-        cacheDuration: 300s
-        uri: https://keycloak.${INFRA_DOMAIN}/auth/realms/cluster/protocol/openid-connect/certs
-      extractFrom:
-        cookies:
-        - "keycloak-access-token"
+  extAuth:
+    headersToExtAuth:
+    - Cookie
+    - X-Auth-Request-User
+    - X-Auth-Request-Groups
+    - X-Auth-Request-Email
+    - X-Auth-Request-Preferred-Username
+    - X-Forwarded-Proto
+    - X-Forwarded-Host
+    - X-Forwarded-Uri
+    - X-Auth-Request-Access-Token
+    - X-Auth-Request-Redirect
+    http:
+      backendRefs:
+      - group: ""
+        kind: Service
+        name: oauth2-proxy
+        namespace: sec
+        port: 80
+        weight: 1
+      path: /oauth2/auth
