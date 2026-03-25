@@ -42,6 +42,8 @@ spec:
         - name: http
           containerPort: 8000
         env:
+        - name: YUBAL_HOST
+          value: "0.0.0.0"
         - name: YUBAL_AUDIO_FORMAT
           value: "opus"
         - name: YUBAL_AUDIO_QUALITY
@@ -74,6 +76,8 @@ spec:
           value: "false"
         - name: YUBAL_TEMP
           value: "/tmp"
+        - name: YUBAL_CORS_ORIGINS
+          value: "[\"*.${INFRA_DOMAIN}\"]"
         volumeMounts:
         - name: config
           mountPath: /app/config
