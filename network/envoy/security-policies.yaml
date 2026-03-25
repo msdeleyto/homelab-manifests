@@ -16,13 +16,86 @@ spec:
 apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: SecurityPolicy
 metadata:
-  name: network-security-policy
-  namespace: network
+  name: devops-tools-security-policy
+  namespace: devops-tools
 spec:
   targetRefs:
   - group: gateway.networking.k8s.io
     kind: HTTPRoute
-    name: hubble-route
+    name: argocd-route
+  extAuth:
+    headersToExtAuth:
+    - Cookie
+    - X-Auth-Request-User
+    - X-Auth-Request-Groups
+    - X-Auth-Request-Email
+    - X-Auth-Request-Preferred-Username
+    - X-Forwarded-Proto
+    - X-Forwarded-Host
+    - X-Forwarded-Uri
+    - X-Auth-Request-Access-Token
+    - X-Auth-Request-Redirect
+    http:
+      backendRefs:
+      - group: ""
+        kind: Service
+        name: oauth2-proxy
+        namespace: sec
+        port: 80
+        weight: 1
+      path: /oauth2/auth
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: longhorn-security-policy
+  namespace: longhorn
+spec:
+  targetRefs:
+  - group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: longhorn-route
+  extAuth:
+    headersToExtAuth:
+    - Cookie
+    - X-Auth-Request-User
+    - X-Auth-Request-Groups
+    - X-Auth-Request-Email
+    - X-Auth-Request-Preferred-Username
+    - X-Forwarded-Proto
+    - X-Forwarded-Host
+    - X-Forwarded-Uri
+    - X-Auth-Request-Access-Token
+    - X-Auth-Request-Redirect
+    http:
+      backendRefs:
+      - group: ""
+        kind: Service
+        name: oauth2-proxy
+        namespace: sec
+        port: 80
+        weight: 1
+      path: /oauth2/auth
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: media-security-policy
+  namespace: media
+spec:
+  targetRefs:
+  - group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: cwa-route
+  - group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: hometube-route
+  - group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: jellyfin-route
+  - group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: yubal-route
   extAuth:
     headersToExtAuth:
     - Cookie
@@ -83,16 +156,13 @@ spec:
 apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: SecurityPolicy
 metadata:
-  name: media-security-policy
-  namespace: media
+  name: network-security-policy
+  namespace: network
 spec:
   targetRefs:
   - group: gateway.networking.k8s.io
     kind: HTTPRoute
-    name: cwa-route
-  - group: gateway.networking.k8s.io
-    kind: HTTPRoute
-    name: hometube-route
+    name: hubble-route
   extAuth:
     headersToExtAuth:
     - Cookie
@@ -104,6 +174,35 @@ spec:
     - X-Forwarded-Host
     - X-Forwarded-Uri
     - X-Auth-Request-Access-Token
+    - X-Auth-Request-Redirect
+    http:
+      backendRefs:
+      - group: ""
+        kind: Service
+        name: oauth2-proxy
+        namespace: sec
+        port: 80
+        weight: 1
+      path: /oauth2/auth
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: p2p-security-policy
+  namespace: p2p
+spec:
+  targetRefs:
+  - group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: jackett-route
+  - group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: qb-route
+  - group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: slskd-route
+  extAuth:
+    headersToExtAuth:
     - X-Auth-Request-Redirect
     http:
       backendRefs:
