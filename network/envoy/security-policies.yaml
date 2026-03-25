@@ -1,4 +1,19 @@
 apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: ClientTrafficPolicy
+metadata:
+  name: oauth2-proxy-traffic-policy
+spec:
+  headers:
+    earlyRequestHeaders:
+      set:
+      - name: X-Auth-Request-Redirect
+        value: https://%REQ(Host)%%REQ(:PATH)%
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: Gateway
+    name: cluster-gateway
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: SecurityPolicy
 metadata:
   name: network-security-policy
@@ -65,6 +80,7 @@ spec:
     - X-Forwarded-Host
     - X-Forwarded-Uri
     - X-Auth-Request-Access-Token
+    - X-Auth-Request-Redirect
     http:
       backendRefs:
       - group: ""
