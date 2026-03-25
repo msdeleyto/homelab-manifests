@@ -206,7 +206,6 @@ spec:
     - Cookie
     - X-Forwarded-Proto
     - X-Forwarded-Host
-    - X-Forwarded-Uri
     - X-Auth-Request-Redirect
     http:
       backendRefs:
