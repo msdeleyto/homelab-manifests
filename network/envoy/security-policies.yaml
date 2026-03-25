@@ -57,6 +57,8 @@ spec:
   extAuth:
     headersToExtAuth:
     - Cookie
+    - Host
+    - X-Forwarded-Proto
     - X-Auth-Request-User
     - X-Auth-Request-Groups
     - X-Auth-Request-Email
