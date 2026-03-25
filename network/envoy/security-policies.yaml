@@ -204,7 +204,6 @@ spec:
   extAuth:
     headersToExtAuth:
     - Cookie
-    - X-Forwarded-Proto
     - X-Auth-Request-Redirect
     http:
       backendRefs:
