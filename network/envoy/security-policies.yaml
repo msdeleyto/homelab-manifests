@@ -49,7 +49,7 @@ apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: SecurityPolicy
 metadata:
   name: longhorn-security-policy
-  namespace: longhorn
+  namespace: longhorn-system
 spec:
   targetRefs:
   - group: gateway.networking.k8s.io
