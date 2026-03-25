@@ -56,14 +56,10 @@ spec:
     name: prometheus-route
   extAuth:
     headersToExtAuth:
-    - Cookie
     - Host
     - X-Forwarded-Proto
-    - X-Auth-Request-User
-    - X-Auth-Request-Groups
-    - X-Auth-Request-Email
-    - X-Auth-Request-Preferred-Username
-    - X-Auth-Request-Redirect
+    - X-Forwarded-Host
+    - X-Forwarded-Uri
     http:
       backendRefs:
       - group: ""
