@@ -25,6 +25,6 @@ spec:
     filters:
     - type: RequestHeaderModifier
       requestHeaderModifier:
-        add:
+        set:
         - name: Host
           value: localhost
