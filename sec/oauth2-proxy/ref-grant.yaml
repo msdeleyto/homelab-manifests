@@ -7,7 +7,7 @@ spec:
   - group: gateway.envoyproxy.io
     kind: SecurityPolicy
     namespace: monitoring
-  - group: gateway.envoyproxy.io
+  - group: gateway.networking.k8s.io
     kind: HTTPRoute
     namespace: monitoring
   to:
