@@ -203,10 +203,10 @@ spec:
     name: slskd-route
   extAuth:
     headersToExtAuth:
+    - Cookie
     - X-Forwarded-Proto
     - X-Forwarded-Host
     - X-Forwarded-Uri
-    - X-Auth-Request-Access-Token
     - X-Auth-Request-Redirect
     http:
       backendRefs:
