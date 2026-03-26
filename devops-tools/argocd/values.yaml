@@ -32,7 +32,7 @@ configs:
             command: [sh, -c, find . -name kustomization.yaml]
   cm:
     create: true
-    users.anonymous.enabled: "false"
+    # users.anonymous.enabled: "false"
     # auth.proxy.enabled: "true"
     # auth.proxy.user.header: "X-Auth-Request-Email"
     resource.customizations: |
