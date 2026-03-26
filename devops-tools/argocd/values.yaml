@@ -1,7 +1,6 @@
 configs:
   params:
     server.insecure: true
-    server.rootpath: ""
   clusterCredentials:
     homelab:
       server: https://kubernetes.default.svc
@@ -32,7 +31,16 @@ configs:
             command: [sh, -c, find . -name kustomization.yaml]
 
   cm:
-    users.anonymous.enabled: "false"
+    dex.config: |
+      connectors:
+        - type: authproxy
+          id: oauth2-proxy
+          name: OAuth2-Proxy
+          config:
+            userHeader: X-Forwarded-User
+            groupHeader: X-Forwarded-Group
+            staticGroups:
+              - default
     resource.customizations: |
       argoproj.io/Application:
         health.lua: |
