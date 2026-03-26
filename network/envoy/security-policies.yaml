@@ -26,13 +26,6 @@ spec:
   extAuth:
     headersToExtAuth:
     - Cookie
-    - X-Auth-Request-User
-    - X-Auth-Request-Groups
-    - X-Auth-Request-Email
-    - X-Forwarded-Proto
-    - X-Forwarded-Host
-    - X-Forwarded-Uri
-    - X-Auth-Request-Access-Token
     - X-Auth-Request-Redirect
     http:
       backendRefs:
@@ -43,6 +36,9 @@ spec:
         port: 80
         weight: 1
       path: /oauth2/auth
+      headersToBackend:
+      - "X-Forwarded-User"
+      - "X-Forwarded-Groups"
 ---
 apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: SecurityPolicy
