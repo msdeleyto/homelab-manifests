@@ -1,7 +1,7 @@
 configs:
   params:
     server.insecure: true
-    server.rootpath: ""
+    # server.rootpath: ""
   clusterCredentials:
     homelab:
       server: https://kubernetes.default.svc
@@ -33,8 +33,8 @@ configs:
   cm:
     create: true
     users.anonymous.enabled: "false"
-    auth.proxy.enabled: "true"
-    auth.proxy.user.header: "X-Auth-Request-Email"
+    # auth.proxy.enabled: "true"
+    # auth.proxy.user.header: "X-Auth-Request-Email"
     resource.customizations: |
       argoproj.io/Application:
         health.lua: |
@@ -58,10 +58,10 @@ configs:
       - .spec.data[].remoteRef.conversionStrategy
       - .spec.data[].remoteRef.decodingStrategy
       - .spec.data[].remoteRef.metadataPolicy
-  rbac:
-    create: true
-    policy.csv: |
-      g, admin, role:admin
+  # rbac:
+  #   create: true
+  #   policy.csv: |
+  #     g, admin, role:admin
 
 dex:
   enabled: false
