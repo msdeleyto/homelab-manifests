@@ -1,6 +1,7 @@
 configs:
   params:
     server.insecure: true
+    server.rootpath: ""
   clusterCredentials:
     homelab:
       server: https://kubernetes.default.svc
@@ -29,18 +30,10 @@ configs:
         discover:
           find:
             command: [sh, -c, find . -name kustomization.yaml]
-
   cm:
-    dex.config: |
-      connectors:
-        - type: authproxy
-          id: oauth2-proxy
-          name: OAuth2-Proxy
-          config:
-            userHeader: X-Forwarded-User
-            groupHeader: X-Forwarded-Group
-            staticGroups:
-              - default
+    create: true
+    users.anonymous.enabled: "false"
+    auth.proxy.enabled: "true"
     resource.customizations: |
       argoproj.io/Application:
         health.lua: |
@@ -64,6 +57,9 @@ configs:
       - .spec.data[].remoteRef.conversionStrategy
       - .spec.data[].remoteRef.decodingStrategy
       - .spec.data[].remoteRef.metadataPolicy
+  rbac:
+    create: true
+    policy.default: role:admin
 
 dex:
   enabled: false
