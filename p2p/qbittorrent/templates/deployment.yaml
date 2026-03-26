@@ -61,11 +61,13 @@ spec:
         env:
         - name: QBT_WEBUI_PORT
           value: "8080"
-        - name: QBT_VERSION
-          value: "latest"
-        - name: QUARANTINE_DIR
-          value: "/quarantine"
         volumeMounts:
+        - name: qbittorrent-config
+          mountPath: /config/qBittorrent/config/qBittorrent.conf
+          subPath: qBittorrent.conf
+        - name: qbittorrent-ssmtp-config
+          mountPath: /etc/ssmtp/ssmtp.conf
+          subPath: ssmtp.conf
         - name: downloads
           mountPath: /downloads
         - name: logs
@@ -73,8 +75,6 @@ spec:
         - name: jackett-config
           mountPath: /config/jackett
           readOnly: true
-        - name: qbittorrent-config
-          mountPath: /config/qBittorrent
         resources:
           requests:
             memory: "1Gi"
@@ -126,8 +126,11 @@ spec:
           server: nas.homelab
           path: /volume1/prod/logs/qbittorrent
       - name: qbittorrent-config
-        persistentVolumeClaim:
-          claimName: qbittorrent-config
+        configMap:
+          name: qbittorrent-config
+      - name: qbittorrent-ssmtp-config
+        configMap:
+          name: qbittorrent-ssmtp-config
       - name: jackett-config
         persistentVolumeClaim:
           claimName: jackett-config
