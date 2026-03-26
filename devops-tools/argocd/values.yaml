@@ -35,7 +35,6 @@ configs:
     users.anonymous.enabled: "false"
     auth.proxy.enabled: "true"
     auth.proxy.user.header: "X-Auth-Request-Email"
-    auth.proxy.group.header: "X-Auth-Request-Groups"
     resource.customizations: |
       argoproj.io/Application:
         health.lua: |
