@@ -26,6 +26,9 @@ spec:
   extAuth:
     headersToExtAuth:
     - Cookie
+    - X-Auth-Request-User
+    - X-Auth-Request-Groups
+    - X-Auth-Request-Email
     - X-Auth-Request-Redirect
     http:
       backendRefs:
