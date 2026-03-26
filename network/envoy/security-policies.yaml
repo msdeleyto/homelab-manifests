@@ -38,6 +38,7 @@ spec:
       path: /oauth2/auth
       headersToBackend:
       - X-Auth-Request-Email
+      - Authorization
 ---
 apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: SecurityPolicy
