@@ -37,8 +37,6 @@ spec:
         weight: 1
       path: /oauth2/auth
       headersToBackend:
-      - X-Auth-Request-User
-      - X-Auth-Request-Preferred-Username
       - X-Auth-Request-Groups
       - X-Auth-Request-Email
 ---

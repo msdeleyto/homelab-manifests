@@ -34,7 +34,7 @@ configs:
     create: true
     users.anonymous.enabled: "false"
     auth.proxy.enabled: "true"
-    auth.proxy.user.header: "X-Auth-Request-User"
+    auth.proxy.user.header: "X-Auth-Request-Email"
     auth.proxy.group.header: "X-Auth-Request-Groups"
     resource.customizations: |
       argoproj.io/Application:
@@ -61,7 +61,8 @@ configs:
       - .spec.data[].remoteRef.metadataPolicy
   rbac:
     create: true
-    policy.default: role:admin
+    policy.csv: |
+      g, admin, role:admin
 
 dex:
   enabled: false
