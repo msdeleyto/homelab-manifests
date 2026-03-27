@@ -1,18 +1,9 @@
-# grafana.ini:
-#   auth.generic_oauth:
-#     enabled: true
-#     name: keycloak
-#     header_name: keycloak-access-token
-#     client_id: gateway
-#     client_secret: {{ .Values.admin.existingSecret }}
-#     scopes: openid email profile offline_access roles
-#     email_attribute_path: email
-#     login_attribute_path: username
-#     name_attribute_path: username
-#     auth_url: https://keycloak.${INFRA_DOMAIN}/auth/realms/cluster/protocol/openid-connect/auth
-#     token_url: https://keycloak.${INFRA_DOMAIN}/auth/realms/cluster/protocol/openid-connect/token
-#     api_url: https://keycloak.${INFRA_DOMAIN}/auth/realms/cluster/protocol/openid-connect/userinfo
-#     role_attribute_path: contains(roles[*], 'admin') && 'Admin'
+grafana.ini:
+  auth.proxy:
+    enabled: true
+    header_name: X-Auth-Request-Email
+    header_property: username
+    auto_sign_up: false
 
 replicaCount: 1
 
