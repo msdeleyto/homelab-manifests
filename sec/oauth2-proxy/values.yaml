@@ -8,3 +8,4 @@ extraArgs:
   cookie-csrf-per-request: true
   cookie-csrf-per-request-limit: 300
   cookie-secure: true
+  whitelist-domain: "*.${INFRA_DOMAIN}"
