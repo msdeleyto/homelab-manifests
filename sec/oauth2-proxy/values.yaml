@@ -4,3 +4,6 @@ alphaConfig:
 
 extraArgs:
   redirect-url: "https://oauth2-proxy.${INFRA_DOMAIN}/oauth2/callback"
+  cookie-csrf-per-request: true
+  cookie-csrf-per-request-limit: 300
+  cookie-secure: true
