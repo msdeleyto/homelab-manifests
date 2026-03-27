@@ -1,7 +1,7 @@
 grafana.ini:
   auth.proxy:
     enabled: true
-    header_name: X-Auth-Request-Email
+    header_name: X-Auth-Request-User
     header_property: username
     auto_sign_up: false
 
