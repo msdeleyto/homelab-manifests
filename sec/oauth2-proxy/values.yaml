@@ -6,7 +6,9 @@ extraArgs:
   reverse-proxy: true
   redirect-url: "https://oauth2-proxy.${INFRA_DOMAIN}/oauth2/callback"
   cookie-csrf-per-request: true
-  cookie-csrf-per-request-limit: 300
+  cookie-csrf-expire: "5m"
   cookie-name: "_oauth2_proxy"
   cookie-secure: true
-  whitelist-domain: "*.${INFRA_DOMAIN}"
+  cookie-domain: ".${INFRA_DOMAIN}"
+  cookie-httponly: false
+  whitelist-domain: ".${INFRA_DOMAIN}"
