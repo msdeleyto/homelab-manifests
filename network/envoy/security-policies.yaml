@@ -38,6 +38,7 @@ spec:
       path: /oauth2/auth
       headersToBackend:
       - X-Auth-Request-User
+      - X-Auth-Request-Email
       - X-Auth-Request-Roles
 ---
 apiVersion: gateway.envoyproxy.io/v1alpha1
