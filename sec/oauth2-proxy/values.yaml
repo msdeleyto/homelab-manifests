@@ -12,3 +12,7 @@ extraArgs:
   cookie-domain: ".${INFRA_DOMAIN}"
   cookie-httponly: false
   whitelist-domain: ".${INFRA_DOMAIN}"
+
+envFrom:
+- secretRef:
+    name: oauth2-proxy-cookie-secret
