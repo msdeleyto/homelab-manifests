@@ -12,4 +12,3 @@ extraArgs:
   cookie-domain: ".${INFRA_DOMAIN}"
   cookie-httponly: false
   whitelist-domain: ".${INFRA_DOMAIN}"
-  set-xauthrequest: true
