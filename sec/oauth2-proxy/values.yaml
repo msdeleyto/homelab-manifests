@@ -1,4 +1,3 @@
-proxyVarsAsSecrets: false
-
-config:
+alphaConfig:
+  enabled: true
   existingConfig: oauth2-proxy-config
