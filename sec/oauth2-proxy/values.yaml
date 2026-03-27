@@ -8,7 +8,9 @@ extraArgs:
   cookie-csrf-per-request: true
   cookie-csrf-expire: "5m"
   cookie-name: "_oauth2_proxy"
+  cookie-secure: true
   cookie-domain: ".${INFRA_DOMAIN}"
+  cookie-httponly: false
   whitelist-domain: ".${INFRA_DOMAIN}"
 
 envFrom:
