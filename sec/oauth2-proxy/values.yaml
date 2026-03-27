@@ -3,4 +3,4 @@ alphaConfig:
   existingConfig: oauth2-proxy-config
 
 extraArgs:
-- --redirect-url="https://oauth2-proxy.${INFRA_DOMAIN}/oauth2/callback"
+  redirect-url: "https://oauth2-proxy.${INFRA_DOMAIN}/oauth2/callback"
