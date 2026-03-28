@@ -1,7 +1,7 @@
 configs:
   params:
     server.insecure: true
-    server.rootpath: ""
+#    server.rootpath: ""
   clusterCredentials:
     homelab:
       server: https://kubernetes.default.svc
@@ -32,9 +32,18 @@ configs:
             command: [sh, -c, find . -name kustomization.yaml]
   cm:
     create: true
-    users.anonymous.enabled: "false"
-    auth.proxy.enabled: "true"
-    auth.proxy.user.header: "X-Auth-Request-User"
+#    users.anonymous.enabled: "false"
+#    auth.proxy.enabled: "true"
+#    auth.proxy.user.header: "X-Auth-Request-User"
+    dex.config: |
+      connectors:
+      - type: authproxy
+        id: oauth2-proxy
+        name: OAuth2-Proxy
+        config:
+          userHeader: X-Auth-Request-User
+          staticGroups:
+          - default
     resource.customizations: |
       argoproj.io/Application:
         health.lua: |
@@ -64,7 +73,7 @@ configs:
       g, admin, role:admin
 
 dex:
-  enabled: false
+  enabled: true
 
 redis:
   enabled: true
