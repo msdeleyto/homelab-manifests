@@ -1,7 +1,6 @@
 configs:
   params:
     server.insecure: true
-#    server.rootpath: ""
   clusterCredentials:
     homelab:
       server: https://kubernetes.default.svc
@@ -32,9 +31,6 @@ configs:
             command: [sh, -c, find . -name kustomization.yaml]
   cm:
     create: true
-#    users.anonymous.enabled: "false"
-#    auth.proxy.enabled: "true"
-#    auth.proxy.user.header: "X-Auth-Request-User"
     dex.config: |
       connectors:
       - type: authproxy
