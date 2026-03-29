@@ -87,4 +87,4 @@ spec:
       - name: books
         nfs:
           server: nas.homelab
-          path: /volume1/data/media/books
+          path: /volume1/data/media/books/new
