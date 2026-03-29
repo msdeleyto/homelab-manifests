@@ -77,9 +77,6 @@ spec:
     name: hometube-route
   - group: gateway.networking.k8s.io
     kind: HTTPRoute
-    name: shelfmark-route
-  - group: gateway.networking.k8s.io
-    kind: HTTPRoute
     name: yubal-route
   extAuth:
     headersToExtAuth:
@@ -162,6 +159,9 @@ spec:
   - group: gateway.networking.k8s.io
     kind: HTTPRoute
     name: qb-route
+  - group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: shelfmark-route
   - group: gateway.networking.k8s.io
     kind: HTTPRoute
     name: slskd-route

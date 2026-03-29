@@ -2,3 +2,8 @@ deployment:
   image:
     repository: ghcr.io/calibrain/shelfmark
     tag: "v1.2.1"
+
+vpn:
+  image:
+    repository: qmcgaw/gluetun
+    tag: v3.41.1
