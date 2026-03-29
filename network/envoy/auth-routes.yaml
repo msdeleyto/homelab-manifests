@@ -12,9 +12,7 @@ spec:
   hostnames:
   - "cd.${INFRA_DOMAIN}"
   - "longhorn.${INFRA_DOMAIN}"
-  - "cwa.${INFRA_DOMAIN}"
   - "hometube.${INFRA_DOMAIN}"
-  - "jellyfin.${INFRA_DOMAIN}"
   - "yubal.${INFRA_DOMAIN}"
   - "grafana.${INFRA_DOMAIN}"
   - "prometheus.${INFRA_DOMAIN}"

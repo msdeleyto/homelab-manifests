@@ -74,13 +74,7 @@ spec:
   targetRefs:
   - group: gateway.networking.k8s.io
     kind: HTTPRoute
-    name: cwa-route
-  - group: gateway.networking.k8s.io
-    kind: HTTPRoute
     name: hometube-route
-  - group: gateway.networking.k8s.io
-    kind: HTTPRoute
-    name: jellyfin-route
   - group: gateway.networking.k8s.io
     kind: HTTPRoute
     name: yubal-route
