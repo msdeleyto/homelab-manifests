@@ -44,6 +44,10 @@ spec:
         - name: http
           containerPort: 8084
         env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
         - name: DOCKERMODE
           value: "true"
         volumeMounts:
