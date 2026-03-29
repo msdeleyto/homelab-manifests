@@ -22,42 +22,42 @@ spec:
                 operator: NotIn
                 values:
                 - "true"
-      initContainers:
-      - name: vpn
-        image: {{ .Values.vpn.image.repository }}:{{ .Values.vpn.image.tag }}
-        restartPolicy: Always
-        securityContext:
-          capabilities:
-            add:
-            - NET_ADMIN
-        envFrom:
-        - secretRef:
-            name: shelfmark-vpn-secret
-        env:
-        - name: VPN_SERVICE_PROVIDER
-          value: nordvpn
-        - name: VPN_TYPE
-          value: wireguard
-        - name: DNS_KEEP_NAMESERVER
-          value: "on"
-        - name: DNS_SERVER
-          value: "off"
-        - name: FIREWALL_OUTBOUND_SUBNETS
-          value: "10.0.0.0/16,10.43.0.0/16"
-        - name: FIREWALL_INPUT_PORTS
-          value: "8080"
-      - name: verify-vpn
-        image: busybox
-        command:
-        - sh
-        - -c
-        - |
-          sleep 30
-          while ! ping -c 1 8.8.8.8; do
-            echo "Ping failed, retrying in 5"
-            sleep 5
-          done
-          echo "ping succesfull, exiting"
+      #initContainers:
+      #- name: vpn
+      #  image: {{ .Values.vpn.image.repository }}:{{ .Values.vpn.image.tag }}
+      #  restartPolicy: Always
+      #  securityContext:
+      #    capabilities:
+      #      add:
+      #      - NET_ADMIN
+      #  envFrom:
+      #  - secretRef:
+      #      name: shelfmark-vpn-secret
+      #  env:
+      #  - name: VPN_SERVICE_PROVIDER
+      #    value: nordvpn
+      #  - name: VPN_TYPE
+      #    value: wireguard
+      #  - name: DNS_KEEP_NAMESERVER
+      #    value: "on"
+      #  - name: DNS_SERVER
+      #    value: "off"
+      #  - name: FIREWALL_OUTBOUND_SUBNETS
+      #    value: "10.0.0.0/16,10.43.0.0/16"
+      #  - name: FIREWALL_INPUT_PORTS
+      #    value: "8080"
+      #- name: verify-vpn
+      #  image: busybox
+      #  command:
+      #  - sh
+      #  - -c
+      #  - |
+      #    sleep 30
+      #    while ! ping -c 1 8.8.8.8; do
+      #      echo "Ping failed, retrying in 5"
+      #      sleep 5
+      #    done
+      #    echo "ping succesfull, exiting"
       containers:
       - name: shelfmark
         image: {{ .Values.deployment.image.repository }}:{{ .Values.deployment.image.tag }}
