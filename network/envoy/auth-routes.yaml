@@ -13,6 +13,7 @@ spec:
   - "cd.${INFRA_DOMAIN}"
   - "longhorn.${INFRA_DOMAIN}"
   - "hometube.${INFRA_DOMAIN}"
+  - "shelfmark.${INFRA_DOMAIN}"
   - "yubal.${INFRA_DOMAIN}"
   - "grafana.${INFRA_DOMAIN}"
   - "prometheus.${INFRA_DOMAIN}"
