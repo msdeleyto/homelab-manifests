@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shelfmark
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shelfmark
+  template:
+    metadata:
+      labels:
+        app: shelfmark
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 100
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      automountServiceAccountToken: false
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: node-role.kubernetes.io/control-plane
+                operator: NotIn
+                values:
+                - "true"
+      containers:
+      - name: shelfmark
+        image: {{ .Values.deployment.image.repository }}:{{ .Values.deployment.image.tag }}
+        livenessProbe:
+          httpGet:
+            path: /api/health
+            port: 8084
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: [ALL]
+        ports:
+        - name: http
+          containerPort: 8084        
+        volumeMounts:
+        - name: config
+          mountPath: /config
+        - name: books
+          mountPath: /books
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: shelfmark-config
+      - name: books
+        nfs:
+          server: nas.homelab
+          path: /volume1/data/media/books

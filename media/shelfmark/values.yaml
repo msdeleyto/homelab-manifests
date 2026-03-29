@@ -1,0 +1,4 @@
+deployment:
+  image:
+    repository: ghcr.io/calibrain/shelfmark
+    tag: "v1.2.1"
