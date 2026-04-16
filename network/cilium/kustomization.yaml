@@ -4,7 +4,7 @@ kind: Kustomization
 helmCharts:
 - name: cilium
   repo: oci://quay.io/cilium/charts
-  version: 1.19.2
+  version: 1.19.3
   releaseName: cilium
   namespace: network
   valuesFile: values.yaml
