@@ -27,7 +27,7 @@ helmCharts:
 
 - name: cni
   repo: https://istio-release.storage.googleapis.com/charts
-  version: 1.29.1
+  version: 1.29.2
   releaseName: istio-cni
   valuesInline:
     profile: ambient
