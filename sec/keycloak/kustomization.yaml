@@ -12,7 +12,7 @@ helmCharts:
 
 - name: keycloakx
   repo: oci://ghcr.io/codecentric/helm-charts
-  version: 7.1.9
+  version: 7.1.11
   releaseName: keycloak
   valuesFile: values.yaml
 
