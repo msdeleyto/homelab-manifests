@@ -32,4 +32,4 @@ prometheus-node-exporter:
   enabled: true
 
 prometheus-pushgateway:
-  enabled: false
+  enabled: true
