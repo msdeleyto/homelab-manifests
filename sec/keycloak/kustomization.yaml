@@ -4,12 +4,6 @@ kind: Kustomization
 namespace: sec
 
 helmCharts:
-- name: cloudnative-pg
-  repo: https://cloudnative-pg.github.io/charts
-  version: 0.27.1
-  releaseName: postgresql-operator
-  valuesFile: cnpg-values.yaml
-
 - name: keycloakx
   repo: oci://ghcr.io/codecentric/helm-charts
   version: 7.1.11
