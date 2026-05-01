@@ -1,0 +1,15 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: timescaledb
+spec:
+  imageName: ghcr.io/cloudnative-pg/postgresql:13.6
+  instances: 1
+  storage:
+    size: 1Gi
+  bootstrap:
+    initdb:
+      database: monitoring
+      owner: monitoring
+      secret:
+        name: timescaledb-secret
