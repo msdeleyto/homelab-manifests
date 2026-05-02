@@ -4,7 +4,7 @@ metadata:
   name: timescaledb
 spec:
   instances: 3
-  imageName: timescale/timescaledb-ha:pg16-ts2.17
+  imageName: timescale/timescaledb-ha:pg16.13-ts2.26.4
 
   postgresUID: 70
   postgresGID: 70
