@@ -62,6 +62,8 @@ spec:
         - name: QBT_WEBUI_PORT
           value: "8080"
         volumeMounts:
+        - name: qb-config-pvc
+          mountPath: /config
         - name: qbittorrent-config
           mountPath: /config/qBittorrent/config/qBittorrent.conf
           subPath: qBittorrent.conf
@@ -125,6 +127,9 @@ spec:
         nfs:
           server: nas.homelab
           path: /volume1/prod/logs/qbittorrent
+      - name: qb-config-pvc
+        persistentVolumeClaim:
+          claimName: qb-config
       - name: qbittorrent-config
         configMap:
           name: qbittorrent-config
