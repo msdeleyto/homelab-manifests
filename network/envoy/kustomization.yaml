@@ -4,13 +4,13 @@ kind: Kustomization
 helmCharts:
 - name: gateway-crds-helm
   repo: oci://docker.io/envoyproxy
-  version: 1.7.2
+  version: 1.8.0
   namespace: network
   valuesFile: values.yaml
 
 - name: gateway-helm
   repo: oci://docker.io/envoyproxy
-  version: 1.7.2
+  version: 1.8.0
   namespace: network
 
 resources:
