@@ -30,6 +30,10 @@ echo "[+] Verifying requirements..."
 verify_requirements "${project_path}"
 echo -e "    Everything ready!\\n"
 
+echo "[+] Installing CRDs..."
+"${project_path}"/crds/tooling/bootstrap
+echo -e "    CRDs ready!\\n"
+
 # Install CNI
 echo "[1/5] Bootstraping CNI..."
 "${project_path}"/network/tooling/bootstrap
