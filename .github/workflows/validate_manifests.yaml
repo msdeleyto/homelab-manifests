@@ -14,7 +14,7 @@ concurrency:
 
 jobs:
   validate-k8s-manifests:
-    uses: home-kops/actions/.github/workflows/validate-k8s-manifests.yaml@main
+    uses: msdeleyto/gh-actions/.github/workflows/validate-k8s-manifests.yaml@main
 
   notify-result:
     runs-on: ubuntu-latest
