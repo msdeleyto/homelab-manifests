@@ -115,8 +115,6 @@ spec:
                 echo "Configuring Jackett json file..." >> /config/poststart.log
                 sed -i "s/YOUR_API_KEY_HERE/${API_KEY}/" /config/qBittorrent/data/nova3/engines/jackett.json
                 sed -i "s/127.0.0.1/jackett/" /config/qBittorrent/data/nova3/engines/jackett.json
-                cat /config/qBittorrent/data/nova3/engines/jackett.json >> /config/poststart.log
-
                 echo "Jackett engine configured successfully" >> /config/poststart.log
       volumes:
       - name: downloads
