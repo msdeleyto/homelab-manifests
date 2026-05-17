@@ -10,6 +10,5 @@
       "automerge": true
     }
   ],
-  "extends": ["helpers:pinGitHubActionDigests"],
   "platformAutomerge": true
 }
