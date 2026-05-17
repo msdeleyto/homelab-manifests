@@ -6,7 +6,8 @@ project_path="$(dirname $0)/.."
 
 cat "${project_path}/cilium/values.yaml" | envsubst '${INFRA_HA_VIP}' > /tmp/cilium-values.yaml
 
-helm upgrade --install cilium oci://quay.io/cilium/charts/cilium --version 1.19.1 \
+cilium_version="$(yq -r '.helmCharts[] | select(.name == "cilium") | .version' "${project_path}/cilium/kustomization.yaml")"
+helm upgrade --install cilium oci://quay.io/cilium/charts/cilium --version "${cilium_version}" \
   --namespace network \
   --create-namespace \
   --values /tmp/cilium-values.yaml > /dev/null
