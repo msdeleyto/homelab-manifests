@@ -111,7 +111,8 @@ echo -e "\nDeploying vault..."
 vault_dir="$(dirname $0)/../vault"
 tooling_dir="$(dirname $0)"
 
-helm upgrade --install vault hashicorp/vault \
+vault_version="$(yq -r '.helmCharts[] | select(.name == "vault") | .version' "${project_path}/vault/kustomization.yaml")"
+helm upgrade --install vault hashicorp/vault --version "${vault_version}" \
   --namespace vault \
   --create-namespace \
   --values "${vault_dir}/values.yaml" > /dev/null
