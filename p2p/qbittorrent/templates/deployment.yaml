@@ -129,11 +129,11 @@ spec:
         persistentVolumeClaim:
           claimName: qb-config
       - name: qbittorrent-config
-        configMap:
-          name: qbittorrent-config
+        secret:
+          secretName: qbittorrent-config          
       - name: qbittorrent-ssmtp-config
-        configMap:
-          name: qbittorrent-ssmtp-config
+        secret:
+          secretName: qbittorrent-ssmtp-config
       - name: jackett-config
         persistentVolumeClaim:
           claimName: jackett-config
