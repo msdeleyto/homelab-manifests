@@ -58,8 +58,8 @@ extraVolumes: |
   - name: keycloak-config-cli
     emptyDir: {}
   - name: config
-    configMap:
-      name: keycloak-config
+    secret:
+      secretName: keycloak-config
 
 extraVolumeMounts: |
   - name: keycloak-config-cli
