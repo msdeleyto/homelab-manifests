@@ -3,6 +3,7 @@ kind: Kustomization
 
 resources:
 - https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.5.1/standard-install.yaml
+- https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.4.1/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml # temp workaround for cilium operator
 - https://github.com/argoproj/argo-cd/manifests/crds?ref=v3.4.2
 - https://raw.githubusercontent.com/external-secrets/external-secrets/v2.0.0/deploy/crds/bundle.yaml
 - https://github.com/cert-manager/cert-manager/releases/download/v1.20.2/cert-manager.crds.yaml
