@@ -10,7 +10,6 @@ helmCharts:
   valuesFile: values.yaml
 
 resources:
-- config-map.yaml
 - external-secrets.yaml
 - httproute.yaml
 - ref-grant.yaml
