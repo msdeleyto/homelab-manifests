@@ -130,7 +130,7 @@ spec:
           claimName: qb-config
       - name: qbittorrent-config
         secret:
-          secretName: qbittorrent-config          
+          secretName: qbittorrent-config
       - name: qbittorrent-ssmtp-config
         secret:
           secretName: qbittorrent-ssmtp-config
