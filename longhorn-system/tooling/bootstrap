@@ -10,7 +10,8 @@ helm repo add longhorn https://charts.longhorn.io > /dev/null && \
 
 cat "${project_path}/longhorn-system/values.yaml" | envsubst '${INFRA_ENV}' > /tmp/longhorn-system-values.yaml
 
-helm upgrade --install longhorn longhorn/longhorn --version 1.11.0 \
+longhorn_version="$(yq -r '.helmCharts[] | select(.name == "longhorn") | .version' "${project_path}/longhorn-system/kustomization.yaml")"
+helm upgrade --install longhorn longhorn/longhorn --version "${longhorn_version}" \
   --namespace longhorn-system \
   --create-namespace \
   --values "/tmp/longhorn-system-values.yaml" > /dev/null
