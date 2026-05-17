@@ -1,4 +1,4 @@
 module.exports = {
   kubernetes: {managerFilePatterns: ["/\\.yaml$/"]},
-  repositories: ['msdeleyto/homelab-manifests']
+  repositories: ["msdeleyto/homelab-manifests"],
 }
