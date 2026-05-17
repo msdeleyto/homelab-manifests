@@ -15,4 +15,4 @@ extraArgs:
 
 envFrom:
 - secretRef:
-    name: oauth2-proxy-cookie-secret
+    name: oauth2-proxy-secret
