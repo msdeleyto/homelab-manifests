@@ -1,4 +1,4 @@
 deployment:
   image:
     repository: ghcr.io/guillevc/yubal
-    tag: "0.8.0"
+    tag: "0.8.1@sha256:406a5cdd02dcb3497d8e99d2b7d361d3a2b283ff273f992e9078d912e3a0c968"
