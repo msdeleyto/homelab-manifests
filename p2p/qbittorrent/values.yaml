@@ -7,7 +7,7 @@ pvc:
 qbittorrent:
   image:
     repository: msd117/qbittorrent
-    tag: 0.0.6
+    tag: 0.0.7@sha256:391fd2438754906b67eaf30bfd94b11e232e712337a2f0c0c917f7a4c39c165a
 
 vpn:
   image:
