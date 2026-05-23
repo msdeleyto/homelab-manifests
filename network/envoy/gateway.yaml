@@ -31,7 +31,6 @@ spec:
       namespaces:
         from: All
   - name: tcp-postgres
-    hostname: "*.${INFRA_DOMAIN}"
     port: 5432
     protocol: TCP
     allowedRoutes:
