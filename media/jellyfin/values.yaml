@@ -7,7 +7,7 @@ pvc:
 deployment:
   image:
     repository: docker.io/jellyfin/jellyfin
-    tag: "10.11.8"
+    tag: "10.11.9@sha256:bc9fa8e1462fffe3d8d4255fc62af478602641f4c0e5f4875fea8563d1189837"
 
 backup:
   schedule: "0 15 * * *"
