@@ -1,5 +1,5 @@
-apiVersion: gateway.networking.k8s.io/v1
-kind: HTTPRoute
+apiVersion: gateway.networking.k8s.io/v1alpha2
+kind: TCPRoute
 metadata:
   name: litellm-route
 spec:
@@ -8,7 +8,7 @@ spec:
     kind: Gateway
     name: cluster-gateway
     namespace: network
-    sectionName: https
+    sectionName: tcp-postgres
   hostnames:
   - "litellm-db.${INFRA_DOMAIN}"
   rules:

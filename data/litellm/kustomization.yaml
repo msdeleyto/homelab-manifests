@@ -6,4 +6,4 @@ namespace: data
 resources:
 - db-cluster.yaml
 - external-secrets.yaml
-- httproute.yaml
+- tcproute.yaml
