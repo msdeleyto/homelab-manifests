@@ -1,0 +1,15 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: litellm-db
+spec:
+  imageName: ghcr.io/cloudnative-pg/postgresql:13.6
+  instances: 1
+  storage:
+    size: 16Gi
+  bootstrap:
+    initdb:
+      database: litellm
+      owner: litellm
+      secret:
+        name: litellm-db-secret
