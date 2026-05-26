@@ -22,7 +22,6 @@ verify_requirements() {
 }
 
 vault_secrets="$1"
-vault_secret_files="$2"
 
 project_path="$(dirname $0)/.."
 
@@ -46,7 +45,7 @@ echo -e "   Storage ready!\\n"
 
 # Install Vault
 echo "[3/5] Bootstraping vault..."
-"${project_path}"/vault/tooling/bootstrap "${vault_secrets}" "${vault_secret_files}"
+"${project_path}"/vault/tooling/bootstrap "${vault_secrets}"
 echo -e "   Vault ready!\\n"
 
 # Install ESO
