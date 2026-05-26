@@ -3,7 +3,6 @@
 set -euo pipefail
 
 SECRETS_FILE="${1}"
-SECRET_FILES="${2}"
 
 initialize() {
   init_status=0
@@ -98,7 +97,6 @@ load_secrets() {
   secrets="$(cat "${SECRETS_FILE}" | yq '.cluster.secrets')"
 
   "${tooling_dir}"/load-secrets "${secrets}"
-  "${tooling_dir}"/load-secret-files "${SECRET_FILES}"
 }
 
 # Add helm repository
