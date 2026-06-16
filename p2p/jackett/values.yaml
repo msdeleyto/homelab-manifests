@@ -1,4 +1,4 @@
 jackett:
   image:
     repository: linuxserver/jackett
-    tag: 0.24.1905@sha256:88a434e81b3afeea3eb3935990771c8eeb0d592efad2e4b934c3c1f9e787fada
+    tag: 0.24.2075@sha256:152250ddc6fd55e2d094f9dc0db1bfe470dd524c53b4ef82f6505309e203954d
