@@ -26,9 +26,7 @@ k8sClientRateLimit:
   burst: 64
 
 gatewayAPI:
-  enabled: true
-  gatewayClass:
-    create: "true"
+  enabled: false
 
 hubble:
   relay:
