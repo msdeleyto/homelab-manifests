@@ -1,0 +1,4 @@
+crds:
+  gatewayAPI:
+    safeUpgradePolicy:
+      enabled: false

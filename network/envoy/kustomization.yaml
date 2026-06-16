@@ -6,6 +6,7 @@ helmCharts:
   repo: oci://docker.io/envoyproxy
   version: 1.8.1
   namespace: network
+  valuesFile: values.yaml
 
 resources:
 - external-secret.yaml
