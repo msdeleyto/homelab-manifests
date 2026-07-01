@@ -1,22 +1,68 @@
-pvc:
-  storageClassName: longhorn
-  accessModes:
-  - ReadWriteOnce
-  size: 10Gi
+fullnameOverride: jellyfin
 
-deployment:
-  image:
-    repository: docker.io/jellyfin/jellyfin
-    tag: "10.11.11@sha256:aefb67e6a7ff1debdd154a78a7bbb780fd0c873d8639210a7f6a2016ad2b35db"
+image:
+  repository: docker.io/jellyfin/jellyfin
+  tag: "10.11.11@sha256:aefb67e6a7ff1debdd154a78a7bbb780fd0c873d8639210a7f6a2016ad2b35db"
 
-backup:
-  schedule: "0 15 * * *"
-  image:
-    repository: busybox
-    tag: "1.38@sha256:fd8d9aa63ba2f0982b5304e1ee8d3b90a210bc1ffb5314d980eb6962f1a9715d"
-  command: |
-    echo "Starting backup at $(date)"
-    tar -czf /backup/jellyfin-$(date +%Y%m%d%H%M%S).tar.gz /config
-    echo "Backup completed at $(date)"
-    echo "Removing backups older than 3 days"
-    find /backup -maxdepth 1 -mtime +3 -type f -delete
+serviceAccount:
+  create: false
+
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  runAsGroup: 100
+  fsGroup: 1000
+  seccompProfile:
+    type: RuntimeDefault
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+    - ALL
+
+service:
+  port: 8096
+
+httpRoute:
+  enabled: true
+  parentRefs:
+  - name: cluster-gateway
+    sectionName: https
+    namespace: network
+  hostnames:
+  - "jellyfin.${INFRA_DOMAIN}"
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /
+
+resources:
+  limits:
+    ephemeral-storage: 32Gi
+  requests:
+    ephemeral-storage: 16Gi
+
+volumes:
+- name: config
+  persistentVolumeClaim:
+    claimName: jellyfin-config-pvc
+- name: data
+  nfs:
+    server: nas.homelab
+    path: /volume1/data/media
+
+volumeMounts:
+- mountPath: /config
+  name: config
+- name: data
+  mountPath: /data/media
+
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: node-role.kubernetes.io/control-plane
+          operator: NotIn
+          values:
+          - "true"
