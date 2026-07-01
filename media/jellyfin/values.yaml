@@ -29,6 +29,8 @@ httpRoute:
   enabled: true
   parentRefs:
   - name: cluster-gateway
+    group: gateway.networking.k8s.io
+    kind: Gateway
     sectionName: https
     namespace: network
   hostnames:
