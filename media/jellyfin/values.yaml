@@ -1,3 +1,4 @@
+nameOverride: jellyfin
 fullnameOverride: jellyfin
 
 image:

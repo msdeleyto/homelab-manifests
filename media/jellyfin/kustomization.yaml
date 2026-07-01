@@ -8,6 +8,7 @@ helmGlobals:
 
 helmCharts:
 - name: base-app
+  releaseName: jellyfin
   valuesFile: values.yaml
 
 resources:
