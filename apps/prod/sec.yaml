@@ -1,0 +1,57 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: keycloak
+  namespace: devops-tools
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: sec
+  project: default
+  source:
+    path: ./sec/keycloak
+    repoURL: https://github.com/msdeleyto/homelab-manifests.git
+    targetRevision: main
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    managedNamespaceMetadata:
+      labels:
+        pod-security.kubernetes.io/audit: restricted
+        pod-security.kubernetes.io/audit-version: latest
+        pod-security.kubernetes.io/enforce: baseline
+        pod-security.kubernetes.io/enforce-version: latest
+    syncOptions:
+    - CreateNamespace=true
+    - ServerSideApply=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: oauth2-proxy
+  namespace: devops-tools
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: sec
+  project: default
+  source:
+    path: ./sec/oauth2-proxy
+    repoURL: https://github.com/msdeleyto/homelab-manifests.git
+    targetRevision: main
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    managedNamespaceMetadata:
+      labels:
+        pod-security.kubernetes.io/audit: restricted
+        pod-security.kubernetes.io/audit-version: latest
+        pod-security.kubernetes.io/enforce: baseline
+        pod-security.kubernetes.io/enforce-version: latest
+    syncOptions:
+    - CreateNamespace=true
+    - ServerSideApply=true

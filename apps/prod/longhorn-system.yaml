@@ -1,0 +1,33 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: longhorn-system
+  namespace: devops-tools
+spec:
+  generators:
+    - list:
+        elements:
+          - name: longhorn-system
+  template:
+    metadata:
+      name: '{{name}}'
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/msdeleyto/homelab-manifests.git
+        targetRevision: main
+        path: './longhorn-system/{{name}}'
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: longhorn-system
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        managedNamespaceMetadata:
+          labels:
+            pod-security.kubernetes.io/audit: restricted
+            pod-security.kubernetes.io/audit-version: latest
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=true

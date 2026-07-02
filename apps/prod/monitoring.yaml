@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: monitoring
+  namespace: devops-tools
+spec:
+  generators:
+    - list:
+        elements:
+          - name: alloy
+          # - name: crowdsec
+          - name: grafana
+          - name: loki
+          - name: prometheus
+          - name: tempo
+          # - name: timescale
+  template:
+    metadata:
+      name: '{{name}}'
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/msdeleyto/homelab-manifests.git
+        targetRevision: main
+        path: './monitoring/{{name}}'
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: monitoring
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        managedNamespaceMetadata:
+          labels:
+#            pod-security.kubernetes.io/enforce: baseline
+#            pod-security.kubernetes.io/enforce-version: latest
+            pod-security.kubernetes.io/audit: restricted
+            pod-security.kubernetes.io/audit-version: latest
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=true

@@ -1,0 +1,36 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: p2p
+  namespace: devops-tools
+spec:
+  generators:
+    - list:
+        elements:
+          - name: jackett
+          - name: qbittorrent
+          - name: shelfmark
+          - name: slskd
+  template:
+    metadata:
+      name: '{{name}}'
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/msdeleyto/homelab-manifests.git
+        targetRevision: main
+        path: './p2p/{{name}}'
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: p2p
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        managedNamespaceMetadata:
+          labels:
+            pod-security.kubernetes.io/audit: restricted
+            pod-security.kubernetes.io/audit-version: latest
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=true
