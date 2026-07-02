@@ -48,6 +48,7 @@ resources:
     ephemeral-storage: 16Gi
 
 storage:
+  create: true
   className: longhorn
   accessModes:
   - ReadWriteOnce
