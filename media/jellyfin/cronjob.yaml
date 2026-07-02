@@ -32,7 +32,7 @@ spec:
           volumes:
           - name: config
             persistentVolumeClaim:
-              claimName: jellyfin-config-pvc
+              claimName: jellyfin
           - name: backup
             nfs:
               server: nas.homelab
