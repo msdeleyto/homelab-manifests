@@ -12,6 +12,5 @@ helmCharts:
   valuesFile: values.yaml
 
 resources:
-- pvc.yaml
 - cronjob.yaml
 - network-policy.yaml

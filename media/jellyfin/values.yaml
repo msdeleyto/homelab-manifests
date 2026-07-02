@@ -47,10 +47,16 @@ resources:
   requests:
     ephemeral-storage: 16Gi
 
+storage:
+  className: longhorn
+  accessModes:
+  - ReadWriteOnce
+  size: 10Gi
+
 volumes:
 - name: config
   persistentVolumeClaim:
-    claimName: jellyfin-config-pvc
+    claimName: jellyfin
 - name: data
   nfs:
     server: nas.homelab
