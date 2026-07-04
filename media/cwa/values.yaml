@@ -1,10 +1,97 @@
-pvc:
-  storageClassName: longhorn
+nameOverride: cwa
+fullnameOverride: cwa
+
+image:
+  repository: crocodilestick/calibre-web-automated
+  tag: V3.0.4
+
+serviceAccount:
+  create: false  
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  runAsGroup: 100
+  fsGroup: 1000
+  seccompProfile:
+    type: RuntimeDefault
+
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+    - ALL
+
+service:
+  port: 8083
+
+httpRoute:
+  enabled: true
+  parentRefs:
+  - name: cluster-gateway
+    group: gateway.networking.k8s.io
+    kind: Gateway
+    sectionName: https
+    namespace: network
+  hostnames:
+  - "cwa.${INFRA_DOMAIN}"
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /
+
+storage:
+  create: true
+  name: calibre-config-pvc
+  className: longhorn
   accessModes:
   - ReadWriteOnce
   size: 4Gi
 
-deployment:
-  image:
-    repository: crocodilestick/calibre-web-automated
-    tag: "V3.0.4"
+env:
+- name: PUID
+  value: "1000"
+- name: PGID
+  value: "1000"
+- name: CUSTOM_USER
+  valueFrom:
+    secretKeyRef:
+      name: cwa-secret
+      key: USER
+- name: CUSTOM_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: cwa-secret
+      key: PASSWORD
+
+volumes:
+- name: config
+  persistentVolumeClaim:
+    claimName: calibre-config-pvc
+- name: library
+  nfs:
+    server: nas.homelab
+    path: /volume1/data/media/books/library
+- name: new-books
+  nfs:
+    server: nas.homelab
+    path: /volume1/data/media/books/new
+
+volumeMounts:
+- name: config
+  mountPath: /config
+- name: library
+  mountPath: /calibre-library 
+- name: new-books
+  mountPath: /cwa-book-ingest
+
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: node-role.kubernetes.io/control-plane
+          operator: NotIn
+          values:
+          - "true"

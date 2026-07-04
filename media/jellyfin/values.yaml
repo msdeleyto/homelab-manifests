@@ -49,6 +49,7 @@ resources:
 
 storage:
   create: true
+  name: jellyfin
   className: longhorn
   accessModes:
   - ReadWriteOnce
