@@ -6,12 +6,7 @@ image:
   tag: V3.0.4
 
 serviceAccount:
-  create: false  
-
-securityContext:
-  capabilities:
-    drop:
-    - ALL
+  create: false
 
 service:
   port: 8083
