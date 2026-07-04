@@ -41,12 +41,6 @@ httpRoute:
         type: PathPrefix
         value: /
 
-resources:
-  limits:
-    ephemeral-storage: 32Gi
-  requests:
-    ephemeral-storage: 16Gi
-
 livenessProbe:
   httpGet:
     path: /_stcore/health
