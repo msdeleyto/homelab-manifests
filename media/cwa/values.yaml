@@ -8,13 +8,6 @@ image:
 serviceAccount:
   create: false  
 
-podSecurityContext:
-  runAsUser: 1000
-  runAsGroup: 100
-  fsGroup: 1000
-  seccompProfile:
-    type: RuntimeDefault
-
 securityContext:
   capabilities:
     drop:
