@@ -7,8 +7,9 @@ metadata:
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
-  strategy: {{ .Values.strategy }}
   {{- end }}
+  strategy:
+    type: {{ .Values.strategy.type }}
   selector:
     matchLabels:
       {{- include "base-app.selectorLabels" . | nindent 6 }}
