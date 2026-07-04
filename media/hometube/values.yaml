@@ -1,4 +1,100 @@
-deployment:
-  image:
-    repository: ghcr.io/egalitarianmonkey/hometube
-    tag: "2.9"
+nameOverride: hometube
+fullnameOverride: hometube
+
+image:
+  repository: ghcr.io/egalitarianmonkey/hometube
+  tag: 2.9
+
+serviceAccount:
+  create: false
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  runAsGroup: 100
+  fsGroup: 1000
+  seccompProfile:
+    type: RuntimeDefault
+
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+    - ALL
+
+service:
+  port: 8501
+
+httpRoute:
+  enabled: true
+  parentRefs:
+  - name: cluster-gateway
+    group: gateway.networking.k8s.io
+    kind: Gateway
+    sectionName: https
+    namespace: network
+  hostnames:
+  - "hometube.${INFRA_DOMAIN}"
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /
+
+resources:
+  limits:
+    ephemeral-storage: 32Gi
+  requests:
+    ephemeral-storage: 16Gi
+
+livenessProbe:
+  httpGet:
+    path: /_stcore/health
+    port: http
+
+storage:
+  create: true
+  name: hometube-config
+  className: longhorn
+  accessModes:
+  - ReadWriteOnce
+  size: 1Gi
+
+env:
+- name: STREAMLIT_SERVER_HEADLESS
+  value: "true"
+- name: VIDEOS_FOLDER
+  value: /data/videos
+- name: TMP_DOWNLOAD_FOLDER
+  value: /data/temp
+
+volumes:
+- name: config
+  persistentVolumeClaim:
+    claimName: hometube-config
+- name: videos
+  nfs:
+    server: nas.homelab
+    path: /volume1/data/media/hometube/videos
+- name: temp
+  nfs:
+    server: nas.homelab
+    path: /volume1/data/media/hometube/temp
+
+volumeMounts:
+- mountPath: /config
+  name: config
+- name: videos
+  mountPath: /data/videos
+- name: temp
+  mountPath: /data/temp
+
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: node-role.kubernetes.io/control-plane
+          operator: NotIn
+          values:
+          - "true"

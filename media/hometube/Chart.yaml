@@ -1,5 +1,0 @@
-apiVersion: v2
-name: hometube
-description: Deploy hometube resources
-type: application
-version: 1.0.0
