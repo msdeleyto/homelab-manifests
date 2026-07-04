@@ -1,4 +1,122 @@
-deployment:
-  image:
-    repository: ghcr.io/guillevc/yubal
-    tag: "0.8.1@sha256:406a5cdd02dcb3497d8e99d2b7d361d3a2b283ff273f992e9078d912e3a0c968"
+nameOverride: yubal
+fullnameOverride: yubal
+
+image:
+  repository: ghcr.io/guillevc/yubal
+  tag: 0.8.1@sha256:406a5cdd02dcb3497d8e99d2b7d361d3a2b283ff273f992e9078d912e3a0c968
+
+serviceAccount:
+  create: false
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  runAsGroup: 100
+  fsGroup: 1000
+  seccompProfile:
+    type: RuntimeDefault
+
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+    - ALL
+
+service:
+  port: 8000
+
+httpRoute:
+  enabled: true
+  parentRefs:
+  - name: cluster-gateway
+    group: gateway.networking.k8s.io
+    kind: Gateway
+    sectionName: https
+    namespace: network
+  hostnames:
+  - "yubal.${INFRA_DOMAIN}"
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /
+
+resources:
+  limits:
+    ephemeral-storage: 32Gi
+  requests:
+    ephemeral-storage: 16Gi
+
+livenessProbe:
+  httpGet:
+    path: /_stcore/health
+    port: http
+
+storage:
+  create: true
+  name: yubal-config
+  className: longhorn
+  accessModes:
+  - ReadWriteOnce
+  size: 1Gi
+
+env:
+- name: YUBAL_AUDIO_FORMAT
+  value: "opus"
+- name: YUBAL_AUDIO_QUALITY
+  value: "0"
+- name: YUBAL_SCHEDULER_ENABLED
+  value: "true"
+- name: YUBAL_SCHEDULER_CRON
+  value: "0 0 * * *"
+- name: YUBAL_FETCH_LYRICS
+  value: "false"
+- name: YUBAL_DOWNLOAD_UGC
+  value: "false"
+- name: YUBAL_REPLAYGAIN
+  value: "true"
+- name: YUBAL_JOB_TIMEOUT_SECONDS
+  value: "1800"
+- name: YUBAL_TZ
+  value: "UTC"
+- name: YUBAL_HOST
+  value: "0.0.0.0"
+- name: YUBAL_PORT
+  value: "8000"
+- name: YUBAL_DATA
+  value: "/app/data"
+- name: YUBAL_CONFIG
+  value: "/app/config"
+- name: YUBAL_LOG_LEVEL
+  value: "INFO"
+- name: YUBAL_ASCII_FILENAMES
+  value: "false"
+- name: YUBAL_TEMP
+  value: "/tmp"
+- name: YUBAL_CORS_ORIGINS
+  value: "[\"*.${INFRA_DOMAIN}\"]"
+
+volumes:
+- name: config
+  persistentVolumeClaim:
+    claimName: yubal-config
+- name: data
+  nfs:
+    server: nas.homelab
+    path: /volume1/data/media/music
+
+volumeMounts:
+- name: config
+  mountPath: /app/config
+- name: data
+  mountPath: /app/data
+
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: node-role.kubernetes.io/control-plane
+          operator: NotIn
+          values:
+          - "true"
