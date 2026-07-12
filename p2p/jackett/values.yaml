@@ -43,7 +43,7 @@ storage:
   name: jackett-config
   className: longhorn
   accessModes:
-  - ReadWriteOnce
+  - ReadWriteMany
   size: 1Gi
 
 env:
