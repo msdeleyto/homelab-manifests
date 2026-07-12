@@ -58,7 +58,7 @@ volumes:
     claimName: jackett-config
 
 volumeMounts:
-- name: jackett-config
+- name: config
   mountPath: /config
 
 affinity:
