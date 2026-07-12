@@ -38,10 +38,8 @@ httpRoute:
         type: PathPrefix
         value: /
 
-livenessProbe:
-  httpGet:
-    path: /
-    port: http
+livenessProbe: {}
+readinessProbe: {}
 
 storage:
   create: true
