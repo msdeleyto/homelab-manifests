@@ -138,6 +138,8 @@ autoscaling:
 # Environment variables
 env: []
 
+envFrom: []
+
 # Additional volumes on the output Deployment definition.
 volumes: []
   # - name: foo
@@ -156,3 +158,5 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+initContainers: []

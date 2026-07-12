@@ -1,15 +1,140 @@
-pvc:
-  storageClassName: longhorn
+nameOverride: qbittorrent
+fullnameOverride: qbittorrent
+
+image:
+  repository: msd117/qbittorrent
+  tag: 0.0.7@sha256:391fd2438754906b67eaf30bfd94b11e232e712337a2f0c0c917f7a4c39c165a
+
+serviceAccount:
+  create: false
+
+service:
+  port: 8080
+
+httpRoute:
+  enabled: true
+  parentRefs:
+  - name: cluster-gateway
+    group: gateway.networking.k8s.io
+    kind: Gateway
+    sectionName: https
+    namespace: network
+  hostnames:
+  - "qb.${INFRA_DOMAIN}"
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /
+
+storage:
+  create: true
+  name: qb-config
+  className: longhorn
   accessModes:
   - ReadWriteOnce
   size: 1Gi
 
-qbittorrent:
-  image:
-    repository: msd117/qbittorrent
-    tag: 0.0.7@sha256:391fd2438754906b67eaf30bfd94b11e232e712337a2f0c0c917f7a4c39c165a
+resources:
+  requests:
+    memory: "1Gi"
+    cpu: "100m"
+  limits:
+    memory: "4Gi"
+    cpu: "500m"
 
-vpn:
-  image:
-    repository: qmcgaw/gluetun
-    tag: v3.41.1
+env:
+- name: PUID
+  value: "1000"
+- name: PGID
+  value: "1000"
+
+envFrom:
+- secretRef:
+  name: qbittorrent-secret
+
+volumes:
+- name: downloads
+  nfs:
+    server: nas.homelab
+    path: /volume1/data/media/downloads
+- name: logs
+  nfs:
+    server: nas.homelab
+    path: /volume1/prod/logs/qbittorrent
+- name: qb-config-pvc
+  persistentVolumeClaim:
+    claimName: qb-config
+- name: qbittorrent-config
+  secret:
+    secretName: qbittorrent-config
+- name: qbittorrent-ssmtp-config
+  secret:
+    secretName: qbittorrent-ssmtp-config
+- name: jackett-config
+  persistentVolumeClaim:
+    claimName: jackett-config
+
+volumeMounts:
+- name: qb-config-pvc
+  mountPath: /config
+- name: qbittorrent-config
+  mountPath: /config/qBittorrent/config/qBittorrent.conf
+  subPath: qBittorrent.conf
+- name: qbittorrent-ssmtp-config
+  mountPath: /etc/ssmtp/ssmtp.conf
+  subPath: ssmtp.conf
+- name: downloads
+  mountPath: /downloads
+- name: logs
+  mountPath: /var/log/cerberus
+- name: jackett-config
+  mountPath: /config/jackett
+  readOnly: true
+
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: node-role.kubernetes.io/control-plane
+          operator: NotIn
+          values:
+          - "true"
+
+initContainers:
+- name: vpn
+  image: qmcgaw/gluetun:v3.41.1
+  restartPolicy: Always
+  securityContext:
+    capabilities:
+      add:
+      - NET_ADMIN
+  envFrom:
+  - secretRef:
+      name: qbittorrent-vpn-secret
+  env:
+  - name: VPN_SERVICE_PROVIDER
+    value: nordvpn
+  - name: VPN_TYPE
+    value: wireguard
+  - name: DNS_KEEP_NAMESERVER
+    value: "on"
+  - name: DNS_SERVER
+    value: "off"
+  - name: FIREWALL_OUTBOUND_SUBNETS
+    value: "10.0.0.0/16,10.43.0.0/16"
+  - name: FIREWALL_INPUT_PORTS
+    value: "8080"
+- name: verify-vpn
+  image: busybox
+  command:
+  - sh
+  - -c
+  - |
+    sleep 30
+    while ! ping -c 1 8.8.8.8; do
+      echo "Ping failed, retrying in 5"
+      sleep 5
+    done
+    echo "ping succesfull, exiting"

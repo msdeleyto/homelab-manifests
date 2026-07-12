@@ -1,5 +1,0 @@
-apiVersion: v2
-name: qbittorrent
-description: Chart for qbittorrent
-type: application
-version: 1.0.0
