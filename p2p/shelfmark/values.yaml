@@ -1,9 +1,78 @@
-deployment:
-  image:
-    repository: ghcr.io/calibrain/shelfmark
-    tag: "v1.3.3@sha256:1f0e9ecdef24a3d8f5787282eaea3859edcd3bb0c3d508382e2b2bc4bb18d7d6"
+nameOverride: shelfmark
+fullnameOverride: shelfmark
 
-vpn:
-  image:
-    repository: qmcgaw/gluetun
-    tag: v3.41.1
+image:
+  repository: ghcr.io/calibrain/shelfmark
+  tag: v1.3.3@sha256:1f0e9ecdef24a3d8f5787282eaea3859edcd3bb0c3d508382e2b2bc4bb18d7d6
+
+serviceAccount:
+  create: false
+
+service:
+  port: 8084
+
+httpRoute:
+  enabled: true
+  parentRefs:
+  - name: cluster-gateway
+    group: gateway.networking.k8s.io
+    kind: Gateway
+    sectionName: https
+    namespace: network
+  hostnames:
+  - "shelfmark.${INFRA_DOMAIN}"
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /
+
+livenessProbe:
+  httpGet:
+    path: /api/health
+    port: http
+
+storage:
+  create: true
+  name: shelfmark-config
+  className: longhorn
+  accessModes:
+  - ReadWriteOnce
+  size: 1Gi
+
+env:
+- name: PUID
+  value: "1000"
+- name: PGID
+  value: "1000"
+- name: DOCKERMODE
+  value: "true"
+
+envFrom:
+- secretRef:
+  name: qbittorrent-secret
+
+volumes:
+- name: config
+  persistentVolumeClaim:
+    claimName: shelfmark-config
+- name: books
+  nfs:
+    server: nas.homelab
+    path: /volume1/data/media/books/new
+
+volumeMounts:
+- name: config
+  mountPath: /config
+- name: books
+  mountPath: /books
+
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: node-role.kubernetes.io/control-plane
+          operator: NotIn
+          values:
+          - "true"

@@ -1,5 +1,0 @@
-apiVersion: v2
-name: shelfmark
-description: Deploy shelfmark resources
-type: application
-version: 1.0.0
