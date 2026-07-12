@@ -1,4 +1,61 @@
-jackett:
-  image:
-    repository: linuxserver/jackett
-    tag: 0.24.2075@sha256:152250ddc6fd55e2d094f9dc0db1bfe470dd524c53b4ef82f6505309e203954d
+nameOverride: jackett
+fullnameOverride: jackett
+
+image:
+  repository: linuxserver/jackett
+  tag: 0.24.2075@sha256:152250ddc6fd55e2d094f9dc0db1bfe470dd524c53b4ef82f6505309e203954d
+
+serviceAccount:
+  create: false
+
+service:
+  port: 9117
+
+httpRoute:
+  enabled: true
+  parentRefs:
+  - name: cluster-gateway
+    group: gateway.networking.k8s.io
+    kind: Gateway
+    sectionName: https
+    namespace: network
+  hostnames:
+  - "jackett.${INFRA_DOMAIN}"
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /
+
+storage:
+  create: true
+  name: jackett-config
+  className: longhorn
+  accessModes:
+  - ReadWriteOnce
+  size: 1Gi
+
+env:
+- name: PUID
+  value: "1000"
+- name: PGID
+  value: "1000"
+
+volumes:
+- name: config
+  persistentVolumeClaim:
+    claimName: jackett-config
+
+volumeMounts:
+- name: jackett-config
+  mountPath: /config
+
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: node-role.kubernetes.io/control-plane
+          operator: NotIn
+          values:
+          - "true"
