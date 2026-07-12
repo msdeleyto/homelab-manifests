@@ -38,6 +38,7 @@ httpRoute:
     namespace: network
   hostnames:
   - "slskd.${INFRA_DOMAIN}"
+  port: 5030
   rules:
   - matches:
     - path:

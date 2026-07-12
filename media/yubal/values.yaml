@@ -45,6 +45,7 @@ httpRoute:
     namespace: network
   hostnames:
   - "yubal.${INFRA_DOMAIN}"
+  port: 8000
   rules:
   - matches:
     - path:

@@ -34,7 +34,7 @@ spec:
         - group: ''
           kind: Service
           name: {{ $fullName }}
-          port: {{ $svcPort }}
+          port: {{ .Values.httpRoute.port }}
           weight: 1
     {{- end }}
 {{- end }}

@@ -45,6 +45,7 @@ httpRoute:
     namespace: network
   hostnames:
   - "hometube.${INFRA_DOMAIN}"
+  port: 8501
   rules:
   - matches:
     - path:

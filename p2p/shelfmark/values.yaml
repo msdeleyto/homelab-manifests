@@ -31,6 +31,7 @@ httpRoute:
     namespace: network
   hostnames:
   - "shelfmark.${INFRA_DOMAIN}"
+  port: 8084
   rules:
   - matches:
     - path:

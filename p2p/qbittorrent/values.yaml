@@ -31,6 +31,7 @@ httpRoute:
     namespace: network
   hostnames:
   - "qb.${INFRA_DOMAIN}"
+  port: 8080
   rules:
   - matches:
     - path:
