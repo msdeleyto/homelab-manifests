@@ -62,7 +62,7 @@ env:
 
 envFrom:
 - secretRef:
-  name: qbittorrent-secret
+    name: qbittorrent-secret
 
 volumes:
 - name: downloads

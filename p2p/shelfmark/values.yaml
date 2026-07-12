@@ -59,10 +59,6 @@ env:
 - name: DOCKERMODE
   value: "true"
 
-envFrom:
-- secretRef:
-  name: qbittorrent-secret
-
 volumes:
 - name: config
   persistentVolumeClaim:
