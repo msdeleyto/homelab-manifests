@@ -1,6 +1,6 @@
 {{- if .Values.httpRoute.enabled -}}
 {{- $fullName := include "base-app.fullname" . -}}
-{{- $svcPort := .Values.service.port -}}
+{{- $backendPort := .Values.httpRoute.port -}}
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
@@ -34,7 +34,7 @@ spec:
         - group: ''
           kind: Service
           name: {{ $fullName }}
-          port: {{ .Values.httpRoute.port }}
+          port: {{ $backendPort }}
           weight: 1
     {{- end }}
 {{- end }}
