@@ -40,7 +40,7 @@ httpRoute:
 
 livenessProbe:
   httpGet:
-    path: /api/ping
+    path: /
     port: http
 
 storage:
