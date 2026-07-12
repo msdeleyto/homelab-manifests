@@ -38,8 +38,8 @@ httpRoute:
         type: PathPrefix
         value: /
 
-livenessProbe: {}
-readinessProbe: {}
+livenessProbe: null
+readinessProbe: null
 
 storage:
   create: true
