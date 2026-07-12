@@ -1,9 +1,157 @@
-slskd:
-  image:
-    repository: msd117/slskd
-    tag: 0.0.13
+nameOverride: slskd
+fullnameOverride: slskd
 
-vpn:
-  image:
-    repository: qmcgaw/gluetun
-    tag: v3.41.1
+image:
+  repository: msd117/slskd
+  tag: 0.0.13
+
+serviceAccount:
+  create: false
+
+service:
+  type: ClusterIP
+  ports:
+  - name: http
+    port: 5030
+    targetPort: http
+    protocol: TCP
+  - name: incoming
+    port: 50300
+    targetPort: 50300
+    protocol: TCP
+
+ports:
+- name: http
+  containerPort: 5030
+  protocol: TCP
+- name: incoming
+  containerPort: 50300
+  protocol: TCP
+
+httpRoute:
+  enabled: true
+  parentRefs:
+  - name: cluster-gateway
+    group: gateway.networking.k8s.io
+    kind: Gateway
+    sectionName: https
+    namespace: network
+  hostnames:
+  - "slskd.${INFRA_DOMAIN}"
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /
+
+storage:
+  create: true
+  name: slskd-config
+  className: local-path
+  accessModes:
+  - ReadWriteOnce
+  size: 1Gi
+
+env:
+- name: PUID
+  value: "1000"
+- name: PGID
+  value: "1000"
+- name: AUTO_UPDATE
+  value: "false"
+- name: SLSKD_NO_AUTH
+  value: "true"
+- name: SLSKD_REMOTE_CONFIGURATION
+  value: "true"
+- name: SLSKD_APP_DIR
+  value: "/config/slskd"
+- name: SLSKD_DOWNLOADS_DIR
+  value: "/downloads/complete"
+- name: SLSKD_INCOMPLETE_DIR
+  value: "/downloads/incomplete"
+- name: SLSKD_SHARED_DIR
+  value: "/shares"
+- name: SLSKD_LOGS_DIR
+  value: /var/log/cerberus
+- name: QUARANTINE_DIR
+  value: /quarantine
+
+envFrom:
+- secretRef:
+    name: slskd-secret
+
+volumes:
+- name: config
+  persistentVolumeClaim:
+    claimName: slskd-config
+- name: shares
+  nfs:
+    server: nas.homelab
+    path: /volume1/data/media/shares
+- name: downloads
+  nfs:
+    server: nas.homelab
+    path: /volume1/data/media/downloads
+- name: logs
+  nfs:
+    server: nas.homelab
+    path: /volume1/prod/logs/slskd
+
+volumeMounts:
+- name: config
+  mountPath: /config
+- name: downloads
+  mountPath: /downloads
+- name: shares
+  mountPath: /shares
+  readOnly: true
+- name: logs
+  mountPath: /var/log/cerberus
+
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: node-role.kubernetes.io/control-plane
+          operator: NotIn
+          values:
+          - "true"
+
+initContainers:
+- name: vpn
+  image: qmcgaw/gluetun:v3.41.1
+  restartPolicy: Always
+  securityContext:
+    capabilities:
+      add:
+      - NET_ADMIN
+  envFrom:
+  - secretRef:
+      name: qbittorrent-vpn-secret
+  env:
+  - name: VPN_SERVICE_PROVIDER
+    value: nordvpn
+  - name: VPN_TYPE
+    value: wireguard
+  - name: DNS_KEEP_NAMESERVER
+    value: "on"
+  - name: DNS_SERVER
+    value: "off"
+  - name: FIREWALL_OUTBOUND_SUBNETS
+    value: "10.0.0.0/16,10.43.0.0/16"
+  - name: FIREWALL_INPUT_PORTS
+    value: "8080"
+- name: verify-vpn
+  image: busybox
+  command:
+  - sh
+  - -c
+  - |
+    sleep 30
+    while ! ping -c 1 8.8.8.8; do
+      echo "Ping failed, retrying in 5"
+      sleep 5
+    done
+    echo "ping succesfull, exiting"
+

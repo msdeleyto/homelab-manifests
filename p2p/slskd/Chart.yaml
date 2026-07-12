@@ -1,5 +1,0 @@
-apiVersion: v2
-name: slskd
-description: Chart for slskd
-type: application
-version: 1.0.0

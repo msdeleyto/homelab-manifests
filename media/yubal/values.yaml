@@ -23,7 +23,17 @@ securityContext:
     - ALL
 
 service:
-  port: 8000
+  type: ClusterIP
+  ports:
+  - name: http
+    port: 8000
+    targetPort: http
+    protocol: TCP
+
+ports:
+- name: http
+  containerPort: 8000
+  protocol: TCP
 
 httpRoute:
   enabled: true

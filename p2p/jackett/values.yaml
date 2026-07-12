@@ -9,7 +9,17 @@ serviceAccount:
   create: false
 
 service:
-  port: 9117
+  type: ClusterIP
+  ports:
+  - name: http
+    port: 9117
+    targetPort: http
+    protocol: TCP
+
+ports:
+- name: http
+  containerPort: 9117
+  protocol: TCP
 
 httpRoute:
   enabled: true

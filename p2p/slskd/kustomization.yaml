@@ -1,10 +1,15 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
+namespace: p2p
+
 helmGlobals:
-  chartHome: ../
+  chartHome: ../../charts
 
 helmCharts:
-- name: slskd
-  namespace: p2p
+- name: base-app
+  releaseName: slskd
   valuesFile: values.yaml
+
+resources:
+- external-secrets.yaml

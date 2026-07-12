@@ -57,7 +57,16 @@ service:
   # This sets the service type more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
   type: ClusterIP
   # This sets the ports more information can be found here: https://kubernetes.io/docs/concepts/services-networking/service/#field-spec-ports
-  port: 80
+  ports:
+  - name: 80
+    targetPort: http
+    protocol: TCP
+    name: http
+
+ports:
+  - name: http
+    containerPort: 80
+    protocol: TCP
 
 # -- Expose the service via gateway-api HTTPRoute
 # Requires Gateway API resources and suitable controller installed within the cluster

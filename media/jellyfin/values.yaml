@@ -23,7 +23,17 @@ securityContext:
     - ALL
 
 service:
-  port: 8096
+  type: ClusterIP
+  ports:
+  - name: http
+    port: 8096
+    targetPort: http
+    protocol: TCP
+
+ports:
+- name: http
+  containerPort: 8096
+  protocol: TCP
 
 httpRoute:
   enabled: true
