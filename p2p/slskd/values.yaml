@@ -129,7 +129,7 @@ initContainers:
       - NET_ADMIN
   envFrom:
   - secretRef:
-      name: qbittorrent-vpn-secret
+      name: slskd-vpn-secret
   env:
   - name: VPN_SERVICE_PROVIDER
     value: nordvpn
