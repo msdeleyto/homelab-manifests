@@ -45,6 +45,11 @@ httpRoute:
         type: PathPrefix
         value: /
 
+livenessProbe:
+  httpGet:
+    path: /health
+    port: http
+
 storage:
   create: true
   name: slskd-config
