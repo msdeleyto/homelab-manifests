@@ -38,6 +38,11 @@ httpRoute:
         type: PathPrefix
         value: /
 
+livenessProbe:
+  httpGet:
+    path: /api/ping
+    port: http
+
 storage:
   create: true
   name: jackett-config
