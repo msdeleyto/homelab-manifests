@@ -6,6 +6,6 @@ namespace: data
 helmCharts:
 - name: cloudnative-pg
   repo: https://cloudnative-pg.github.io/charts
-  version: 0.28.2
+  version: 0.29.0
   releaseName: postgresql-operator
   valuesFile: values.yaml
