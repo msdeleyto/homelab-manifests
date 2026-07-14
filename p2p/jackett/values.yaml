@@ -3,7 +3,7 @@ fullnameOverride: jackett
 
 image:
   repository: linuxserver/jackett
-  tag: 0.24.2075@sha256:152250ddc6fd55e2d094f9dc0db1bfe470dd524c53b4ef82f6505309e203954d
+  tag: 0.24.2213@sha256:49005ea618773b2ef90d73c359c8b616d406163a170c747259d052456d054bd5
 
 serviceAccount:
   create: false
