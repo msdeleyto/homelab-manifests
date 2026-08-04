@@ -95,6 +95,27 @@ spec:
       - X-Auth-Request-User
 ---
 apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: EnvoyPatchPolicy
+metadata:
+  name: recompute-route
+  namespace: media
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: Gateway
+    name: cluster-gateway
+  type: JSONPatch
+  jsonPatches:
+  - op: add
+    path: /spec/configPatches/0
+    value:
+      namedHttpFilter:
+        name: envoy.filters.http.ext_authz
+        typedConfig:
+          "@type": ://googleapis.com
+          clear_route_cache: true 
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: SecurityPolicy
 metadata:
   name: monitoring-security-policy
