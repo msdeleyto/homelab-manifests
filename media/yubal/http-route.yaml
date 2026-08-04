@@ -13,20 +13,28 @@ spec:
   - "yubal.${INFRA_DOMAIN}"
   rules:
   - backendRefs:
-      - kind: Service
-        name: yubal-miguel
-        port: 8000
-        weight: 1
+    - group: ''
+      kind: Service
+      name: yubal-miguel
+      port: 8000
+      weight: 1
     matches:
     - headers:
       - name: X-Auth-Request-User
         value: miguel
+      path:
+        type: PathPrefix
+        value: /
   - backendRefs:
-      - kind: Service
-        name: yubal-ari
-        port: 8000
-        weight: 1
+    - group: ''
+      kind: Service
+      name: yubal-ari
+      port: 8000
+      weight: 1
     matches:
     - headers:
       - name: X-Auth-Request-User
         value: ari
+      path:
+        type: PathPrefix
+        value: /
