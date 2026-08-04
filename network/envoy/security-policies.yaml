@@ -98,13 +98,11 @@ apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: EnvoyPatchPolicy
 metadata:
   name: recompute-route
-  namespace: media
 spec:
   targetRef:
     group: gateway.networking.k8s.io
     kind: Gateway
     name: cluster-gateway
-    namespace: network
   type: JSONPatch
   jsonPatches:
   - type: "type.googleapis.com/envoy.config.listener.v3.Listener"
