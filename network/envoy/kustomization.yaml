@@ -12,5 +12,6 @@ resources:
 - external-secret.yaml
 - envoyproxy.yaml
 - gateway.yaml
-- security-policies.yaml
-- auth-routes.yaml
+# - security-policies.yaml
+# - auth-routes.yaml
+- security-policy.yaml
