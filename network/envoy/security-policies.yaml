@@ -104,16 +104,15 @@ spec:
     group: gateway.networking.k8s.io
     kind: Gateway
     name: cluster-gateway
+    namespace: network
   type: JSONPatch
   jsonPatches:
-  - op: add
-    path: /spec/configPatches/0
-    value:
-      namedHttpFilter:
-        name: envoy.filters.http.ext_authz
-        typedConfig:
-          "@type": ://googleapis.com
-          clear_route_cache: true 
+  - type: "type.googleapis.com/envoy.config.listener.v3.Listener"
+    name: network/cluster-gateway/https
+    operation:
+      op: add
+      path: "/default_filter_chain/filters/0/typed_config/http_filters/0/typed_config/clear_route_cache"
+      value: true
 ---
 apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: SecurityPolicy
