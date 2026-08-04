@@ -109,7 +109,7 @@ spec:
     name: network/cluster-gateway/https
     operation:
       op: add
-      path: "/default_filter_chain/filters/0/typed_config/http_filters/2/typed_config/clear_route_cache"
+      path: "/filter_chains/0/filters/0/typed_config/http_filters/2/typed_config/clear_route_cache"
       value: true
 ---
 apiVersion: gateway.envoyproxy.io/v1alpha1
