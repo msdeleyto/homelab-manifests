@@ -83,6 +83,7 @@ spec:
     - Cookie
     - X-Auth-Request-Redirect
     http:
+      recomputeRoute: true
       backendRefs:
       - group: ""
         kind: Service
