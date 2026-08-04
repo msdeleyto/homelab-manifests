@@ -40,3 +40,13 @@ spec:
       path:
         type: PathPrefix
         value: /
+  - backendRefs:
+    - group: ''
+      kind: Service
+      name: yubal-miguel
+      port: 8000
+      weight: 1
+    matches:
+    - path:
+        type: PathPrefix
+        value: /
