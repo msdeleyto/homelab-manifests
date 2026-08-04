@@ -10,3 +10,14 @@ helmCharts:
 - name: base-app
   releaseName: yubal
   valuesFile: values.yaml
+  additionalValuesFiles:
+  - values-ari.yaml
+- name: base-app
+  releaseName: yubal
+  valuesFile: values.yaml
+  additionalValuesFiles:
+  - values-miguel.yaml
+
+resources:
+- pvc.yaml
+- http-route.yaml

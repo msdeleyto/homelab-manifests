@@ -91,6 +91,8 @@ spec:
         port: 80
         weight: 1
       path: /oauth2/auth
+      headersToBackend:
+      - X-Auth-Request-User
 ---
 apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: SecurityPolicy

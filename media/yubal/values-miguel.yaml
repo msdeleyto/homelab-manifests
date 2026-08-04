@@ -1,0 +1,11 @@
+nameOverride: yubal-miguel
+fullnameOverride: yubal-miguel
+
+volumes:
+- name: config
+  persistentVolumeClaim:
+    claimName: yubal-config
+- name: data
+  nfs:
+    server: nas.homelab
+    path: /volume1/data/media/music/miguel
