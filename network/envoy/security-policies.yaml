@@ -98,7 +98,6 @@ apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: EnvoyPatchPolicy
 metadata:
   name: recompute-route
-  namespace: media
 spec:
   targetRef:
     group: gateway.networking.k8s.io
