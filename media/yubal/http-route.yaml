@@ -20,7 +20,7 @@ spec:
       weight: 1
     matches:
     - headers:
-      - name: X-Auth-Request-User
+      - name: x-auth-request-user
         type: Exact
         value: miguel
       path:
@@ -34,7 +34,7 @@ spec:
       weight: 1
     matches:
     - headers:
-      - name: X-Auth-Request-User
+      - name: x-auth-request-user
         type: Exact
         value: ari
       path:
