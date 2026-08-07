@@ -55,7 +55,7 @@ env:
 - name: YUBAL_FETCH_LYRICS
   value: "false"
 - name: YUBAL_DOWNLOAD_UGC
-  value: "false"
+  value: "true"
 - name: YUBAL_REPLAYGAIN
   value: "true"
 - name: YUBAL_JOB_TIMEOUT_SECONDS
