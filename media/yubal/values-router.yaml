@@ -1,0 +1,60 @@
+nameOverride: yubal-router
+fullnameOverride: yubal-router
+
+image:
+  repository: nginxinc/nginx-unprivileged
+  tag: 1.27-alpine
+
+serviceAccount:
+  create: false
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 101
+  runAsGroup: 101
+  fsGroup: 1000
+  seccompProfile:
+    type: RuntimeDefault
+
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+    - ALL
+
+service:
+  type: ClusterIP
+  ports:
+  - name: http
+    port: 8080
+    targetPort: http
+    protocol: TCP
+
+ports:
+- name: http
+  containerPort: 8080
+  protocol: TCP
+
+httpRoute:
+  enabled: false
+
+volumeMounts:
+- name: nginx-config
+  mountPath: /etc/nginx/conf.d/default.conf
+  subPath: default.conf
+  readOnly: true
+
+volumes:
+- name: nginx-config
+  configMap:
+    name: yubal-router-nginx
+
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: node-role.kubernetes.io/control-plane
+          operator: NotIn
+          values:
+          - "true"

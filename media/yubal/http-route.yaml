@@ -15,35 +15,7 @@ spec:
   - backendRefs:
     - group: ''
       kind: Service
-      name: yubal-miguel
-      port: 8000
-      weight: 1
-    matches:
-    - path:
-        type: PathPrefix
-        value: /
-      headers:
-      - name: x-auth-request-user
-        type: Exact
-        value: miguel
-  - backendRefs:
-    - group: ''
-      kind: Service
-      name: yubal-ari
-      port: 8000
-      weight: 1
-    matches:
-    - path:
-        type: PathPrefix
-        value: /
-      headers:
-      - name: x-auth-request-user
-        type: Exact
-        value: ari
-  - backendRefs:
-    - group: ''
-      kind: Service
-      name: echo-test-svc
+      name: yubal-router
       port: 8080
       weight: 1
     matches:

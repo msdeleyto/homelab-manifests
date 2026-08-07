@@ -8,10 +8,15 @@ helmGlobals:
 
 helmCharts:
 - name: base-app
+  releaseName: yubal-router
+  valuesFile: values-router.yaml
+
+- name: base-app
   releaseName: yubal
   valuesFile: values.yaml
   additionalValuesFiles:
   - values-ari.yaml
+
 - name: base-app
   releaseName: yubal
   valuesFile: values.yaml
@@ -19,5 +24,6 @@ helmCharts:
   - values-miguel.yaml
 
 resources:
+- config-map.yaml
 - pvc.yaml
 - http-route.yaml
