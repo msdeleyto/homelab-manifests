@@ -13,12 +13,14 @@ data:
       }
 
       location / {
-        if ($http_x_auth_request_user = "ari") {
+        set $auth_user $http_x_auth_request_user;
+
+        if ($auth_user = "ari") {
           proxy_pass http://yubal-ari:8000;
           break;
         }
 
-        if ($http_x_auth_request_user = "miguel") {
+        if ($auth_user = "miguel") {
           proxy_pass http://yubal-miguel:8000;
           break;
         }
