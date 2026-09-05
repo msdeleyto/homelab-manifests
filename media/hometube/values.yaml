@@ -3,7 +3,7 @@ fullnameOverride: hometube
 
 image:
   repository: ghcr.io/egalitarianmonkey/hometube
-  tag: 2.10@sha256:dedc832cbef321e72b6d872100a184ef14b250d3ba894dadd679100bec6a2a7e
+  tag: 2.12@sha256:d150834b0320c0f05153ba6f481178c7f087505229372f9d8c2b7187672adb1e
 
 serviceAccount:
   create: false
