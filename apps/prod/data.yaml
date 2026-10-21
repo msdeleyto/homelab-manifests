@@ -19,7 +19,7 @@ spec:
       source:
         repoURL: https://github.com/msdeleyto/homelab-manifests.git
         targetRevision: main
-        path: './data/{{name}}'
+        path: './manifests/data/{{name}}'
       destination:
         server: https://kubernetes.default.svc
         namespace: data

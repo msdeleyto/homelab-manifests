@@ -16,7 +16,7 @@ spec:
       source:
         repoURL: https://github.com/msdeleyto/homelab-manifests.git
         targetRevision: main
-        path: './longhorn-system/{{name}}'
+        path: './manifests/longhorn-system/{{name}}'
       destination:
         server: https://kubernetes.default.svc
         namespace: longhorn-system

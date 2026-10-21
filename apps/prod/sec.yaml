@@ -11,7 +11,7 @@ spec:
     namespace: sec
   project: default
   source:
-    path: ./sec/keycloak
+    path: ./manifests/sec/keycloak
     repoURL: https://github.com/msdeleyto/homelab-manifests.git
     targetRevision: main
   syncPolicy:
@@ -39,7 +39,7 @@ spec:
     namespace: sec
   project: default
   source:
-    path: ./sec/oauth2-proxy
+    path: ./manifests/sec/oauth2-proxy
     repoURL: https://github.com/msdeleyto/homelab-manifests.git
     targetRevision: main
   syncPolicy:
