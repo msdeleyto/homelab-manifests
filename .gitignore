@@ -2,3 +2,14 @@
 .env.test
 .env.prod
 .env
+
+# Terraform
+infra/**/*.tfvars
+infra/**/.terraform/
+infra/**/*.tfstate
+infra/**/*.tfstate.*
+infra/**/*.tfstate.backup
+infra/**/.terraform.lock.hcl
+infra/**/kubeconfig
+infra/**/talosconfig
+infra/**/crash.log

@@ -4,12 +4,20 @@ Kubernetes/Helm manifests for a homelab, deployed via ArgoCD (GitOps).
 
 ## Environments
 
-Two environments, managed by ArgoCD ApplicationSets in `apps/`:
+### Kubernetes workloads — ArgoCD ApplicationSets in `apps/`
 
 - `apps/prod/` — production (11 apps: longhorn, network, monitoring, vault, sec, devops-tools, external-secrets, media, p2p, data)
 - `apps/test/` — test (5 apps: devops-tools, network, vault, longhorn, external-secrets)
 
 Each ApplicationSet references a subdirectory under its environment folder. Add a new app by adding an entry to `generators.list.elements`.
+
+### Infrastructure — Terraform in `infra/environments/`
+
+- `infra/environments/prod/` — 3-node HA cluster (talos-01/02/03 @ `.50-.52`, VIP @ `.80`) on a **dedicated bare-metal Proxmox VE host**
+- `infra/environments/test/` — **single-VM** cluster (talos-test-01 @ `.60`, VMID 201, 100 GB data disk) running on a **Proxmox VE instance deployed as a VM on this machine** (nested virtualization)
+- `infra/tooling/create-test-pve-vm` — helper script to launch the local test Proxmox VE VM via libvirt/KVM with `--cpu host-passthrough`
+
+Both environments share the same modules under `infra/modules/`. The test environment sets `cluster_vip` to the node's own IP (no L2 VIP election needed for one node) and uses `cpu_type = "kvm64"` (or `"host"`).
 
 ## Full Bootstrap
 
@@ -46,16 +54,10 @@ Never apply manifests directly — always go through kustomize first.
 | Directory | Purpose |
 |---|---|
 | `apps/` | ArgoCD ApplicationSet definitions |
-| `charts/` | Local Helm charts (base-app) |
-| `crds/` | Cluster CRDs (remote sources via kustomize) |
-| `monitoring/` | Monitoring stack (alloy, grafana, loki, prometheus, tempo) |
-| `vault/` | HashiCorp Vault deployment + auth/policies |
-| `sec/` | Security tools (keycloak, oauth2-proxy, falco, kubebench) |
-| `network/` | CNI (cilium), cert-manager, envoy gateway |
-| `longhorn-system/` | Block storage |
-| `data/` | Databases (CNPG) and AI infra (litellm) |
-| `media/` | Media servers (cwa, hometube, jellyfin, yubal) |
-| `p2p/` | P2P tools (jackett, qbittorrent, shelfmark, slskd) |
-| `devops-tools/` | ArgoCD, tooling bootstrap |
-| `tooling/` | Root-level bootstrap orchestrator |
-| `external-secrets/` | External Secrets Operator |
+| `infra/environments/prod/` | Terraform: 3-node prod cluster (bare-metal PVE host) |
+| `infra/environments/test/` | Terraform: single-VM test cluster (nested PVE VM on this host) |
+| `infra/modules/` | Shared Terraform modules (pve-config, talos-image, talos-vm, talos-cluster) |
+| `infra/tooling/` | Local helper scripts (create-test-pve-vm) |
+| `manifests/` | All Kubernetes/Helm manifests |
+| `manifests/charts/` | Local Helm charts (base-app) |
+| `manifests/crds/` | Cluster CRDs (remote sources via kustomize) |

@@ -1,0 +1,89 @@
+#!/usr/bin/env bash
+# ==============================================================================
+# create-test-pve-vm: Provision a Proxmox VE VM locally on this host using libvirt/KVM
+#
+# This creates a local virtual machine running Proxmox VE with nested KVM support
+# enabled (--cpu host-passthrough), ready to host the test Talos cluster.
+# ==============================================================================
+set -euo pipefail
+
+VM_NAME="${VM_NAME:-pve-test}"
+RAM_MB="${RAM_MB:-16384}"
+VCPUS="${VCPUS:-4}"
+DISK_SIZE_GB="${DISK_SIZE_GB:-100}"
+POOL_OR_DIR="${DISK_DIR:-/var/lib/libvirt/images}"
+DISK_PATH="${POOL_OR_DIR}/${VM_NAME}.qcow2"
+NETWORK="${NETWORK:-network=default}"
+ISO_PATH="${ISO_PATH:-}"
+
+echo "==> Checking nested virtualization on host..."
+NESTED_AMD="/sys/module/kvm_amd/parameters/nested"
+NESTED_INTEL="/sys/module/kvm_intel/parameters/nested"
+
+if [ -f "$NESTED_AMD" ]; then
+    NESTED_VAL=$(cat "$NESTED_AMD")
+    if [ "$NESTED_VAL" != "1" ] && [ "$NESTED_VAL" != "Y" ]; then
+        echo "WARNING: Nested virtualization might not be enabled for kvm_amd."
+        echo "         To enable: echo 'options kvm_amd nested=1' | sudo tee /etc/modprobe.d/kvm-nested.conf"
+    else
+        echo "    Nested virtualization is enabled (AMD)."
+    fi
+elif [ -f "$NESTED_INTEL" ]; then
+    NESTED_VAL=$(cat "$NESTED_INTEL")
+    if [ "$NESTED_VAL" != "1" ] && [ "$NESTED_VAL" != "Y" ]; then
+        echo "WARNING: Nested virtualization might not be enabled for kvm_intel."
+        echo "         To enable: echo 'options kvm_intel nested=1' | sudo tee /etc/modprobe.d/kvm-nested.conf"
+    else
+        echo "    Nested virtualization is enabled (Intel)."
+    fi
+fi
+
+if [ -z "$ISO_PATH" ]; then
+    echo "==> Searching for Proxmox VE ISO..."
+    POSSIBLE_ISOS=$(find /var/lib/libvirt/boot /var/lib/libvirt/images "$HOME/Downloads" "$HOME" -maxdepth 2 -name "proxmox-ve*.iso" 2>/dev/null || true)
+    if [ -n "$POSSIBLE_ISOS" ]; then
+        ISO_PATH=$(echo "$POSSIBLE_ISOS" | head -n 1)
+        echo "    Found ISO: $ISO_PATH"
+    else
+        echo "ERROR: No Proxmox VE ISO specified and none found automatically."
+        echo "       Please download Proxmox VE 8 ISO from https://www.proxmox.com/en/downloads"
+        echo "       and rerun with: ISO_PATH=/path/to/proxmox-ve_8.x-x.iso $0"
+        exit 1
+    fi
+fi
+
+if virsh dominfo "$VM_NAME" >/dev/null 2>&1; then
+    echo "ERROR: Domain $VM_NAME already exists in libvirt."
+    echo "       To delete: virsh destroy $VM_NAME && virsh undefine $VM_NAME --remove-all-storage"
+    exit 1
+fi
+
+echo "==> Creating disk image at $DISK_PATH (${DISK_SIZE_GB} GB)..."
+mkdir -p "$(dirname "$DISK_PATH")"
+qemu-img create -f qcow2 "$DISK_PATH" "${DISK_SIZE_GB}G"
+
+echo "==> Launching virt-install for Proxmox VE..."
+virt-install \
+    --name "$VM_NAME" \
+    --memory "$RAM_MB" \
+    --vcpus "$VCPUS" \
+    --cpu host-passthrough \
+    --os-variant debian12 \
+    --disk "path=$DISK_PATH,format=qcow2,bus=virtio" \
+    --cdrom "$ISO_PATH" \
+    --network "$NETWORK,model=virtio" \
+    --graphics vnc,listen=0.0.0.0 \
+    --video virtio \
+    --boot cdrom,hd \
+    --noautoconsole
+
+echo ""
+echo "==> VM $VM_NAME successfully created and started!"
+echo "    Connect to the console to finish the Proxmox VE installation:"
+echo "      virt-viewer $VM_NAME   (or via virt-manager / VNC)"
+echo ""
+echo "    Once installation finishes and the PVE VM reboots:"
+echo "    1. Check its IP with: virsh domifaddr $VM_NAME"
+echo "    2. Access Proxmox VE Web UI at: https://<PVE_IP>:8006"
+echo "    3. Update infra/environments/test/terraform.tfvars with the PVE IP and credentials"
+echo "    4. Run terraform init && terraform apply in infra/environments/test"

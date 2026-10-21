@@ -1,0 +1,31 @@
+# Copy this file to terraform.tfvars and fill in your values.
+# terraform.tfvars is gitignored — never commit secrets.
+
+# Proxmox VE
+pve_endpoint  = "https://192.168.10.2:8006"
+pve_username  = "terraform@pve"
+pve_password  = "CHANGE_ME"
+pve_ssh_user  = "root"
+pve_node      = "pve01"
+pve_storage_pool = "local-lvm"
+
+# Talos image (generate at https://factory.talos.dev/)
+# Extensions: qemu-guest-agent, amd-ucode, drbd
+talos_version      = "v1.9.0"
+talos_schematic_id = "CHANGE_ME"
+talos_image_url    = "https://factory.talos.dev/image/CHANGE_ME/v1.9.0/nocloud-amd64.raw.xz"
+
+# Cluster
+cluster_name = "homelab"
+cluster_vip  = "192.168.10.80"
+gateway      = "192.168.10.1"
+
+# Absolute path to the root of this repository on the machine running Terraform
+manifests_path = "/path/to/homelab-manifests"
+
+# Node overrides (optional — defaults match the plan)
+# nodes = {
+#   "talos-01" = { vmid = 101, ip = "192.168.10.50/24", controlplane = true, cpu_cores = 4, memory_mb = 8192, os_disk_gb = 64, data_disk_gb = 500 }
+#   "talos-02" = { vmid = 102, ip = "192.168.10.51/24", controlplane = true, cpu_cores = 4, memory_mb = 8192, os_disk_gb = 64, data_disk_gb = 500 }
+#   "talos-03" = { vmid = 103, ip = "192.168.10.52/24", controlplane = true, cpu_cores = 4, memory_mb = 8192, os_disk_gb = 64, data_disk_gb = 500 }
+# }
