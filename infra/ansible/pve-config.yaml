@@ -73,13 +73,28 @@
         update_cache: true
 
     # =========================================================================
-    # 2. Set Local User SSH Key as Authorized Key
+    # 2. Set Local User SSH Key & Harden SSH
     # =========================================================================
     - name: Add local user SSH key to authorized_keys
       ansible.posix.authorized_key:
         user: "root"
         state: present
         key: "{{ lookup('ansible.builtin.file', '~/.ssh/id_ed25519.pub') }}"
+
+    - name: Configure SSH hardening
+      ansible.builtin.copy:
+        dest: /etc/ssh/sshd_config.d/00-hardening.conf
+        owner: root
+        group: root
+        mode: '0644'
+        content: |
+          # SSH Hardening Configuration
+          PasswordAuthentication no
+          KbdInteractiveAuthentication no
+          PermitRootLogin prohibit-password
+          X11Forwarding no
+          MaxAuthTries 3
+      notify: Reload SSH service
 
     # =========================================================================
     # 3. Create Terraform Role Following the Docs
@@ -137,3 +152,9 @@
       ansible.builtin.command: pveum user token add {{ terraform_user }} {{ terraform_token_id }} -privsep=0 --output-format json
       when: terraform_token_id not in user_tokens.stdout
       changed_when: true
+
+  handlers:
+    - name: Reload SSH service
+      ansible.builtin.service:
+        name: ssh
+        state: reloaded
