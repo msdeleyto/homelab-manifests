@@ -1,0 +1,21 @@
+# Python virtual environments & bytecode
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+
+# Ansible execution artifacts
+*.retry
+.ansible/
+.cache/
+
+# Ansible-lint cache
+.ansible-lint
+
+# Local tokens and secrets
+.pve_api_token
+*.secret
+
+# Local unversioned inventory overrides
+inventory.ini

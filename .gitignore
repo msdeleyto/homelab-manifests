@@ -13,3 +13,7 @@ infra/**/.terraform.lock.hcl
 infra/**/kubeconfig
 infra/**/talosconfig
 infra/**/crash.log
+
+# Ansible
+.ansible/
+*.retry
