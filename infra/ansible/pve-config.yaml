@@ -1,0 +1,139 @@
+- name: Prepare and configure Proxmox VE host for Terraform
+  hosts: proxmox
+  become: true
+  gather_facts: true
+  vars:
+    terraform_user: "terraform@pve"
+    terraform_user_comment: "Terraform Provisioner"
+    terraform_role: "TerraformProv"
+    terraform_token_id: "terraform"
+    terraform_privs:
+      # Datastore
+      - Datastore.Allocate
+      - Datastore.AllocateSpace
+      - Datastore.AllocateTemplate
+      - Datastore.Audit
+      # Pool & Network
+      - Pool.Allocate
+      - SDN.Use
+      # System
+      - Sys.Audit
+      - Sys.Console
+      - Sys.Modify
+      # Virtual Machine
+      - VM.Allocate
+      - VM.Audit
+      - VM.Clone
+      - VM.Config.CDROM
+      - VM.Config.CPU
+      - VM.Config.Cloudinit
+      - VM.Config.Disk
+      - VM.Config.HWType
+      - VM.Config.Memory
+      - VM.Config.Network
+      - VM.Config.Options
+      - VM.Console
+      - VM.GuestAgent.Audit
+      - VM.GuestAgent.Unrestricted
+      - VM.Migrate
+      - VM.PowerMgmt
+  tasks:
+    # =========================================================================
+    # 1. Update Sources to No-Subscription (Proxmox VE and Ceph)
+    # =========================================================================
+    - name: Disable enterprise repositories
+      ansible.builtin.lineinfile:
+        path: "{{ item }}"
+        regexp: '^Enabled:'
+        line: 'Enabled: no'
+      loop:
+        - /etc/apt/sources.list.d/pve-enterprise.sources
+        - /etc/apt/sources.list.d/ceph.sources
+
+    - name: Configure no-subscription repositories
+      ansible.builtin.copy:
+        dest: "{{ item.path }}"
+        owner: root
+        group: root
+        mode: '0644'
+        content: |
+          Types: deb
+          URIs: {{ item.url }}
+          Suites: trixie
+          Components: {{ 'pve-no-subscription' if 'pve' in item.path else 'no-subscription' }}
+          Signed-By: /usr/share/keyrings/proxmox-archive-keyring.gpg
+      loop:
+        - path: /etc/apt/sources.list.d/pve-no-subscription.sources
+          url: http://download.proxmox.com/debian/pve
+        - path: /etc/apt/sources.list.d/ceph-no-subscription.sources
+          url: http://download.proxmox.com/debian/ceph-squid
+
+    - name: Update APT package cache
+      ansible.builtin.apt:
+        update_cache: true
+
+    # =========================================================================
+    # 2. Set Local User SSH Key as Authorized Key
+    # =========================================================================
+    - name: Add local user SSH key to authorized_keys
+      ansible.posix.authorized_key:
+        user: "root"
+        state: present
+        key: "{{ lookup('ansible.builtin.file', '~/.ssh/id_ed25519.pub') }}"
+
+    # =========================================================================
+    # 3. Create Terraform Role Following the Docs
+    # =========================================================================
+    - name: Check existing Proxmox VE roles
+      ansible.builtin.command: pveum role list
+      register: existing_roles
+      changed_when: false
+
+    - name: Create Terraform role
+      ansible.builtin.command: pveum role add {{ terraform_role }} -privs "{{ terraform_privs | join(',') }}"
+      when: terraform_role not in existing_roles.stdout
+      changed_when: true
+
+    - name: Update Terraform role privileges if role already exists
+      ansible.builtin.command: pveum role modify {{ terraform_role }} -privs "{{ terraform_privs | join(',') }}"
+      when: terraform_role in existing_roles.stdout
+      changed_when: true
+
+    # =========================================================================
+    # 4. Create Terraform User Following the Docs
+    # =========================================================================
+    - name: Check existing Proxmox VE users
+      ansible.builtin.command: pveum user list
+      register: existing_users
+      changed_when: false
+
+    - name: Create Terraform service user
+      ansible.builtin.command: pveum user add {{ terraform_user }} --comment "{{ terraform_user_comment }}"
+      when: terraform_user not in existing_users.stdout
+      changed_when: true
+
+    # =========================================================================
+    # 5. Assign Role to User
+    # =========================================================================
+    - name: Check existing ACL assignments
+      ansible.builtin.command: pveum acl list
+      register: existing_acls
+      changed_when: false
+
+    - name: Assign Terraform role to Terraform user at root path (/)
+      ansible.builtin.command: pveum acl modify / -role {{ terraform_role }} -user {{ terraform_user }}
+      when: not (existing_acls.stdout | regex_search('^/\s+.*' ~ (terraform_user | regex_escape) ~ '.*' ~ (terraform_role | regex_escape), multiline=True))
+      changed_when: true
+
+    # =========================================================================
+    # 6. Generate API Token
+    # =========================================================================
+    - name: Check existing API tokens for user
+      ansible.builtin.command: pveum user token list {{ terraform_user }}
+      register: user_tokens
+      changed_when: false
+
+    - name: Generate API token for Terraform user
+      ansible.builtin.command: pveum user token add {{ terraform_user }} {{ terraform_token_id }} -privsep=0 --output-format json
+      when: terraform_token_id not in user_tokens.stdout
+      changed_when: true
