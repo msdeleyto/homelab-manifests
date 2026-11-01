@@ -2,7 +2,7 @@ terraform {
   required_providers {
     talos = {
       source  = "siderolabs/talos"
-      version = "~> 0.7"
+      version = "~> 0.12"
     }
   }
 }
@@ -29,54 +29,71 @@ data "talos_machine_configuration" "controlplane" {
     yamlencode({
       machine = {
         network = {
-          hostname = each.key
           interfaces = [
             {
               interface = "eth0"
               dhcp      = false
-              addresses = [each.value.ip]
+              addresses = ["${each.value.ip}"]
               routes = [
                 {
                   network = "0.0.0.0/0"
-                  gateway = var.gateway
+                  gateway = "${var.gateway}"
                 }
               ]
               vip = {
-                ip = var.cluster_vip
+                ip = "${var.cluster_vip}"
               }
             }
           ]
         }
+
         kernel = {
           modules = [
-            { name = "drbd", parameters = ["usermode_helper=disabled"] },
-            { name = "drbd_transport_tcp" }
-          ]
-        }
-        kubelet = {
-          extraMounts = [
             {
-              destination = "/var/lib/linstor"
-              type        = "bind"
-              source      = "/var/lib/linstor"
-              options     = ["bind", "rshared", "rw"]
+              name = "drbd"
+              parameters = [
+                "usermode_helper=disabled"
+              ]
+            },
+            {
+              name = "drbd_transport_tcp"
             }
           ]
         }
-        features = {
-          qemuGuestAgent = {
-            enabled = true
-          }
+
+        install = {
+          disk = "/dev/vda" # Main Talos disk
         }
+
+        allowScheduling = true
+
+        kubelet = {
+          extraMounts = [
+            {
+              destination = "/var/lib/kubelet"
+              type        = "bind"
+              source      = "/var/lib/kubelet"
+              options     = ["rw", "rshared", "bind"]
+            }
+          ]
+        }
+
+        disks = [
+          {
+            device = "/dev/vdb"
+            ignore = true
+          }
+        ]
       }
+
       cluster = {
         network = {
           cni = {
-            name = "none" # Cilium is deployed separately
+            name = "none"
           }
         }
         proxy = {
-          disabled = true # Cilium replaces kube-proxy
+          disabled = true
         }
       }
     })
@@ -107,7 +124,7 @@ resource "talos_machine_bootstrap" "this" {
 # ---------------------------------------------------------------------------
 # Extract kubeconfig + talosconfig after bootstrap
 # ---------------------------------------------------------------------------
-data "talos_cluster_kubeconfig" "this" {
+resource "talos_cluster_kubeconfig" "this" {
   client_configuration = talos_machine_secrets.this.client_configuration
   node                 = var.node_addresses[local.first_controlplane]
   endpoint             = var.cluster_vip

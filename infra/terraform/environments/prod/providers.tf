@@ -1,6 +1,12 @@
 terraform {
   required_version = ">= 1.9"
 
+  backend "s3" {
+    bucket = "homelab-infra"
+    key    = "prod/terraform.tfstate"
+    region = "us-east-1"
+  }
+
   required_providers {
     proxmox = {
       source  = "bpg/proxmox"
@@ -8,7 +14,7 @@ terraform {
     }
     talos = {
       source  = "siderolabs/talos"
-      version = "~> 0.7"
+      version = "~> 0.12"
     }
     null = {
       source  = "hashicorp/null"

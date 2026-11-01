@@ -16,7 +16,7 @@ variable "gateway" {
 variable "kubernetes_version" {
   description = "Kubernetes version to deploy (must be compatible with the Talos version)"
   type        = string
-  default     = "" # Empty means Talos uses its bundled default
+  default     = null # Null means Talos uses its bundled default
 }
 
 variable "nodes" {

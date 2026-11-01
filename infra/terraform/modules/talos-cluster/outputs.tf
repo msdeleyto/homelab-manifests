@@ -1,6 +1,6 @@
 output "kubeconfig_raw" {
   description = "Raw kubeconfig YAML for the cluster"
-  value       = data.talos_cluster_kubeconfig.this.kubeconfig_raw
+  value       = resource.talos_cluster_kubeconfig.this.kubeconfig_raw
   sensitive   = true
 }
 

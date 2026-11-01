@@ -30,12 +30,16 @@ resource "proxmox_virtual_environment_vm" "talos" {
     enabled = true # QEMU guest agent installed via Talos extension
     trim    = true
     type    = "virtio"
+    timeout = "10s"
+
+    wait_for_ip {
+      disabled = true
+    }
   }
 
   cpu {
-    architecture = "x86_64"
-    cores        = each.value.cpu_cores
-    type         = var.cpu_type
+    cores = each.value.cpu_cores
+    type  = var.cpu_type
   }
 
   memory {
@@ -67,6 +71,7 @@ resource "proxmox_virtual_environment_vm" "talos" {
     bridge   = "vmbr0"
     model    = "virtio"
     firewall = false
+    mac_address = each.value.mac_address
   }
 
   # Talos boots from the cloud-init / nocloud image; no cloud-init block needed.

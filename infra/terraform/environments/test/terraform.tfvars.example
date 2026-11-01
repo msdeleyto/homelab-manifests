@@ -3,10 +3,8 @@
 
 # Proxmox VE — test hypervisor running as a VM on this machine
 # (created via infra/tooling/create-test-pve-vm or libvirt/qemu)
-pve_endpoint     = "https://192.168.122.50:8006"
-pve_username     = "terraform@pve"
-pve_password     = "CHANGE_ME"
-pve_ssh_user     = "root"
+pve_endpoint     = "https://192.168.10.50:8006"
+pve_api_token    = "api-token"
 pve_node         = "pve-test"
 pve_storage_pool = "local-lvm"
 cpu_type         = "kvm64" # or "host" if host-passthrough is configured
@@ -26,7 +24,7 @@ gateway      = "192.168.10.1"
 # Absolute path to the root of this repository on the machine running Terraform
 manifests_path = "/path/to/homelab-manifests"
 
-# Single node — override only if you need different resources
+# Single node
 # nodes = {
-#   "talos-test-01" = { vmid = 201, ip = "192.168.10.60/24", controlplane = true, cpu_cores = 4, memory_mb = 8192, os_disk_gb = 64, data_disk_gb = 100 }
+#   "talos-test-01" = { vmid = 201, ip = "192.168.10.60/24", controlplane = true, cpu_cores = 4, memory_mb = 8192, os_disk_gb = 32, data_disk_gb = 64, mac_address = "00:00:00:00:00:00" }
 # }

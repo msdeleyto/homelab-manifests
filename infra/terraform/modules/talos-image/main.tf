@@ -12,13 +12,12 @@ terraform {
 # Proxmox storage via the PVE API. This avoids downloading it manually.
 # ---------------------------------------------------------------------------
 
-resource "proxmox_virtual_environment_download_file" "talos_image" {
+resource "proxmox_download_file" "this" {
   node_name    = var.pve_node
   content_type = "iso"
   datastore_id = "local" # PVE "local" datastore holds ISO/template images
 
-  file_name               = "talos-${var.talos_version}-${var.schematic_id}-nocloud-amd64.img"
-  url                     = var.talos_image_url
-  decompression_algorithm = "zst"
-  overwrite               = false
+  file_name = "talos-${var.talos_version}-${var.schematic_id}-nocloud-amd64.iso"
+  url       = var.talos_image_url
+  overwrite = false
 }

@@ -6,21 +6,10 @@ variable "pve_endpoint" {
   type        = string
 }
 
-variable "pve_username" {
-  description = "Proxmox VE API username"
-  type        = string
-}
-
-variable "pve_password" {
-  description = "Proxmox VE API password"
+variable "pve_api_token" {
+  description = "Proxmox API token (e.g. terraform@pve!terraform=uuid)"
   type        = string
   sensitive   = true
-}
-
-variable "pve_ssh_user" {
-  description = "SSH user on PVE host"
-  type        = string
-  default     = "root"
 }
 
 variable "pve_node" {
@@ -33,12 +22,6 @@ variable "pve_storage_pool" {
   description = "PVE storage pool for VM disks"
   type        = string
   default     = "local-lvm"
-}
-
-variable "cpu_type" {
-  description = "QEMU CPU type for VMs inside the test Proxmox instance. Since test Proxmox runs as a VM, use 'kvm64' or 'host' (if nested virt is enabled with host-passthrough)."
-  type        = string
-  default     = "kvm64"
 }
 
 # ---------------------------------------------------------------------------
@@ -72,19 +55,8 @@ variable "nodes" {
     memory_mb    = number
     os_disk_gb   = number
     data_disk_gb = number
+    mac_address  = string
   }))
-  # Single VM: CP + worker, lower resources, higher VMID range (200s)
-  default = {
-    "talos-test-01" = {
-      vmid         = 201
-      ip           = "192.168.10.60/24"
-      controlplane = true
-      cpu_cores    = 4
-      memory_mb    = 8192
-      os_disk_gb   = 64
-      data_disk_gb = 100
-    }
-  }
 }
 
 variable "gateway" {

@@ -4,8 +4,6 @@
 # Proxmox VE
 pve_endpoint  = "https://192.168.10.2:8006"
 pve_username  = "terraform@pve"
-pve_password  = "CHANGE_ME"
-pve_ssh_user  = "root"
 pve_node      = "pve01"
 pve_storage_pool = "local-lvm"
 
@@ -23,7 +21,7 @@ gateway      = "192.168.10.1"
 # Absolute path to the root of this repository on the machine running Terraform
 manifests_path = "/path/to/homelab-manifests"
 
-# Node overrides (optional — defaults match the plan)
+# Node overrides
 # nodes = {
 #   "talos-01" = { vmid = 101, ip = "192.168.10.50/24", controlplane = true, cpu_cores = 4, memory_mb = 8192, os_disk_gb = 64, data_disk_gb = 500 }
 #   "talos-02" = { vmid = 102, ip = "192.168.10.51/24", controlplane = true, cpu_cores = 4, memory_mb = 8192, os_disk_gb = 64, data_disk_gb = 500 }

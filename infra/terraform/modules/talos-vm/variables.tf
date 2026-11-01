@@ -24,6 +24,7 @@ variable "nodes" {
     memory_mb    = number
     os_disk_gb   = number
     data_disk_gb = number
+    mac_address  = string
   }))
 }
 

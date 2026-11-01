@@ -67,35 +67,6 @@ variable "nodes" {
     os_disk_gb   = number
     data_disk_gb = number
   }))
-  default = {
-    "talos-01" = {
-      vmid         = 101
-      ip           = "192.168.10.50/24"
-      controlplane = true
-      cpu_cores    = 4
-      memory_mb    = 8192
-      os_disk_gb   = 64
-      data_disk_gb = 500
-    }
-    "talos-02" = {
-      vmid         = 102
-      ip           = "192.168.10.51/24"
-      controlplane = true
-      cpu_cores    = 4
-      memory_mb    = 8192
-      os_disk_gb   = 64
-      data_disk_gb = 500
-    }
-    "talos-03" = {
-      vmid         = 103
-      ip           = "192.168.10.52/24"
-      controlplane = true
-      cpu_cores    = 4
-      memory_mb    = 8192
-      os_disk_gb   = 64
-      data_disk_gb = 500
-    }
-  }
 }
 
 # ---------------------------------------------------------------------------

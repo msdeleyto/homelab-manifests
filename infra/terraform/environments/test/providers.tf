@@ -1,6 +1,12 @@
 terraform {
   required_version = ">= 1.9"
 
+  backend "s3" {
+    bucket = "homelab-infra"
+    key    = "test/terraform.tfstate"
+    region = "us-east-1"
+  }
+
   required_providers {
     proxmox = {
       source  = "bpg/proxmox"
@@ -8,7 +14,7 @@ terraform {
     }
     talos = {
       source  = "siderolabs/talos"
-      version = "~> 0.7"
+      version = "~> 0.12"
     }
     null = {
       source  = "hashicorp/null"
@@ -18,14 +24,13 @@ terraform {
 }
 
 provider "proxmox" {
-  endpoint = var.pve_endpoint
-  username = var.pve_username
-  password = var.pve_password
-  insecure = true
+  endpoint  = var.pve_endpoint
+  api_token = var.pve_api_token
+  insecure  = true
 
   ssh {
-    agent    = true
-    username = var.pve_ssh_user
+    username    = "root"
+    private_key = file("~/.ssh/id_ed25519")
   }
 }
 
