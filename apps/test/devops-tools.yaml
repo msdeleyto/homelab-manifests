@@ -8,7 +8,6 @@ spec:
   - list:
       elements:
       - name: argocd
-      - name: renovate
   template:
     metadata:
       name: '{{name}}'
@@ -17,7 +16,7 @@ spec:
       source:
         repoURL: https://github.com/msdeleyto/homelab-manifests.git
         targetRevision: main
-        path: './devops-tools/{{name}}'
+        path: './manifests/devops-tools/{{name}}'
       destination:
         server: https://kubernetes.default.svc
         namespace: devops-tools
