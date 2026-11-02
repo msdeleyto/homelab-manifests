@@ -36,7 +36,7 @@ cp .env.example .env
 ├── apps/                      # ArgoCD ApplicationSet definitions
 │   ├── prod/                  # Production environment
 │   └── test/                  # Test environment
-├── charts/                    # Local Helm charts (base-app templates)
+├── infra/                     # Terraform modules and environments (Proxmox + Talos)
 ├── monitoring/                # Observability stack
 ├── network/                   # Networking (CNI, cert-manager, envoy)
 ├── sec/                       # Security tools
