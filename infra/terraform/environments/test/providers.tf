@@ -5,6 +5,9 @@ terraform {
     bucket = "homelab-infra"
     key    = "test/terraform.tfstate"
     region = "us-east-1"
+
+    # State contains full Talos cluster secrets (machine Secrets, etcd keys).
+    encrypt = true
   }
 
   required_providers {

@@ -7,6 +7,10 @@ terraform {
   }
 }
 
+locals {
+  first_controlplane = keys(var.nodes)[0]
+}
+
 # ---------------------------------------------------------------------------
 # Machine secrets — generated once and stored in Terraform state.
 # These contain the Talos PKI, etcd encryption key, etc.
@@ -17,92 +21,115 @@ resource "talos_machine_secrets" "this" {}
 # Machine configuration — one per node, templated from patches
 # ---------------------------------------------------------------------------
 data "talos_machine_configuration" "controlplane" {
-  for_each = { for k, v in var.nodes : k => v if v.controlplane }
-
+  for_each           = var.nodes
   cluster_name       = var.cluster_name
   cluster_endpoint   = "https://${var.cluster_vip}:6443"
   machine_type       = "controlplane"
   machine_secrets    = talos_machine_secrets.this.machine_secrets
   kubernetes_version = var.kubernetes_version
 
-  config_patches = [
-    yamlencode({
-      machine = {
-        network = {
-          interfaces = [
-            {
-              interface = "eth0"
-              dhcp      = false
-              addresses = ["${each.value.ip}"]
-              routes = [
-                {
-                  network = "0.0.0.0/0"
-                  gateway = "${var.gateway}"
+  config_patches = concat(
+    [
+      yamlencode({
+        machine = {
+          network = {
+            interfaces = [
+              {
+                interface = "eth0"
+                dhcp      = false
+                addresses = ["${each.value.ip}"]
+                routes = [
+                  {
+                    network = "0.0.0.0/0"
+                    gateway = "${var.gateway}"
+                  }
+                ]
+                vip = {
+                  ip = "${var.cluster_vip}"
                 }
-              ]
-              vip = {
-                ip = "${var.cluster_vip}"
               }
-            }
-          ]
-        }
-
-        kernel = {
-          modules = [
-            {
-              name = "drbd"
-              parameters = [
-                "usermode_helper=disabled"
-              ]
-            },
-            {
-              name = "drbd_transport_tcp"
-            }
-          ]
-        }
-
-        install = {
-          disk = "/dev/vda" # Main Talos disk
-        }
-
-        allowScheduling = true
-
-        kubelet = {
-          extraMounts = [
-            {
-              destination = "/var/lib/kubelet"
-              type        = "bind"
-              source      = "/var/lib/kubelet"
-              options     = ["rw", "rshared", "bind"]
-            }
-          ]
-        }
-
-        disks = [
-          {
-            device = "/dev/vdb"
-            ignore = true
+            ]
           }
-        ]
-      }
 
-      cluster = {
-        network = {
-          cni = {
-            name = "none"
+          kernel = {
+            modules = [
+              {
+                name = "drbd"
+                parameters = [
+                  "usermode_helper=disabled"
+                ]
+              },
+              {
+                name = "drbd_transport_tcp"
+              }
+            ]
+          }
+
+          kubelet = {
+            extraMounts = [
+              {
+                destination = "/var/lib/kubelet"
+                type        = "bind"
+                source      = "/var/lib/kubelet"
+                options     = ["rw", "rshared", "bind"]
+              }
+            ]
           }
         }
-        proxy = {
-          disabled = true
+      }),
+
+      # Install disk — PVE exposes the disks as /dev/sda (OS disk) and
+      # /dev/sdb (LINSTOR/DRBD data disk); never /dev/vda. This is a project
+      # convention — if talos-vm's disk bus ever changes, this selector must
+      # be updated together with it.
+      yamlencode({
+        apiVersion = "v1alpha1"
+        kind       = "UnattendedInstallConfig"
+        installer = {
+          image = "factory.talos.dev/nocloud-installer/${var.talos_schematic_id}:${var.talos_version}"
         }
-      }
-    })
-  ]
+        provisioning = {
+          diskSelector = {
+            match = "disk.dev_path == \"/dev/sda\""
+          }
+        }
+      }),
+
+      yamlencode({
+        apiVersion = "v1alpha1"
+        kind       = "KubeFlannelCNIConfig"
+        "$patch"   = "delete"
+      }),
+
+      # kube-proxy replacement is handled by Cilium.
+      yamlencode({
+        apiVersion = "v1alpha1"
+        kind       = "KubeProxyConfig"
+        enabled    = false
+      }),
+
+      yamlencode({
+        apiVersion = "v1alpha1"
+        kind       = "KubeNodeConfig"
+        taints = {
+          "node-role.kubernetes.io/control-plane" = {
+            "$patch" = "delete"
+          }
+        }
+      }),
+
+      yamlencode({
+        apiVersion = "v1alpha1"
+        kind       = "KubeletConfig"
+        "$patch"   = "delete"
+      }),
+    ]
+  )
 }
 
 # Apply configuration to each control plane node
 resource "talos_machine_configuration_apply" "controlplane" {
-  for_each = { for k, v in var.nodes : k => v if v.controlplane }
+  for_each = var.nodes
 
   client_configuration        = talos_machine_secrets.this.client_configuration
   machine_configuration_input = data.talos_machine_configuration.controlplane[each.key].machine_configuration
@@ -137,11 +164,4 @@ data "talos_client_configuration" "this" {
   client_configuration = talos_machine_secrets.this.client_configuration
   nodes                = [for name, addr in var.node_addresses : addr]
   endpoints            = [var.cluster_vip]
-}
-
-# ---------------------------------------------------------------------------
-# Locals
-# ---------------------------------------------------------------------------
-locals {
-  first_controlplane = keys({ for k, v in var.nodes : k => v if v.controlplane })[0]
 }

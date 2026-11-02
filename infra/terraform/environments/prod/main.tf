@@ -1,9 +1,3 @@
-module "pve_config" {
-  source = "../../modules/pve-config"
-
-  pve_node = var.pve_node
-}
-
 module "talos_image" {
   source = "../../modules/talos-image"
 
@@ -31,11 +25,13 @@ module "talos_vm" {
 module "talos_cluster" {
   source = "../../modules/talos-cluster"
 
-  cluster_name   = var.cluster_name
-  cluster_vip    = var.cluster_vip
-  gateway        = var.gateway
-  nodes          = var.nodes
-  node_addresses = module.talos_vm.node_addresses
+  cluster_name       = var.cluster_name
+  cluster_vip        = var.cluster_vip
+  gateway            = var.gateway
+  talos_version      = var.talos_version
+  talos_schematic_id = var.talos_schematic_id
+  nodes              = var.nodes
+  node_addresses     = module.talos_vm.node_addresses
 
   depends_on = [module.talos_vm]
 }

@@ -23,11 +23,13 @@ module "talos_vm" {
 module "talos_cluster" {
   source = "../../modules/talos-cluster"
 
-  cluster_name   = var.cluster_name
-  cluster_vip    = var.cluster_vip
-  gateway        = var.gateway
-  nodes          = var.nodes
-  node_addresses = module.talos_vm.node_addresses
+  cluster_name       = var.cluster_name
+  cluster_vip        = var.cluster_vip
+  gateway            = var.gateway
+  talos_version      = var.talos_version
+  talos_schematic_id = var.talos_schematic_id
+  nodes              = var.nodes
+  node_addresses     = module.talos_vm.node_addresses
 
   depends_on = [module.talos_vm]
 }
@@ -52,15 +54,15 @@ module "talos_cluster" {
 #     interpreter = ["/bin/bash", "-c"]
 #   }
 # }
-# 
-# resource "local_sensitive_file" "kubeconfig" {
-#   content         = module.talos_cluster.kubeconfig_raw
-#   filename        = "${path.module}/kubeconfig"
-#   file_permission = "0600"
-# }
-# 
-# resource "local_sensitive_file" "talosconfig" {
-#   content         = module.talos_cluster.talosconfig
-#   filename        = "${path.module}/talosconfig"
-#   file_permission = "0600"
-# }
+
+resource "local_sensitive_file" "kubeconfig" {
+  content         = module.talos_cluster.kubeconfig_raw
+  filename        = "${path.module}/kubeconfig"
+  file_permission = "0600"
+}
+
+resource "local_sensitive_file" "talosconfig" {
+  content         = module.talos_cluster.talosconfig
+  filename        = "${path.module}/talosconfig"
+  file_permission = "0600"
+}

@@ -19,20 +19,42 @@ variable "kubernetes_version" {
   default     = null # Null means Talos uses its bundled default
 }
 
+variable "talos_version" {
+  description = "Talos Linux version used by the Image Factory image"
+  type        = string
+}
+
+variable "talos_schematic_id" {
+  description = "Talos Image Factory schematic ID used for installation"
+  type        = string
+}
+
 variable "nodes" {
-  description = "Map of node definitions"
+  description = "Map of node definitions (control-plane only; extra attributes passed by callers are ignored)"
   type = map(object({
-    vmid         = number
     ip           = string
     controlplane = bool
-    cpu_cores    = number
-    memory_mb    = number
-    os_disk_gb   = number
-    data_disk_gb = number
   }))
+
+  validation {
+    condition     = length(var.nodes) > 0
+    error_message = "At least one node must be defined."
+  }
+
+  validation {
+    condition     = alltrue([for _, v in var.nodes : v.controlplane])
+    error_message = "This module only supports control-plane nodes; every entry must have controlplane = true."
+  }
 }
 
 variable "node_addresses" {
-  description = "Map of node name to IP address (from talos-vm module)"
+  description = "Map of node name to IP address without prefix length (from talos-vm module)"
   type        = map(string)
+
+  validation {
+    condition = alltrue([
+      for k in keys(var.nodes) : contains(keys(var.node_addresses), k)
+    ])
+    error_message = "node_addresses must contain an entry for every node defined in nodes."
+  }
 }

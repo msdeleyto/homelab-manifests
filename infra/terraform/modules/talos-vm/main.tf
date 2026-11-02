@@ -85,10 +85,4 @@ resource "proxmox_virtual_environment_vm" "talos" {
   stop_on_destroy     = true
   timeout_stop_vm     = 30
   timeout_shutdown_vm = 30
-
-  lifecycle {
-    # Prevent accidental destruction if VM ID or name changes
-    prevent_destroy = false
-    ignore_changes  = [disk[0].file_id] # Image updates don't replace the OS disk
-  }
 }

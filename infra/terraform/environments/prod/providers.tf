@@ -5,6 +5,9 @@ terraform {
     bucket = "homelab-infra"
     key    = "prod/terraform.tfstate"
     region = "us-east-1"
+
+    # State contains full Talos cluster secrets (machine Secrets, etcd keys).
+    encrypt = true
   }
 
   required_providers {
@@ -27,16 +30,13 @@ terraform {
 # Proxmox VE provider
 # ---------------------------------------------------------------------------
 provider "proxmox" {
-  endpoint = var.pve_endpoint # e.g. "https://192.168.10.2:8006"
-  username = var.pve_username # e.g. "terraform@pve"
-  password = var.pve_password
-
-  # Accept self-signed PVE certificates (typical for homelabs)
-  insecure = true
+  endpoint = var.pve_endpoint
+  api_token = var.pve_api_token
+  insecure  = true
 
   ssh {
-    agent    = true
-    username = var.pve_ssh_user # e.g. "root"
+    username    = "root"
+    private_key = file("~/.ssh/id_ed25519")
   }
 }
 
