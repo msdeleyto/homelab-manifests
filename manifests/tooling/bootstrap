@@ -21,8 +21,6 @@ verify_requirements() {
   fi
 }
 
-vault_secrets="$1"
-
 project_path="$(dirname $0)/.."
 
 echo "[+] Verifying requirements..."
@@ -34,27 +32,17 @@ echo "[+] Installing CRDs..."
 echo -e "    CRDs ready!\\n"
 
 # Install CNI
-echo "[1/5] Bootstraping CNI..."
+echo "[1/4] Bootstraping CNI..."
 "${project_path}"/manifests/network/tooling/bootstrap
 echo -e "   CNI ready!\\n"
 
-# Install storage
-echo "[2/5] Bootstraping storage..."
-"${project_path}"/manifests/longhorn-system/tooling/bootstrap
-echo -e "   Storage ready!\\n"
-
-# Install Vault
-echo "[3/5] Bootstraping vault..."
-"${project_path}"/manifests/vault/tooling/bootstrap "${vault_secrets}"
-echo -e "   Vault ready!\\n"
-
 # Install ESO
-echo "[4/5] Bootstraping ESO..."
+echo "[2/3] Bootstraping ESO..."
 "${project_path}"/manifests/external-secrets/tooling/bootstrap
 echo -e "   ESO ready!\\n"
 
 # Install ArgoCD
-echo "[5/5] Bootstraping ArgoCD..."
+echo "[3/3] Bootstraping ArgoCD..."
 "${project_path}"/manifests/devops-tools/tooling/bootstrap
 echo -e "   Devops-tools ready!\\n"
 

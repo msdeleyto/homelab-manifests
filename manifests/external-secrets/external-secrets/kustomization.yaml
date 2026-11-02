@@ -9,8 +9,15 @@ helmCharts:
   namespace: external-secrets
   valuesInline:
     installCRDs: false
+    bitwarden-sdk-server:
+      enabled: true
+      image:
+        tls:
+          enabled: true
+          secretName: bitwarden-tls-certs
     genericTargets:
       enabled: true
 
 resources:
+- bitwarden-certs.yaml
 - secret-store.yaml

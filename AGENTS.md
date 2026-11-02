@@ -6,8 +6,8 @@ Kubernetes/Helm manifests for a homelab, deployed via ArgoCD (GitOps).
 
 ### Kubernetes workloads — ArgoCD ApplicationSets in `apps/`
 
-- `apps/prod/` — production (11 apps: longhorn, network, monitoring, vault, sec, devops-tools, external-secrets, media, p2p, data)
-- `apps/test/` — test (5 apps: devops-tools, network, vault, longhorn, external-secrets)
+- `apps/prod/` — production (10 apps: longhorn, network, monitoring, sec, devops-tools, external-secrets, media, p2p, data, crds)
+- `apps/test/` — test (5 apps: devops-tools, network, longhorn, external-secrets, crds)
 
 Each ApplicationSet references a subdirectory under its environment folder. Add a new app by adding an entry to `generators.list.elements`.
 
@@ -27,9 +27,9 @@ One-shot cluster bootstrap from scratch (no existing cluster required):
 tooling/bootstrap
 ```
 
-This installs CRDs → CNI (Cilium) → Storage (Longhorn) → Vault → External Secrets Operator → ArgoCD.
+This installs CRDs → CNI (Cilium) → Storage (Longhorn) → External Secrets Operator → ArgoCD.
 
-Vault bootstrap requires a secrets file (`vault/tooling/bootstrap <secrets.yaml>`) containing `cluster.secrets.vault.unsealer[]` and `cluster.secrets.vault.vault.rootToken`.
+ESO bootstrap requires the `bitwarden-access-token` Secret to exist in the `external-secrets` namespace (Bitwarden SM machine account access token).
 
 ## Variable Substitution
 
@@ -44,7 +44,7 @@ Never apply manifests directly — always go through kustomize first.
 ## Key Conventions
 
 - All namespaces enforce `pod-security.kubernetes.io/audit: restricted` (audit-version: latest)
-- ArgoCD sync-waves: ESO `-3`, Vault `-4`, others default `0`
+- ArgoCD sync-waves: ESO `-3`, others default `0`
 - ArgoCD uses `CreateNamespace=true` and `ServerSideApply=true`
 - Renovate auto-meres minor/patch Helm chart updates (`renovate.json`)
 - CI validates all YAML manifests on PR/push

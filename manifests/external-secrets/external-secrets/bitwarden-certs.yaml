@@ -1,0 +1,60 @@
+# cert-manager resources for Bitwarden SDK server TLS
+# The SDK server MUST run with HTTPS, so we use cert-manager to generate
+# a self-signed CA and issue a certificate for the in-cluster SDK server.
+
+# Step 1: Self-signed issuer to bootstrap the CA
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: bitwarden-bootstrap-issuer
+  namespace: external-secrets
+spec:
+  selfSigned: {}
+---
+# Step 2: CA certificate signed by the self-signed issuer
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: bitwarden-ca-certificate
+  namespace: external-secrets
+spec:
+  commonName: bitwarden-tls-ca
+  isCA: true
+  secretName: bitwarden-ca-certs
+  issuerRef:
+    name: bitwarden-bootstrap-issuer
+    kind: Issuer
+---
+# Step 3: Issuer backed by our CA
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: bitwarden-certificate-issuer
+  namespace: external-secrets
+spec:
+  ca:
+    secretName: bitwarden-ca-certs
+---
+# Step 4: Server certificate for the Bitwarden SDK server
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: bitwarden-sdk-server-certificate
+  namespace: external-secrets
+spec:
+  secretName: bitwarden-tls-certs
+  dnsNames:
+    - bitwarden-sdk-server.external-secrets.svc.cluster.local
+    - external-secrets-bitwarden-sdk-server.external-secrets.svc.cluster.local
+    - bitwarden-sdk-server
+    - localhost
+  ipAddresses:
+    - 127.0.0.1
+    - ::1
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS8
+    size: 2048
+  issuerRef:
+    name: bitwarden-certificate-issuer
+    kind: Issuer

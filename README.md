@@ -17,7 +17,7 @@ cp .env.example .env
 ./tooling/bootstrap
 
 # 4. ArgoCD will pick up all apps automatically
-#    Production: apps/prod/  (11 apps)
+#    Production: apps/prod/  (10 apps)
 #    Test:       apps/test/  (5 apps)
 ```
 
@@ -43,8 +43,7 @@ cp .env.example .env
 ├── data/                      # Data services (PostgreSQL, LLM proxy)
 ├── media/                     # Media server apps
 ├── p2p/                       # P2P apps
-├── vault/                     # HashiCorp Vault
-├── external-secrets/          # External Secrets Operator
+├── external-secrets/          # External Secrets Operator + Bitwarden SM
 ├── devops-tools/              # ArgoCD deployment
 ├── longhorn-system/           # Block storage
 ├── tooling/                   # Bootstrap orchestrator
@@ -59,20 +58,19 @@ All workloads are deployed and managed by ArgoCD ApplicationSets. Apps are organ
 
 | Environment | Apps | Description |
 |---|---|---|
-| `prod` | 11 | Full stack: media, monitoring, security, networking, data, devops |
-| `test` | 5 | Subset for testing: devops-tools, network, vault, longhorn, external-secrets |
+| `prod` | 10 | Full stack: media, monitoring, security, networking, data, devops |
+| `test` | 5 | Subset for testing: devops-tools, network, longhorn, external-secrets |
 
-Each ApplicationSet uses `CreateNamespace=true` and `ServerSideApply=true` for self-healing and namespace management. Sync-waves are ordered: ArgoCD → Vault (-4) → ESO (-3) → other apps (0).
+Each ApplicationSet uses `CreateNamespace=true` and `ServerSideApply=true` for self-healing and namespace management. Sync-waves are ordered: ArgoCD → ESO (-3) → other apps (0).
 
 ### Bootstrap Flow
 
-The cluster is bootstrapped in 5 sequential steps via `tooling/bootstrap`:
+The cluster is bootstrapped in 4 sequential steps via `tooling/bootstrap`:
 
 1. **CRDs** — Install cluster-wide CRDs (gateway-api, cert-manager, ESO, etc.)
 2. **CNI (Cilium)** — Deploy Cilium with load-balancer pool and HA VIP
 3. **Storage (Longhorn)** — Deploy Longhorn with PVCs, control-plane-tolerated
-4. **Vault** — Initialize, unseal, configure auth, load secrets (requires `vault/tooling/bootstrap <secrets.yaml>`)
-5. **External Secrets Operator** — Install ESO for secret injection into apps
+4. **External Secrets Operator** — Install ESO with Bitwarden SDK server for secret injection into apps
 
 ### Configuration
 
@@ -84,7 +82,6 @@ All manifests use `envsubst` for variable substitution. The template file is:
 | `INFRA_DOMAIN` | Domain for ingress and services | Yes |
 | `INFRA_LB_IP` | Load balancer IP (Cilium) | Yes |
 | `INFRA_HA_VIP` | HA Virtual IP | Yes |
-| `VAULT_ADMIN_PASSWORD` | Vault admin password | Yes (prod) |
 
 Template a copy of `.env.example` with your actual values before deploying:
 
@@ -93,12 +90,17 @@ cp .env.example .env
 # Edit .env with your cluster-specific values
 ```
 
-### Vault Setup
+### Secrets Management
 
-Vault bootstrap requires a secrets file at `vault/tooling/bootstrap <secrets.yaml>` containing:
+External Secrets Operator (ESO) integrates with Bitwarden Secrets Manager to inject secrets into applications. The Bitwarden SDK server runs in-cluster with TLS certificates managed by cert-manager.
 
-- `cluster.secrets.vault.unsealer[]` — Unseal keys (filled automatically from `vault operator init`)
-- `cluster.secrets.vault.vault.rootToken` — Initial root token (filled automatically)
+To bootstrap ESO, create the Bitwarden access token secret in the `external-secrets` namespace:
+
+```bash
+kubectl create secret generic bitwarden-access-token \
+  --namespace external-secrets \
+  --from-literal=token=<your-bitwarden-sm-access-token>
+```
 
 ## CI/CD
 
@@ -112,8 +114,6 @@ GitHub Actions workflow validates all Kubernetes manifests on every PR and push 
 ```
 
 ## Notes
-
-> Vault bootstrap is a one-time operation that initializes the Vault server, unseals it with keys from your secrets file, and configures auth engines and policies. After bootstrap, subsequent deploys use the existing vault deployment.
 
 > All namespaces enforce `pod-security.kubernetes.io/audit: restricted` (audit-version: latest).
 
