@@ -2,7 +2,6 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: domain
-  namespace: network
 spec:
   secretName: domain-tls-secret
   commonName: ${INFRA_DOMAIN}
