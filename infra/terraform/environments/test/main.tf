@@ -34,27 +34,6 @@ module "talos_cluster" {
   depends_on = [module.talos_vm]
 }
 
-# # ---------------------------------------------------------------------------
-# # Bootstrap Cilium CNI
-# # For the test cluster, the VIP is set to the node's own IP, so there is no
-# # leader election — Cilium simply starts on the single node.
-# # ---------------------------------------------------------------------------
-# resource "null_resource" "deploy_cilium" {
-#   depends_on = [module.talos_cluster]
-# 
-#   triggers = {
-#     cluster_id = module.talos_cluster.cluster_id
-#   }
-# 
-#   provisioner "local-exec" {
-#     command     = <<-EOT
-#       kubectl --kubeconfig <(echo '${module.talos_cluster.kubeconfig_raw}') \
-#         apply -k ${var.manifests_path}/manifests/network/cilium/
-#     EOT
-#     interpreter = ["/bin/bash", "-c"]
-#   }
-# }
-
 resource "local_sensitive_file" "kubeconfig" {
   content         = module.talos_cluster.kubeconfig_raw
   filename        = "${path.module}/kubeconfig"
