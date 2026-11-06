@@ -11,8 +11,18 @@ verify_requirements() {
     error=1
   fi
 
+  if ! which helm &>/dev/null; then
+    echo "    [!] helm not found"
+    error=1
+  fi
+
   if ! which envsubst &>/dev/null; then
     echo "    [!] envsubst not found"
+    error=1
+  fi
+
+  if ! which yq &>/dev/null; then
+    echo "    [!] yq not found"
     error=1
   fi
 
@@ -89,8 +99,39 @@ echo "    CRDs ready!"
 # Step 2: Install Cilium (CNI)
 echo ""
 echo "[2/4] Installing Cilium (CNI)..."
-kubectl create namespace network --dry-run=client -o yaml | kubectl apply -f -
-apply_kustomization "${manifests_path}/network/cilium"
+
+# Create namespace network and set pod security labels
+kubectl apply -f "${manifests_path}/network/cilium/namespace.yaml"
+
+cat "${manifests_path}/network/cilium/values.yaml" | envsubst '${INFRA_HA_VIP}' > /tmp/cilium-values.yaml
+
+cilium_version="$(yq -r '.helmCharts[] | select(.name == "cilium") | .version' "${manifests_path}/network/cilium/kustomization.yaml")"
+helm upgrade --install cilium oci://quay.io/cilium/charts/cilium --force-conflicts \
+  --version "${cilium_version}" \
+  --namespace network \
+  --values /tmp/cilium-values.yaml > /dev/null
+
+kubectl wait --namespace network \
+  --for=create daemonset.apps/cilium-envoy \
+  --timeout=300s
+
+kubectl wait --namespace network \
+  --for=condition=Ready pod \
+  --selector=name=cilium-envoy \
+  --timeout=300s
+
+kubectl wait --namespace network \
+  --for=create daemonset.apps/cilium \
+  --timeout=300s
+
+kubectl wait --namespace network \
+  --for=condition=Ready pod \
+  --selector=app.kubernetes.io/name=cilium-agent \
+  --timeout=300s
+
+echo "    Applying Cilium configuration..."
+envsubst < <(kubectl kustomize --enable-helm "${manifests_path}/network/cilium") | \
+  kubectl apply --server-side --force-conflicts -f - > /dev/null
 echo "    Cilium ready!"
 
 # Step 3: Install External Secrets Operator
@@ -105,7 +146,11 @@ kubectl create secret generic bitwarden-access-token \
   --from-literal=token="${BITWARDEN_ACCESS_TOKEN}" \
   --dry-run=client -o yaml | kubectl apply -f -
 
-apply_kustomization "${manifests_path}/external-secrets/external-secrets"
+envsubst < <(kubectl kustomize --enable-helm "${manifests_path}/external-secrets/external-secrets") | \
+  kubectl apply --server-side --force-conflicts -f - > /dev/null
+
+echo "    Waiting for ESO webhook to be ready..."
+kubectl --namespace external-secrets wait --for condition=available deploy/external-secrets-webhook --timeout=120s > /dev/null
 echo "    ESO ready!"
 
 # Step 4: Install ArgoCD

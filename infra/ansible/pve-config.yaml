@@ -1,3 +1,7 @@
+# TODO
+# - Harden SSH configuration
+# - Install Glances
+
 - name: Prepare and configure Proxmox VE host for Terraform
   hosts: proxmox
   become: true

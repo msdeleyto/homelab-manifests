@@ -26,8 +26,9 @@ BITWARDEN_ACCESS_TOKEN=<your-token> ./manifests/tooling/bootstrap
 - **Kubernetes** cluster (v1.29+)
 - **Helm** 3.x
 - **kubectl**
+- **kustomize** (included in kubectl)
 - **envsubst** (for variable substitution in manifests)
-- **yq** (for secrets file parsing)
+- **yq** (for parsing YAML configuration)
 
 ## Project Layout
 

@@ -11,5 +11,6 @@ helmCharts:
   valuesFile: values.yaml
 
 resources:
+- namespace.yaml
 - gateway-lb-pool.yaml
 - httproute.yaml
