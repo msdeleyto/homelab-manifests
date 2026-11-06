@@ -36,14 +36,6 @@ verify_requirements() {
   fi
 }
 
-# Apply kustomize with envsubst
-apply_kustomization() {
-  local path="$1"
-  echo "    Applying ${path}..."
-  envsubst < <(kubectl kustomize --enable-helm "${path}") | \
-    kubectl apply --server-side --force-conflicts -f -
-}
-
 project_path="$(cd "$(dirname "$0")/../.." && pwd)"
 manifests_path="${project_path}/manifests"
 
@@ -74,26 +66,13 @@ if [[ ${#missing[@]} -gt 0 ]]; then
   for var in "${missing[@]}"; do
     echo "  - ${var}"
   done
-  echo ""
-  echo "Load your env file before running:"
-  echo "  set -a && source .env.test && set +a"
-  echo "  BITWARDEN_ACCESS_TOKEN=<token> ${0}"
-  echo ""
-  echo "Variable descriptions:"
-  echo "  BITWARDEN_ACCESS_TOKEN      Bitwarden SM machine account access token"
-  echo "  INFRA_ENV                   Environment: test or prod"
-  echo "  INFRA_DOMAIN                Cluster domain (e.g. example.com)"
-  echo "  INFRA_LB_IP                 Load balancer IP for Cilium (e.g. 192.168.1.80)"
-  echo "  INFRA_HA_VIP                HA virtual IP for the API server (e.g. 192.168.1.80)"
-  echo "  INFRA_BITWARDEN_ORG_ID      Bitwarden organization ID"
-  echo "  INFRA_BITWARDEN_PROJECT_ID  Bitwarden project ID"
   exit 1
 fi
 
 # Step 1: Install CRDs
 echo ""
 echo "[1/4] Installing CRDs..."
-apply_kustomization "${manifests_path}/crds"
+kubectl apply --server-side --force-conflicts -k "${manifests_path}/crds" > /dev/null
 echo "    CRDs ready!"
 
 # Step 2: Install Cilium (CNI)
@@ -130,7 +109,8 @@ kubectl wait --namespace network \
   --timeout=300s
 
 echo "    Applying Cilium configuration..."
-envsubst < <(kubectl kustomize --enable-helm "${manifests_path}/network/cilium") | \
+kubectl kustomize --enable-helm "${project_path}/cilium" | \
+  envsubst '${INFRA_DOMAIN} ${INFRA_LB_IP} ${INFRA_HA_VIP}' | \
   kubectl apply --server-side --force-conflicts -f - > /dev/null
 echo "    Cilium ready!"
 
@@ -146,7 +126,7 @@ kubectl create secret generic bitwarden-access-token \
   --from-literal=token="${BITWARDEN_ACCESS_TOKEN}" \
   --dry-run=client -o yaml | kubectl apply -f -
 
-envsubst < <(kubectl kustomize --enable-helm "${manifests_path}/external-secrets/external-secrets") | \
+kubectl kustomize "${manifests_path}/external-secrets/external-secrets" --enable-helm | \
   kubectl apply --server-side --force-conflicts -f - > /dev/null
 
 echo "    Waiting for ESO webhook to be ready..."
@@ -157,7 +137,9 @@ echo "    ESO ready!"
 echo ""
 echo "[4/4] Installing ArgoCD..."
 kubectl create namespace devops-tools --dry-run=client -o yaml | kubectl apply -f -
-apply_kustomization "${manifests_path}/devops-tools/argocd"
+kubectl kustomize --enable-helm "${manifests_path}/devops-tools/argocd" | \
+  envsubst '${INFRA_DOMAIN} ${INFRA_ENV}' | \
+  kubectl apply --server-side --force-conflicts -f - > /dev/null
 echo "    ArgoCD ready!"
 
 echo ""
