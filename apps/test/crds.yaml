@@ -12,7 +12,7 @@ spec:
   source:
     path: ./manifests/crds
     repoURL: https://github.com/msdeleyto/homelab-manifests.git
-    targetRevision: main
+    targetRevision: refactor/secrets
   syncPolicy:
     automated:
       prune: true
