@@ -13,8 +13,8 @@ cd homelab-manifests
 cp .env.example .env
 # Edit .env with your values: INFRA_ENV, INFRA_DOMAIN, INFRA_LB_IP, etc.
 
-# 3. Bootstrap the cluster (requires existing K8s cluster)
-./tooling/bootstrap
+# 3. Bootstrap the cluster (requires existing K8s cluster and Bitwarden token)
+BITWARDEN_ACCESS_TOKEN=<your-token> ./manifests/tooling/bootstrap
 
 # 4. ArgoCD will pick up all apps automatically
 #    Production: apps/prod/  (10 apps)
@@ -69,8 +69,15 @@ The cluster is bootstrapped in 4 sequential steps via `tooling/bootstrap`:
 
 1. **CRDs** — Install cluster-wide CRDs (gateway-api, cert-manager, ESO, etc.)
 2. **CNI (Cilium)** — Deploy Cilium with load-balancer pool and HA VIP
-3. **Storage (Longhorn)** — Deploy Longhorn with PVCs, control-plane-tolerated
-4. **External Secrets Operator** — Install ESO with Bitwarden SDK server for secret injection into apps
+3. **External Secrets Operator** — Install ESO with Bitwarden SDK server and configure Bitwarden access token
+4. **ArgoCD** — Install ArgoCD which takes over deployment of all other applications via GitOps
+
+Load your environment file and provide the Bitwarden token:
+
+```bash
+set -a && source .env.test && set +a
+BITWARDEN_ACCESS_TOKEN=<your-token> ./manifests/tooling/bootstrap
+```
 
 ### Configuration
 
@@ -82,6 +89,8 @@ All manifests use `envsubst` for variable substitution. The template file is:
 | `INFRA_DOMAIN` | Domain for ingress and services | Yes |
 | `INFRA_LB_IP` | Load balancer IP (Cilium) | Yes |
 | `INFRA_HA_VIP` | HA Virtual IP | Yes |
+| `INFRA_BITWARDEN_ORG_ID` | Bitwarden organization ID | Yes |
+| `INFRA_BITWARDEN_PROJECT_ID` | Bitwarden project ID | Yes |
 
 Template a copy of `.env.example` with your actual values before deploying:
 

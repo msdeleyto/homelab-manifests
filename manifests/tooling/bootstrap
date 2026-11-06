@@ -4,16 +4,21 @@ set -euo pipefail
 
 # Verify requirements
 verify_requirements() {
-  error="0"
+  local error=0
 
-  if ! which kubectl 2>&1 > /dev/null; then
-    echo "    [!] kubectl not detected!"
-    error="1"
+  if ! which kubectl &>/dev/null; then
+    echo "    [!] kubectl not found"
+    error=1
   fi
 
-  if ! which helm 2>&1 > /dev/null; then
-    echo "    [!] helm not detected!"
-    error="1"
+  if ! which envsubst &>/dev/null; then
+    echo "    [!] envsubst not found"
+    error=1
+  fi
+
+  if ! kubectl kustomize --help &>/dev/null 2>&1; then
+    echo "    [!] kubectl kustomize not available"
+    error=1
   fi
 
   if [[ "${error}" == "1" ]]; then
@@ -21,29 +26,95 @@ verify_requirements() {
   fi
 }
 
-project_path="$(dirname $0)/.."
+# Apply kustomize with envsubst
+apply_kustomization() {
+  local path="$1"
+  echo "    Applying ${path}..."
+  envsubst < <(kubectl kustomize --enable-helm "${path}") | \
+    kubectl apply --server-side --force-conflicts -f -
+}
+
+project_path="$(cd "$(dirname "$0")/../.." && pwd)"
+manifests_path="${project_path}/manifests"
 
 echo "[+] Verifying requirements..."
-verify_requirements "${project_path}"
-echo -e "    Everything ready!\\n"
+verify_requirements
+echo "    Everything ready!"
 
-echo "[+] Installing CRDs..."
-"${project_path}"/manifests/crds/tooling/bootstrap
-echo -e "    CRDs ready!\\n"
+# Validate required variables
+required_vars=(
+  BITWARDEN_ACCESS_TOKEN
+  INFRA_ENV
+  INFRA_DOMAIN
+  INFRA_LB_IP
+  INFRA_HA_VIP
+  INFRA_BITWARDEN_ORG_ID
+  INFRA_BITWARDEN_PROJECT_ID
+)
+missing=()
+for var in "${required_vars[@]}"; do
+  if [[ -z "${!var:-}" ]]; then
+    missing+=("$var")
+  fi
+done
 
-# Install CNI
-echo "[1/4] Bootstraping CNI..."
-"${project_path}"/manifests/network/tooling/bootstrap
-echo -e "   CNI ready!\\n"
+if [[ ${#missing[@]} -gt 0 ]]; then
+  echo ""
+  echo "Error: missing required variables:"
+  for var in "${missing[@]}"; do
+    echo "  - ${var}"
+  done
+  echo ""
+  echo "Load your env file before running:"
+  echo "  set -a && source .env.test && set +a"
+  echo "  BITWARDEN_ACCESS_TOKEN=<token> ${0}"
+  echo ""
+  echo "Variable descriptions:"
+  echo "  BITWARDEN_ACCESS_TOKEN      Bitwarden SM machine account access token"
+  echo "  INFRA_ENV                   Environment: test or prod"
+  echo "  INFRA_DOMAIN                Cluster domain (e.g. example.com)"
+  echo "  INFRA_LB_IP                 Load balancer IP for Cilium (e.g. 192.168.1.80)"
+  echo "  INFRA_HA_VIP                HA virtual IP for the API server (e.g. 192.168.1.80)"
+  echo "  INFRA_BITWARDEN_ORG_ID      Bitwarden organization ID"
+  echo "  INFRA_BITWARDEN_PROJECT_ID  Bitwarden project ID"
+  exit 1
+fi
 
-# Install ESO
-echo "[2/3] Bootstraping ESO..."
-"${project_path}"/manifests/external-secrets/tooling/bootstrap
-echo -e "   ESO ready!\\n"
+# Step 1: Install CRDs
+echo ""
+echo "[1/4] Installing CRDs..."
+apply_kustomization "${manifests_path}/crds"
+echo "    CRDs ready!"
 
-# Install ArgoCD
-echo "[3/3] Bootstraping ArgoCD..."
-"${project_path}"/manifests/devops-tools/tooling/bootstrap
-echo -e "   Devops-tools ready!\\n"
+# Step 2: Install Cilium (CNI)
+echo ""
+echo "[2/4] Installing Cilium (CNI)..."
+kubectl create namespace network --dry-run=client -o yaml | kubectl apply -f -
+apply_kustomization "${manifests_path}/network/cilium"
+echo "    Cilium ready!"
 
-echo "[+] Cluster services ready!"
+# Step 3: Install External Secrets Operator
+echo ""
+echo "[3/4] Installing External Secrets Operator..."
+kubectl create namespace external-secrets --dry-run=client -o yaml | kubectl apply -f -
+
+# Create Bitwarden access token secret
+echo "    Creating Bitwarden access token secret..."
+kubectl create secret generic bitwarden-access-token \
+  --namespace external-secrets \
+  --from-literal=token="${BITWARDEN_ACCESS_TOKEN}" \
+  --dry-run=client -o yaml | kubectl apply -f -
+
+apply_kustomization "${manifests_path}/external-secrets/external-secrets"
+echo "    ESO ready!"
+
+# Step 4: Install ArgoCD
+echo ""
+echo "[4/4] Installing ArgoCD..."
+kubectl create namespace devops-tools --dry-run=client -o yaml | kubectl apply -f -
+apply_kustomization "${manifests_path}/devops-tools/argocd"
+echo "    ArgoCD ready!"
+
+echo ""
+echo "[+] Bootstrap complete!"
+echo ""

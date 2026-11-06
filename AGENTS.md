@@ -24,16 +24,16 @@ Both environments share the same modules under `infra/modules/`. The test enviro
 One-shot cluster bootstrap from scratch (no existing cluster required):
 
 ```bash
-tooling/bootstrap
+BITWARDEN_ACCESS_TOKEN=<your-token> ./manifests/tooling/bootstrap
 ```
 
-This installs CRDs → CNI (Cilium) → Storage (Longhorn) → External Secrets Operator → ArgoCD.
+This installs CRDs → CNI (Cilium) → External Secrets Operator → ArgoCD. After bootstrap, ArgoCD takes over and deploys all other applications via GitOps.
 
-ESO bootstrap requires the `bitwarden-access-token` Secret to exist in the `external-secrets` namespace (Bitwarden SM machine account access token).
+ESO bootstrap requires a Bitwarden Secrets Manager machine account access token. Create one in your Bitwarden SM organization with access to the project containing your secrets.
 
 ## Variable Substitution
 
-Manifests use `envsubst` for: `INFRA_DOMAIN`, `INFRA_LB_IP`, `INFRA_HA_VIP`, `INFRA_ENV`.
+Manifests use `envsubst` for: `INFRA_DOMAIN`, `INFRA_LB_IP`, `INFRA_HA_VIP`, `INFRA_ENV`, `INFRA_BITWARDEN_ORG_ID`, `INFRA_BITWARDEN_PROJECT_ID`.
 Template a copy of `.env.example` with actual values before deploying.
 
 ## Manifest Rendering
