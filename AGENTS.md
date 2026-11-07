@@ -27,7 +27,7 @@ One-shot cluster bootstrap from scratch (no existing cluster required):
 BITWARDEN_ACCESS_TOKEN=<your-token> ./manifests/tooling/bootstrap
 ```
 
-This installs CRDs → CNI (Cilium) → External Secrets Operator → ArgoCD. After bootstrap, ArgoCD takes over and deploys all other applications via GitOps.
+This installs CRDs → CNI (Cilium) → cert-manager → External Secrets Operator → ArgoCD. After bootstrap, ArgoCD takes over and deploys all other applications via GitOps.
 
 ESO bootstrap requires a Bitwarden Secrets Manager machine account access token. Create one in your Bitwarden SM organization with access to the project containing your secrets.
 

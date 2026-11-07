@@ -71,13 +71,13 @@ fi
 
 # Step 1: Install CRDs
 echo ""
-echo "[1/4] Installing CRDs..."
+echo "[1/5] Installing CRDs..."
 kubectl apply --server-side --force-conflicts -k "${manifests_path}/crds" > /dev/null
 echo "    CRDs ready!"
 
 # Step 2: Install Cilium (CNI)
 echo ""
-echo "[2/4] Installing Cilium (CNI)..."
+echo "[2/5] Installing Cilium (CNI)..."
 
 # Create namespace network and set pod security labels
 kubectl apply -f "${manifests_path}/network/cilium/namespace.yaml"
@@ -114,9 +114,25 @@ kubectl kustomize --enable-helm "${manifests_path}/network/cilium" | \
   kubectl apply --server-side --force-conflicts -f - > /dev/null
 echo "    Cilium ready!"
 
-# Step 3: Install External Secrets Operator
+# Step 3: Install cert-manager
 echo ""
-echo "[3/4] Installing External Secrets Operator..."
+echo "[3/5] Installing cert-manager..."
+cert_manager_version="$(yq -r '.helmCharts[] | select(.name == "cert-manager") | .version' "${manifests_path}/network/certmanager/kustomization.yaml")"
+helm upgrade --install cert-manager oci://quay.io/jetstack/charts/cert-manager \
+  --version "${cert_manager_version}" \
+  --namespace network \
+  --values "${manifests_path}/network/certmanager/values.yaml" > /dev/null
+
+echo "    Waiting for cert-manager pods to be ready..."
+kubectl --namespace network wait --for=condition=Ready pod \
+  --selector app.kubernetes.io/instance=cert-manager \
+  --timeout=300s
+
+echo "    cert-manager ready!"
+
+# Step 4: Install External Secrets Operator
+echo ""
+echo "[4/5] Installing External Secrets Operator..."
 kubectl create namespace external-secrets --dry-run=client -o yaml | kubectl apply -f -
 
 # Create Bitwarden access token secret
@@ -127,15 +143,23 @@ kubectl create secret generic bitwarden-access-token \
   --dry-run=client -o yaml | kubectl apply -f -
 
 kubectl kustomize "${manifests_path}/external-secrets/external-secrets" --enable-helm | \
+  envsubst '${INFRA_BITWARDEN_ORG_ID} ${INFRA_BITWARDEN_PROJECT_ID}' | \
   kubectl apply --server-side --force-conflicts -f - > /dev/null
 
 echo "    Waiting for ESO webhook to be ready..."
 kubectl --namespace external-secrets wait --for condition=available deploy/external-secrets-webhook --timeout=120s > /dev/null
+
+echo "    Waiting for Bitwarden TLS certificates..."
+kubectl --namespace external-secrets wait --for=jsonpath='{.status.ready}' certificate/bitwarden-sdk-server-certificate --timeout=120s > /dev/null 2>&1 || \
+  kubectl --namespace external-secrets wait --for=create secret/bitwarden-tls-certs --timeout=120s > /dev/null
+
+echo "    Waiting for bitwarden-sdk-server to be ready..."
+kubectl --namespace external-secrets wait --for condition=available deploy/bitwarden-sdk-server --timeout=120s > /dev/null
 echo "    ESO ready!"
 
-# Step 4: Install ArgoCD
+# Step 5: Install ArgoCD
 echo ""
-echo "[4/4] Installing ArgoCD..."
+echo "[5/5] Installing ArgoCD..."
 kubectl create namespace devops-tools --dry-run=client -o yaml | kubectl apply -f -
 kubectl kustomize --enable-helm "${manifests_path}/devops-tools/argocd" | \
   envsubst '${INFRA_DOMAIN} ${INFRA_ENV}' | \

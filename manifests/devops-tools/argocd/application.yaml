@@ -7,7 +7,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/msdeleyto/homelab-manifests.git
-    targetRevision: main
+    targetRevision: refactor/secrets
     path: ./apps/${INFRA_ENV}
     directory:
       recurse: true
