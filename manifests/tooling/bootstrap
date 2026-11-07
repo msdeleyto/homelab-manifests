@@ -109,7 +109,7 @@ kubectl wait --namespace network \
   --timeout=300s
 
 echo "    Applying Cilium configuration..."
-kubectl kustomize --enable-helm "${project_path}/cilium" | \
+kubectl kustomize --enable-helm "${manifests_path}/network/cilium" | \
   envsubst '${INFRA_DOMAIN} ${INFRA_LB_IP} ${INFRA_HA_VIP}' | \
   kubectl apply --server-side --force-conflicts -f - > /dev/null
 echo "    Cilium ready!"
