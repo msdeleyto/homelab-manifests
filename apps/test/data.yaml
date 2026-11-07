@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cnpg
+  namespace: devops-tools
+  annotations:
+    argocd.argoproj.io/sync-wave: "-2"
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: data
+  project: default
+  source:
+    path: ./manifests/data/cnpg
+    repoURL: https://github.com/msdeleyto/homelab-manifests.git
+    targetRevision: refactor/secrets
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    managedNamespaceMetadata:
+      labels:
+        pod-security.kubernetes.io/enforce: baseline
+        pod-security.kubernetes.io/enforce-version: latest
+        pod-security.kubernetes.io/audit: restricted
+        pod-security.kubernetes.io/audit-version: latest
+    syncOptions:
+    - CreateNamespace=true
+    - ServerSideApply=true
