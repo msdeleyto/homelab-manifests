@@ -4,21 +4,22 @@ kind: Kustomization
 namespace: piraeus
 
 helmCharts:
-- name: piraeus
-  repo: oci://ghcr.io/piraeusdatastore/piraeus-operator/piraeus
-  version: 2.12.1
-  releaseName: piraeus-operator
-  valuesInline:
-    operator:
-      resources:
-        requests:
-          cpu: 100m
-          memory: 128Mi
-        limits:
-          cpu: 500m
-          memory: 512Mi
+  - name: piraeus
+    repo: oci://ghcr.io/piraeusdatastore/piraeus-operator
+    version: 2.12.1
+    releaseName: piraeus-operator
+    valuesInline:
+      operator:
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
 
-- name: linstor-cluster
-  repo: oci://ghcr.io/piraeusdatastore/helm-charts/linstor-cluster
-  version: 2.12.1
-  releaseName: linstor-cluster
+  - name: linstor-cluster
+    repo: oci://ghcr.io/piraeusdatastore/helm-charts
+    version: 1.3.2
+    releaseName: linstor-cluster
+    valuesFile: values.yaml
