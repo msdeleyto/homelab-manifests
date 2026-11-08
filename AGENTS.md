@@ -33,7 +33,7 @@ ESO bootstrap requires a Bitwarden Secrets Manager machine account access token.
 
 ## Variable Substitution
 
-Manifests use `envsubst` for: `INFRA_DOMAIN`, `INFRA_LB_IP`, `INFRA_HA_VIP`, `INFRA_ENV`, `INFRA_BITWARDEN_ORG_ID`, `INFRA_BITWARDEN_PROJECT_ID`.
+Manifests use `envsubst` for: `DOMAIN`, `INFRA_LB_IP`, `INFRA_HA_VIP`, `INFRA_ENV`, `INFRA_BITWARDEN_ORG_ID`, `INFRA_BITWARDEN_PROJECT_ID`.
 Template a copy of `.env.example` with actual values before deploying.
 
 ## Manifest Rendering

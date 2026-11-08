@@ -20,7 +20,7 @@ spec:
       name: envoy-proxy-config
   listeners:
   - name: https
-    hostname: "*.${INFRA_DOMAIN}"
+    hostname: "*.${DOMAIN}"
     port: 443
     protocol: HTTPS
     tls:

@@ -11,16 +11,16 @@ spec:
     namespace: network
     sectionName: https
   hostnames:
-  - "cd.${INFRA_DOMAIN}"
-  - "hometube.${INFRA_DOMAIN}"
-  - "shelfmark.${INFRA_DOMAIN}"
-  - "yubal.${INFRA_DOMAIN}"
-  - "grafana.${INFRA_DOMAIN}"
-  - "prometheus.${INFRA_DOMAIN}"
-  - "hubble.${INFRA_DOMAIN}"
-  - "jackett.${INFRA_DOMAIN}"
-  - "qb.${INFRA_DOMAIN}"
-  - "slskd.${INFRA_DOMAIN}"
+  - "cd.${DOMAIN}"
+  - "hometube.${DOMAIN}"
+  - "shelfmark.${DOMAIN}"
+  - "yubal.${DOMAIN}"
+  - "grafana.${DOMAIN}"
+  - "prometheus.${DOMAIN}"
+  - "hubble.${DOMAIN}"
+  - "jackett.${DOMAIN}"
+  - "qb.${DOMAIN}"
+  - "slskd.${DOMAIN}"
   rules:
   - backendRefs:
     - group: ''

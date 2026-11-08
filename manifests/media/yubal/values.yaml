@@ -77,7 +77,7 @@ env:
 - name: YUBAL_TEMP
   value: "/tmp"
 - name: YUBAL_CORS_ORIGINS
-  value: "[\"*.${INFRA_DOMAIN}\"]"
+  value: "[\"*.${DOMAIN}\"]"
 
 volumeMounts:
 - name: config

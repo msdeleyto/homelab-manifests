@@ -4,14 +4,14 @@ alphaConfig:
 
 extraArgs:
   reverse-proxy: true
-  redirect-url: "https://oauth2-proxy.${INFRA_DOMAIN}/oauth2/callback"
+  redirect-url: "https://oauth2-proxy.${DOMAIN}/oauth2/callback"
   cookie-csrf-per-request: true
   cookie-csrf-expire: "5m"
   cookie-name: "_oauth2_proxy"
   cookie-secure: true
-  cookie-domain: ".${INFRA_DOMAIN}"
+  cookie-domain: ".${DOMAIN}"
   cookie-httponly: false
-  whitelist-domain: ".${INFRA_DOMAIN}"
+  whitelist-domain: ".${DOMAIN}"
   ssl-insecure-skip-verify: true
 
 envFrom:

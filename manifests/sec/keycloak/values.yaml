@@ -2,7 +2,7 @@ command:
   - "/opt/keycloak/bin/kc.sh"
   - "start"
   - "--http-port=8080"
-  - "--hostname=keycloak.${INFRA_DOMAIN}"
+  - "--hostname=keycloak.${DOMAIN}"
   - "--proxy-headers=xforwarded"
   - "--hostname-strict=true"
 

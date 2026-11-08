@@ -11,7 +11,7 @@ spec:
     namespace: network
     sectionName: https
   hostnames:
-  - "alloy.${INFRA_DOMAIN}"
+  - "alloy.${DOMAIN}"
   rules:
   - backendRefs:
     - group: ''

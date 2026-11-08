@@ -30,7 +30,7 @@ httpRoute:
     sectionName: https
     namespace: network
   hostnames:
-  - "cwa.${INFRA_DOMAIN}"
+  - "cwa.${DOMAIN}"
   port: 8083
   rules:
   - matches:

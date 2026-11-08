@@ -10,7 +10,7 @@ spec:
     namespace: network
     sectionName: https
   hostnames:
-  - "piraeus.${INFRA_DOMAIN}"
+  - "piraeus.${DOMAIN}"
   rules:
   - backendRefs:
     - group: ''

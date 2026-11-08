@@ -30,7 +30,7 @@ httpRoute:
     sectionName: https
     namespace: network
   hostnames:
-  - "shelfmark.${INFRA_DOMAIN}"
+  - "shelfmark.${DOMAIN}"
   port: 8084
   rules:
   - matches:

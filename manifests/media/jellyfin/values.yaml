@@ -44,7 +44,7 @@ httpRoute:
     sectionName: https
     namespace: network
   hostnames:
-  - "jellyfin.${INFRA_DOMAIN}"
+  - "jellyfin.${DOMAIN}"
   port: 8096
   rules:
   - matches:

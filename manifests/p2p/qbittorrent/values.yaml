@@ -30,7 +30,7 @@ httpRoute:
     sectionName: https
     namespace: network
   hostnames:
-  - "qb.${INFRA_DOMAIN}"
+  - "qb.${DOMAIN}"
   port: 8080
   rules:
   - matches:

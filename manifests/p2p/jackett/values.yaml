@@ -30,7 +30,7 @@ httpRoute:
     sectionName: https
     namespace: network
   hostnames:
-  - "jackett.${INFRA_DOMAIN}"
+  - "jackett.${DOMAIN}"
   port: 9117
   rules:
   - matches:

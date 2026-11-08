@@ -10,7 +10,7 @@ spec:
     namespace: network
     sectionName: https
   hostnames:
-  - "oauth2-proxy.${INFRA_DOMAIN}"
+  - "oauth2-proxy.${DOMAIN}"
   rules:
   - backendRefs:
     - group: ''

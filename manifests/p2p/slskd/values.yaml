@@ -37,7 +37,7 @@ httpRoute:
     sectionName: https
     namespace: network
   hostnames:
-  - "slskd.${INFRA_DOMAIN}"
+  - "slskd.${DOMAIN}"
   port: 5030
   rules:
   - matches:

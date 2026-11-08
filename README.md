@@ -11,7 +11,7 @@ cd homelab-manifests
 
 # 2. Copy and configure the environment template
 cp .env.example .env
-# Edit .env with your values: INFRA_ENV, INFRA_DOMAIN, INFRA_LB_IP, etc.
+# Edit .env with your values: INFRA_ENV, DOMAIN, INFRA_LB_IP, etc.
 
 # 3. Bootstrap the cluster (requires existing K8s cluster and Bitwarden token)
 BITWARDEN_ACCESS_TOKEN=<your-token> ./manifests/tooling/bootstrap
@@ -87,7 +87,7 @@ All manifests use `envsubst` for variable substitution. The template file is:
 | Variable | Description | Required |
 |---|---|---|
 | `INFRA_ENV` | Environment: `test` or `prod` | Yes |
-| `INFRA_DOMAIN` | Domain for ingress and services | Yes |
+| `DOMAIN` | Domain for ingress and services | Yes |
 | `INFRA_LB_IP` | Load balancer IP (Cilium) | Yes |
 | `INFRA_HA_VIP` | HA Virtual IP | Yes |
 | `INFRA_BITWARDEN_ORG_ID` | Bitwarden organization ID | Yes |

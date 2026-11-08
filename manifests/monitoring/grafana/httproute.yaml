@@ -10,7 +10,7 @@ spec:
     namespace: network
     sectionName: https
   hostnames:
-  - "grafana.${INFRA_DOMAIN}"
+  - "grafana.${DOMAIN}"
   rules:
   - backendRefs:
     - group: ''

@@ -150,4 +150,4 @@ applicationSet:
   replicas: 1
 
 global:
-  domain: cd.${INFRA_DOMAIN}
+  domain: cd.${DOMAIN}

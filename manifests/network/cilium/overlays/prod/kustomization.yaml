@@ -4,4 +4,6 @@ kind: Kustomization
 resources:
 - ../../base
 - gateway-lb-pool.yaml
-- values.yaml
+
+patches:
+  - path: k8s-service-host-patch.yaml

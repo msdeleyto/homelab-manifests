@@ -10,7 +10,7 @@ spec:
     sectionName: https
     namespace: network
   hostnames:
-  - "yubal.${INFRA_DOMAIN}"
+  - "yubal.${DOMAIN}"
   rules:
   - backendRefs:
     - group: ''

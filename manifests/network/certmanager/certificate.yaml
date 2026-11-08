@@ -4,10 +4,10 @@ metadata:
   name: domain
 spec:
   secretName: domain-tls-secret
-  commonName: ${INFRA_DOMAIN}
+  commonName: ${DOMAIN}
   issuerRef:
     name: letsencrypt
     kind: Issuer
   dnsNames:
-  - ${INFRA_DOMAIN}
-  - "*.${INFRA_DOMAIN}"
+  - ${DOMAIN}
+  - "*.${DOMAIN}"

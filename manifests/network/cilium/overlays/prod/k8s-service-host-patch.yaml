@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: cilium
+  namespace: network
+spec:
+  template:
+    spec:
+      containers:
+      - name: cilium-agent
+        env:
+        - name: KUBERNETES_SERVICE_HOST
+          value: "192.168.10.20"
+        - name: KUBERNETES_SERVICE_PORT
+          value: "6443"
+      initContainers:
+      - name: config
+        env:
+        - name: KUBERNETES_SERVICE_HOST
+          value: "192.168.10.20"
+        - name: KUBERNETES_SERVICE_PORT
+          value: "6443"
+      - name: clean-cilium-state
+        env:
+        - name: KUBERNETES_SERVICE_HOST
+          value: "192.168.10.20"
+        - name: KUBERNETES_SERVICE_PORT
+          value: "6443"
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: cilium-envoy
+  namespace: network
+spec:
+  template:
+    spec:
+      containers:
+      - name: cilium-envoy
+        env:
+        - name: KUBERNETES_SERVICE_HOST
+          value: "192.168.10.20"
+        - name: KUBERNETES_SERVICE_PORT
+          value: "6443"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cilium-operator
+  namespace: network
+spec:
+  template:
+    spec:
+      containers:
+      - name: cilium-operator
+        env:
+        - name: KUBERNETES_SERVICE_HOST
+          value: "192.168.10.20"
+        - name: KUBERNETES_SERVICE_PORT
+          value: "6443"
