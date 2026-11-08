@@ -8,8 +8,11 @@ spec:
     - list:
         elements:
           - name: certmanager
+            path: ./manifests/network/certmanager
           - name: cilium
+            path: ./manifests/network/cilium
           - name: envoy
+            path: ./manifests/network/envoy/overlays/prod
   template:
     metadata:
       name: '{{name}}'
@@ -18,7 +21,7 @@ spec:
       source:
         repoURL: https://github.com/msdeleyto/homelab-manifests.git
         targetRevision: main
-        path: './manifests/network/{{name}}'
+        path: '{{path}}'
       destination:
         server: https://kubernetes.default.svc
         namespace: network

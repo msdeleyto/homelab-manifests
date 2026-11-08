@@ -9,8 +9,9 @@ helmCharts:
   valuesFile: values.yaml
 
 resources:
-- external-secret.yaml
 - envoyproxy.yaml
 - gateway.yaml
+- external-secret.yaml
 - auth-routes.yaml
+- oauth2-proxy-traffic-policy.yaml
 - security-policies.yaml

@@ -7,7 +7,6 @@ spec:
   generators:
   - list:
       elements:
-      - name: common
       - name: argocd
   template:
     metadata:
