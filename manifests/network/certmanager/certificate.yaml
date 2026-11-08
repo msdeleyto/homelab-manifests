@@ -6,7 +6,7 @@ spec:
   secretName: domain-tls-secret
   commonName: ${INFRA_DOMAIN}
   issuerRef:
-    name: letsencrypt-${INFRA_ENV}
+    name: letsencrypt
     kind: Issuer
   dnsNames:
   - ${INFRA_DOMAIN}
