@@ -77,16 +77,25 @@ echo "    CRDs ready!"
 echo ""
 echo "[2/5] Installing Cilium (CNI)..."
 
-# Create namespace network and set pod security labels
-kubectl apply -f "${manifests_path}/network/cilium/namespace.yaml"
+kubectl create namespace network || true
+kubectl label namespace network \
+  pod-security.kubernetes.io/enforce=privileged \
+  pod-security.kubernetes.io/audit=privileged \
+  pod-security.kubernetes.io/warn=privileged \
+  --overwrite
 
-cat "${manifests_path}/network/cilium/values.yaml" > /tmp/cilium-values.yaml
+ha_vip="192.168.10.20"
 
-cilium_version="$(yq -r '.helmCharts[] | select(.name == "cilium") | .version' "${manifests_path}/network/cilium/kustomization.yaml")"
+if [[ "${ENV}" == "test" ]]; then
+  ha_vip="192.168.10.30"
+fi
+
+cilium_version="$(yq -r '.helmCharts[] | select(.name == "cilium") | .version' "${manifests_path}/network/cilium/base/kustomization.yaml")"
 helm upgrade --install cilium oci://quay.io/cilium/charts/cilium --force-conflicts \
   --version "${cilium_version}" \
   --namespace network \
-  --values /tmp/cilium-values.yaml > /dev/null
+  --values "${manifests_path}/network/cilium/base/values.yaml" \
+  --set k8sServiceHost="${ha_vip}" > /dev/null
 
 kubectl wait --namespace network \
   --for=create daemonset.apps/cilium-envoy \
