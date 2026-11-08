@@ -12,6 +12,7 @@ extraArgs:
   cookie-domain: ".${INFRA_DOMAIN}"
   cookie-httponly: false
   whitelist-domain: ".${INFRA_DOMAIN}"
+  ssl-insecure-skip-verify: true
 
 envFrom:
 - secretRef:
