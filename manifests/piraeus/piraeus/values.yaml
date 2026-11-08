@@ -84,3 +84,4 @@ storageClasses:
     volumeBindingMode: WaitForFirstConsumer
     parameters:
       linstor.csi.linbit.com/storagePool: data
+      linstor.csi.linbit.com/autoPlace: "2"
