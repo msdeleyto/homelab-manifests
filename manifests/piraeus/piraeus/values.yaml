@@ -21,29 +21,11 @@ satellite:
 # Final configuration
 linstorCluster:
   controller:
-    podTemplate:
-      spec:
-        containers:
-        - name: linstor-controller
-          resources:
-            requests:
-              cpu: 100m
-              memory: 128Mi
-            limits:
-              cpu: 500m
-              memory: 512Mi
+    enabled: true
+    # Resources configured via patches to avoid overriding the entire podTemplate
   csiController:
-    podTemplate:
-      spec:
-        containers:
-        - name: csi-controller
-          resources:
-            requests:
-              cpu: 50m
-              memory: 64Mi
-            limits:
-              cpu: 200m
-              memory: 256Mi
+    enabled: true
+    # Resources configured via patches to avoid overriding the entire podTemplate
 
 linstorSatelliteConfigurations:
   - name: talos-config
