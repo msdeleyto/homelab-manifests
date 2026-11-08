@@ -7,4 +7,4 @@ resources:
 - https://raw.githubusercontent.com/external-secrets/external-secrets/v2.0.0/deploy/crds/bundle.yaml
 - https://github.com/cert-manager/cert-manager/releases/download/v1.21.2/cert-manager.crds.yaml
 - https://github.com/envoyproxy/gateway/releases/download/v1.8.0/envoy-gateway-crds.yaml
-- https://github.com/piraeusdatastore/piraeus-operator/tree/v2/config/crd?ref=v2.12.1
+- https://github.com/piraeusdatastore/piraeus-operator/tree/v2/config/crd/kustomization.yaml?ref=v2.12.1
