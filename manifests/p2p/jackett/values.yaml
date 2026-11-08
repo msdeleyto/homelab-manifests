@@ -44,7 +44,7 @@ readinessProbe: null
 storage:
   create: true
   name: jackett-config
-  className: longhorn
+  className: piraeus
   accessModes:
   - ReadWriteMany
   size: 1Gi

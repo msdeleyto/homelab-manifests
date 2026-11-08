@@ -44,13 +44,13 @@ spec:
 apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: SecurityPolicy
 metadata:
-  name: longhorn-security-policy
-  namespace: longhorn-system
+  name: piraeus-security-policy
+  namespace: piraeus
 spec:
   targetRefs:
   - group: gateway.networking.k8s.io
     kind: HTTPRoute
-    name: longhorn-route
+    name: piraeus-route
   extAuth:
     headersToExtAuth:
     - Cookie

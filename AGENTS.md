@@ -6,8 +6,8 @@ Kubernetes/Helm manifests for a homelab, deployed via ArgoCD (GitOps).
 
 ### Kubernetes workloads — ArgoCD ApplicationSets in `apps/`
 
-- `apps/prod/` — production (10 apps: longhorn, network, monitoring, sec, devops-tools, external-secrets, media, p2p, data, crds)
-- `apps/test/` — test (5 apps: devops-tools, network, longhorn, external-secrets, crds)
+- `apps/prod/` — production (10 apps: piraeus, network, monitoring, sec, devops-tools, external-secrets, media, p2p, data, crds)
+- `apps/test/` — test (5 apps: devops-tools, network, piraeus, external-secrets, crds)
 
 Each ApplicationSet references a subdirectory under its environment folder. Add a new app by adding an entry to `generators.list.elements`.
 

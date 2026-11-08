@@ -2,7 +2,7 @@ server:
   persistentVolume:
     enabled: true
     size: 32Gi
-    storageClass: longhorn
+    storageClass: piraeus
   extraArgs:
     web.enable-remote-write-receiver: ""
   retention: 5d

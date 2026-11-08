@@ -41,7 +41,7 @@ httpRoute:
 storage:
   create: true
   name: calibre-config-pvc
-  className: longhorn
+  className: piraeus
   accessModes:
   - ReadWriteOnce
   size: 4Gi

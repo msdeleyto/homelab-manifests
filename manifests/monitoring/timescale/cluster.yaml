@@ -24,7 +24,7 @@ spec:
 
   storage:
     size: 20Gi
-    storageClass: longhorn
+    storageClass: piraeus
 
   resources:
     requests:

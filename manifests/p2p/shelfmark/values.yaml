@@ -46,7 +46,7 @@ livenessProbe:
 storage:
   create: true
   name: shelfmark-config
-  className: longhorn
+  className: piraeus
   accessModes:
   - ReadWriteOnce
   size: 1Gi

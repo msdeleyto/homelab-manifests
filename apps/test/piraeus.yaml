@@ -1,13 +1,15 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: longhorn-system
+  name: piraeus
   namespace: devops-tools
+  annotations:
+    argocd.argoproj.io/sync-wave: "-2"
 spec:
   generators:
     - list:
         elements:
-          - name: longhorn-system
+          - name: piraeus
   template:
     metadata:
       name: '{{name}}'
@@ -15,11 +17,11 @@ spec:
       project: default
       source:
         repoURL: https://github.com/msdeleyto/homelab-manifests.git
-        targetRevision: main
-        path: './manifests/longhorn-system/{{name}}'
+        targetRevision: refactor/secrets
+        path: './manifests/piraeus/{{name}}'
       destination:
         server: https://kubernetes.default.svc
-        namespace: longhorn-system
+        namespace: piraeus
       syncPolicy:
         automated:
           prune: true

@@ -60,7 +60,7 @@ livenessProbe:
 storage:
   create: true
   name: hometube-config
-  className: longhorn
+  className: piraeus
   accessModes:
   - ReadWriteOnce
   size: 1Gi

@@ -12,7 +12,7 @@ spec:
     namespace: devops-tools
   - group: gateway.envoyproxy.io
     kind: SecurityPolicy
-    namespace: longhorn-system
+    namespace: piraeus
   - group: gateway.envoyproxy.io
     kind: SecurityPolicy
     namespace: media

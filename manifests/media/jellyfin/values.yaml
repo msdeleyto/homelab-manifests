@@ -61,7 +61,7 @@ resources:
 storage:
   create: true
   name: jellyfin
-  className: longhorn
+  className: piraeus
   accessModes:
   - ReadWriteOnce
   size: 10Gi

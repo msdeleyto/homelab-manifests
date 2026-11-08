@@ -52,9 +52,9 @@ dashboards:
     argocd:
       gnetId: 14584
       revision: 1
-    longhorn:
-      gnetId: 16888
-      revision: 5
+    piraeus:
+      gnetId: 6162
+      revision: 1
       datasource:
       - name: DS_PROMETHEUS
         value: prometheus

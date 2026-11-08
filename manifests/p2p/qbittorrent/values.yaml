@@ -41,7 +41,7 @@ httpRoute:
 storage:
   create: true
   name: qb-config
-  className: longhorn
+  className: piraeus
   accessModes:
   - ReadWriteOnce
   size: 1Gi

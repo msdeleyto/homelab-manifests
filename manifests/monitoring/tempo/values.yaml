@@ -1,7 +1,7 @@
 persistence:
   enabled: true
   enableStatefulSetAutoDeletePVC: false
-  storageClassName: longhorn
+  storageClassName: piraeus
   accessModes:
     - ReadWriteOnce
   size: 10Gi

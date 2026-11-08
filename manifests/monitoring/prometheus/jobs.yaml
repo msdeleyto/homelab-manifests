@@ -24,17 +24,17 @@ extraScrapeConfigs: |
     scrape_interval: 5s
     static_configs:
     - targets: ['argocd-application-controller-metrics.devops-tools.svc.cluster.local:8082']
-  - job_name: 'longhorn'
+  - job_name: 'piraeus'
     metrics_path: /metrics
     kubernetes_sd_configs:
     - role: pod
       namespaces:
         names:
-        - longhorn-system
+        - piraeus
     relabel_configs:
-    - source_labels: [__meta_kubernetes_pod_label_app]
-      regex: longhorn-manager
+    - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_component]
+      regex: linstor-controller
       action: keep
     - source_labels: [__meta_kubernetes_pod_container_port_number]
-      regex: 9500
+      regex: 3376
       action: keep

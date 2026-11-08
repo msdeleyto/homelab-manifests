@@ -3,7 +3,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: yubal-config
 spec:
-  storageClassName: longhorn
+  storageClassName: piraeus
   accessModes:
   - ReadWriteMany
   resources:

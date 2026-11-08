@@ -46,7 +46,7 @@ BITWARDEN_ACCESS_TOKEN=<your-token> ./manifests/tooling/bootstrap
 ├── p2p/                       # P2P apps
 ├── external-secrets/          # External Secrets Operator + Bitwarden SM
 ├── devops-tools/              # ArgoCD deployment
-├── longhorn-system/           # Block storage
+├── piraeus/                   # Distributed block storage (DRBD-based)
 ├── tooling/                   # Bootstrap orchestrator
 └── .github/workflows/         # CI: validate Kubernetes manifests
 ```
@@ -60,7 +60,7 @@ All workloads are deployed and managed by ArgoCD ApplicationSets. Apps are organ
 | Environment | Apps | Description |
 |---|---|---|
 | `prod` | 10 | Full stack: media, monitoring, security, networking, data, devops |
-| `test` | 5 | Subset for testing: devops-tools, network, longhorn, external-secrets |
+| `test` | 5 | Subset for testing: devops-tools, network, piraeus, external-secrets |
 
 Each ApplicationSet uses `CreateNamespace=true` and `ServerSideApply=true` for self-healing and namespace management. Sync-waves are ordered: ArgoCD → ESO (-3) → other apps (0).
 
