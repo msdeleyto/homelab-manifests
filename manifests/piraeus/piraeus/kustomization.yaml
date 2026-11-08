@@ -3,6 +3,9 @@ kind: Kustomization
 
 namespace: piraeus
 
+resources:
+  - talos-satellite-config.yaml
+
 helmCharts:
   - name: piraeus
     repo: oci://ghcr.io/piraeusdatastore/piraeus-operator
