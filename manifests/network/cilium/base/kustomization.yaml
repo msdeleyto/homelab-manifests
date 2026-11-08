@@ -12,5 +12,5 @@ helmCharts:
 
 resources:
 - namespace.yaml
-- gateway-lb-pool.yaml
+- announcement-policy.yaml
 - httproute.yaml

@@ -45,13 +45,11 @@ echo "    Everything ready!"
 
 # Validate required variables
 required_vars=(
+  ENV
+  DOMAIN
+  BITWARDEN_ORG_ID
+  BITWARDEN_PROJECT_ID
   BITWARDEN_ACCESS_TOKEN
-  INFRA_ENV
-  INFRA_DOMAIN
-  INFRA_LB_IP
-  INFRA_HA_VIP
-  INFRA_BITWARDEN_ORG_ID
-  INFRA_BITWARDEN_PROJECT_ID
 )
 missing=()
 for var in "${required_vars[@]}"; do
@@ -82,7 +80,7 @@ echo "[2/5] Installing Cilium (CNI)..."
 # Create namespace network and set pod security labels
 kubectl apply -f "${manifests_path}/network/cilium/namespace.yaml"
 
-cat "${manifests_path}/network/cilium/values.yaml" | envsubst '${INFRA_HA_VIP}' > /tmp/cilium-values.yaml
+cat "${manifests_path}/network/cilium/values.yaml" > /tmp/cilium-values.yaml
 
 cilium_version="$(yq -r '.helmCharts[] | select(.name == "cilium") | .version' "${manifests_path}/network/cilium/kustomization.yaml")"
 helm upgrade --install cilium oci://quay.io/cilium/charts/cilium --force-conflicts \
@@ -109,8 +107,8 @@ kubectl wait --namespace network \
   --timeout=300s
 
 echo "    Applying Cilium configuration..."
-kubectl kustomize --enable-helm "${manifests_path}/network/cilium" | \
-  envsubst '${INFRA_DOMAIN} ${INFRA_LB_IP} ${INFRA_HA_VIP}' | \
+kubectl kustomize --enable-helm "${manifests_path}/network/cilium/overlays/${ENV}" | \
+  envsubst '${DOMAIN}' | \
   kubectl apply --server-side --force-conflicts -f - > /dev/null
 echo "    Cilium ready!"
 
@@ -143,7 +141,7 @@ kubectl create secret generic bitwarden-access-token \
   --dry-run=client -o yaml | kubectl apply -f -
 
 kubectl kustomize "${manifests_path}/external-secrets/external-secrets" --enable-helm | \
-  envsubst '${INFRA_BITWARDEN_ORG_ID} ${INFRA_BITWARDEN_PROJECT_ID}' | \
+  envsubst '${BITWARDEN_ORG_ID} ${BITWARDEN_PROJECT_ID}' | \
   kubectl apply --server-side --force-conflicts -f - > /dev/null
 
 echo "    Waiting for ESO webhook to be ready..."
@@ -161,8 +159,8 @@ echo "    ESO ready!"
 echo ""
 echo "[5/5] Installing ArgoCD..."
 kubectl create namespace devops-tools --dry-run=client -o yaml | kubectl apply -f -
-kubectl kustomize --enable-helm "${manifests_path}/devops-tools/argocd" | \
-  envsubst '${INFRA_DOMAIN} ${INFRA_ENV}' | \
+kubectl kustomize --enable-helm "${manifests_path}/devops-tools/argocd/overlays/${ENV}" | \
+  envsubst '${DOMAIN}' | \
   kubectl apply --server-side --force-conflicts -f - > /dev/null
 echo "    ArgoCD ready!"
 

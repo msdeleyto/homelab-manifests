@@ -10,7 +10,7 @@ spec:
           - name: certmanager
             path: ./manifests/network/certmanager
           - name: cilium
-            path: ./manifests/network/cilium
+            path: ./manifests/network/cilium/overlays/prod
           - name: envoy
             path: ./manifests/network/envoy/overlays/prod
   template:

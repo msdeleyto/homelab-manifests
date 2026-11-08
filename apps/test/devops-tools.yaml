@@ -5,9 +5,10 @@ metadata:
   namespace: devops-tools
 spec:
   generators:
-  - list:
-      elements:
-      - name: argocd
+    - list:
+        elements:
+          - name: argocd
+            path: ./manifests/devops-tools/argocd/overlays/test
   template:
     metadata:
       name: '{{name}}'
@@ -16,7 +17,7 @@ spec:
       source:
         repoURL: https://github.com/msdeleyto/homelab-manifests.git
         targetRevision: refactor/secrets
-        path: './manifests/devops-tools/{{name}}'
+        path: '{{path}}'
       destination:
         server: https://kubernetes.default.svc
         namespace: devops-tools

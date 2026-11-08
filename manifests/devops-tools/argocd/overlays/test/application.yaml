@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: apps
+  namespace: devops-tools
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/msdeleyto/homelab-manifests.git
+    targetRevision: refactor/secrets
+    path: ./apps/test
+    directory:
+      recurse: true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: devops-tools
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
