@@ -8,7 +8,7 @@ spec:
     - list:
         elements:
           - name: argocd
-            path: ./manifests/devops-tools/argocd/overlays/test
+            path: ./manifests/devops-tools/argocd/overlays/prod
   template:
     metadata:
       name: '{{name}}'
