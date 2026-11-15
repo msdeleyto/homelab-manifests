@@ -26,11 +26,8 @@ terraform {
   }
 }
 
-# ---------------------------------------------------------------------------
-# Proxmox VE provider
-# ---------------------------------------------------------------------------
 provider "proxmox" {
-  endpoint = var.pve_endpoint
+  endpoint  = var.pve_endpoint
   api_token = var.pve_api_token
   insecure  = true
 
@@ -40,7 +37,4 @@ provider "proxmox" {
   }
 }
 
-# ---------------------------------------------------------------------------
-# Talos provider — no configuration required at provider level
-# ---------------------------------------------------------------------------
 provider "talos" {}
