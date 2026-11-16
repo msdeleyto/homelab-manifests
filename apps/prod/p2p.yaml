@@ -8,9 +8,9 @@ spec:
     - list:
         elements:
           - name: jackett
-          - name: qbittorrent
+          # - name: qbittorrent
           - name: shelfmark
-          - name: slskd
+          # - name: slskd
   template:
     metadata:
       name: '{{name}}'

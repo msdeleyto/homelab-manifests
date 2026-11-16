@@ -10,7 +10,7 @@ spec:
           - name: alloy
           # - name: crowdsec
           - name: grafana
-          - name: loki
+          # - name: loki
           - name: prometheus
           - name: tempo
           # - name: timescale
