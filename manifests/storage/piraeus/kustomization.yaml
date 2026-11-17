@@ -5,7 +5,6 @@ namespace: storage
 
 resources:
   - talos-satellite-config.yaml
-  - httproute.yaml
 
 helmCharts:
   - name: piraeus
