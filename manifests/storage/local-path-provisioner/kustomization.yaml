@@ -7,24 +7,7 @@ resources:
   - github.com/rancher/local-path-provisioner/deploy?ref=v0.0.31
 
 patches:
-  # Point Local Path Provisioner at the Talos user-volume mount path
-  - patch: |-
-      kind: ConfigMap
-      apiVersion: v1
-      metadata:
-        name: local-path-config
-        namespace: storage
-      data:
-        config.json: |-
-          {
-                  "nodePathMap":[
-                  {
-                          "node":"DEFAULT_PATH_FOR_NON_LISTED_NODES",
-                          "paths":["/var/mnt/local-path-provisioner"]
-                  }
-                  ]
-          }
-
+  - path: configmap-patch.yaml
   - patch: |-
       apiVersion: storage.k8s.io/v1
       kind: StorageClass
