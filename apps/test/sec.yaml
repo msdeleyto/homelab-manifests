@@ -13,7 +13,7 @@ spec:
   source:
     path: ./manifests/sec/keycloak
     repoURL: https://github.com/msdeleyto/homelab-manifests.git
-    targetRevision: refactor/secrets
+    targetRevision: main
   syncPolicy:
     automated:
       prune: true
@@ -41,7 +41,7 @@ spec:
   source:
     path: ./manifests/sec/oauth2-proxy
     repoURL: https://github.com/msdeleyto/homelab-manifests.git
-    targetRevision: refactor/secrets
+    targetRevision: main
   syncPolicy:
     automated:
       prune: true
