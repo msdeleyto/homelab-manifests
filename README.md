@@ -43,7 +43,8 @@ BITWARDEN_ACCESS_TOKEN=<your-token> ./manifests/tooling/bootstrap
 │   ├── charts/                # Local Helm charts (base-app)
 │   ├── crds/                  # Cluster CRDs (remote sources via kustomize)
 │   ├── tooling/               # Bootstrap orchestrator
-│   └── <app-name>/            # Per-app manifests (network, storage, monitoring, etc.)
+│   └── <namespace>/           # Per-namespace directories
+│       └── <app>/             # Per-app manifests (kustomize base + overlays)
 └── .github/workflows/         # CI: validate manifests, Renovate, Slack notifications
 ```
 
@@ -55,8 +56,10 @@ All workloads are deployed and managed by ArgoCD ApplicationSets. Apps are organ
 
 | Environment | Description |
 |---|---|
-| `prod` | Full stack: storage, network, monitoring, security, devops, secrets, media, P2P, data |
-| `test` | Subset for testing: devops-tools, network, storage, external-secrets, data, sec, crds |
+| `prod` | Full platform: network, storage, devops, secrets, security |
+| `test` | Same platform components for testing |
+
+Each environment may also include workload-specific apps (media, P2P, data services, etc.) that depend on the platform layer.
 
 Each ApplicationSet uses `CreateNamespace=true` and `ServerSideApply=true` for self-healing and namespace management. Sync-waves order bootstrap dependencies (CRDs → storage → everything else).
 
@@ -64,9 +67,9 @@ Each ApplicationSet uses `CreateNamespace=true` and `ServerSideApply=true` for s
 
 The cluster is bootstrapped sequentially via `manifests/tooling/bootstrap`:
 
-1. **CRDs** — Install cluster-wide CRDs (gateway-api, cert-manager, ESO, etc.)
-2. **CNI (Cilium)** — Deploy Cilium with load-balancer pool and HA VIP
-3. **cert-manager** — Install cert-manager for TLS certificate management
+1. **CRDs** — Install cluster-wide Custom Resource Definitions (gateway API, certificates, external secrets, etc.)
+2. **CNI (Container Network Interface)** — Deploy networking with load-balancer pool and HA VIP
+3. **Certificate Management** — Install automated TLS certificate provisioning
 4. **External Secrets Operator** — Install ESO with Bitwarden SDK server and configure Bitwarden access token
 5. **ArgoCD** — Install ArgoCD which takes over deployment of all other applications via GitOps
 
@@ -98,7 +101,7 @@ cp .env.example .env
 
 ### Secrets Management
 
-External Secrets Operator (ESO) integrates with Bitwarden Secrets Manager to inject secrets into applications. The Bitwarden SDK server runs in-cluster with TLS certificates managed by cert-manager.
+External Secrets Operator (ESO) integrates with Bitwarden Secrets Manager to inject secrets into applications. The Bitwarden SDK server runs in-cluster with TLS certificates managed by the certificate manager.
 
 The bootstrap script creates the Bitwarden access token secret automatically. For manual setup:
 

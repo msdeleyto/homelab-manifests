@@ -9,7 +9,7 @@
 4. **Creates the Terraform Service User (`terraform@pve`)**: Creates the dedicated service user in the `pve` authentication realm.
 5. **Assigns Permissions (ACL)**: Binds `TerraformProv` to `terraform@pve` recursively at root path (`/`).
 6. **Generates API Token**: Generates the Terraform API token (`-privsep=0`).
-7. **Installs Glances (host monitoring)**: Installs Glances with sensor support in a Python venv at `/opt/glances`, with a systemd service running the web UI (`glances -w`).
+7. **Installs host monitoring**: Installs a monitoring agent with sensor support in a Python venv at `/opt/glances`, with a systemd service running the web UI.
 
 ## Usage
 

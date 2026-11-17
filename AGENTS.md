@@ -6,10 +6,10 @@ Kubernetes/Helm manifests for a homelab, deployed via ArgoCD (GitOps).
 
 ### Kubernetes workloads — ArgoCD ApplicationSets in `apps/`
 
-- `apps/prod/` — production (storage, network, monitoring, sec, devops-tools, external-secrets, media, p2p, data, crds)
-- `apps/test/` — test (devops-tools, network, storage, external-secrets, data, sec, crds)
+- `apps/prod/` — production platform (network, storage, devops, external-secrets, sec, crds)
+- `apps/test/` — same platform components for testing
 
-Each ApplicationSet references a subdirectory under `manifests/`. The `storage` ApplicationSet is a parent kustomization that deploys both Piraeus (LINSTOR/DRBD) and Local Path Provisioner into a single `storage` namespace.
+Each environment may also include workload-specific apps. Each ApplicationSet references a subdirectory under `manifests/`. The `storage` ApplicationSet is a parent kustomization that deploys multiple storage backends into a single `storage` namespace.
 
 ### Infrastructure — Terraform in `infra/terraform/`
 
@@ -20,7 +20,7 @@ Both environments share the same modules under `infra/terraform/modules/`.
 
 ### Host Configuration — Ansible in `infra/ansible/`
 
-Ansible playbook (`pve-config.yaml`) to prepare Proxmox VE hosts: switch to no-subscription repos, harden SSH, create the Terraform service user/role/token, and install host-level monitoring (Glances).
+Ansible playbook (`pve-config.yaml`) to prepare Proxmox VE hosts: switch to no-subscription repos, harden SSH, create the Terraform service user/role/token, and install host-level monitoring.
 
 ## Full Bootstrap
 
@@ -30,7 +30,7 @@ One-shot cluster bootstrap from scratch (no existing cluster required):
 BITWARDEN_ACCESS_TOKEN=<your-token> ./manifests/tooling/bootstrap
 ```
 
-This installs CRDs → CNI (Cilium) → cert-manager → External Secrets Operator → ArgoCD. After bootstrap, ArgoCD takes over and deploys all other applications via GitOps.
+This installs CRDs → CNI (Container Network Interface) → Certificate Management → External Secrets Operator → ArgoCD. After bootstrap, ArgoCD takes over and deploys all other applications via GitOps.
 
 ESO bootstrap requires a Bitwarden Secrets Manager machine account access token. Create one in your Bitwarden SM organization with access to the project containing your secrets.
 

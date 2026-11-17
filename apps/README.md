@@ -6,16 +6,16 @@ ArgoCD ApplicationSet definitions for managing a Kubernetes homelab with GitOps,
 
 Each environment directory (`prod/`, `test/`) contains one YAML file per application group. Each file defines either an `ApplicationSet` (for apps with multiple components) or an `Application` (for single resources like CRDs).
 
-ApplicationSets use a list generator with `name` and `path` elements, where `path` points to the corresponding manifests directory under `manifests/`:
+ApplicationSets use a list generator with `name` and `path` elements, where `path` points to the corresponding manifests directory under `manifests/<namespace>/<app>`:
 
 ```yaml
 generators:
   - list:
       elements:
         - name: component-a
-          path: ./manifests/<group>/component-a
+          path: ./manifests/<namespace>/component-a
         - name: component-b
-          path: ./manifests/<group>/component-b
+          path: ./manifests/<namespace>/component-b
 ```
 
 ## Features
@@ -33,12 +33,12 @@ Edit the appropriate ApplicationSet YAML and add a new element to `generators.li
 ```yaml
 elements:
   - name: existing-app
-    path: ./manifests/<group>/existing-app
+    path: ./manifests/<namespace>/existing-app
   - name: new-app
-    path: ./manifests/<group>/new-app
+    path: ./manifests/<namespace>/new-app
 ```
 
-Make sure the corresponding manifests directory exists under `manifests/`.
+Make sure the corresponding manifests directory exists under `manifests/<namespace>/`.
 
 ## Adding a New Application Group
 
