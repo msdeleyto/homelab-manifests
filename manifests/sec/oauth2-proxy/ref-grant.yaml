@@ -12,7 +12,7 @@ spec:
     namespace: devops-tools
   - group: gateway.envoyproxy.io
     kind: SecurityPolicy
-    namespace: piraeus
+    namespace: storage
   - group: gateway.envoyproxy.io
     kind: SecurityPolicy
     namespace: media

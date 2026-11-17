@@ -58,3 +58,9 @@ variable "node_addresses" {
     error_message = "node_addresses must contain an entry for every node defined in nodes."
   }
 }
+
+variable "local_path_volume_size" {
+  description = "Size of the user volume carved from the system disk for Local Path Provisioner (e.g. '10GB')"
+  type        = string
+  default     = "10GB"
+}

@@ -59,8 +59,6 @@ linstorSatelliteConfigurations:
 
 storageClasses:
   - name: piraeus
-    annotations:
-      storageclass.kubernetes.io/is-default-class: "true"
     reclaimPolicy: Delete
     allowVolumeExpansion: true
     volumeBindingMode: WaitForFirstConsumer

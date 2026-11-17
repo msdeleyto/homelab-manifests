@@ -123,6 +123,22 @@ data "talos_machine_configuration" "controlplane" {
         kind       = "KubeletConfig"
         "$patch"   = "delete"
       }),
+
+      # Local-path-provisioner user volume — carved from free space on the
+      # system (OS) disk.  Mounted at /var/mnt/local-path-provisioner and
+      # used by the Rancher Local Path Provisioner for dynamic PVCs.
+      yamlencode({
+        apiVersion = "v1alpha1"
+        kind       = "UserVolumeConfig"
+        name       = "local-path-provisioner"
+        provisioning = {
+          diskSelector = {
+            match = "system_disk"
+          }
+          minSize = var.local_path_volume_size
+          maxSize = var.local_path_volume_size
+        }
+      }),
     ]
   )
 }

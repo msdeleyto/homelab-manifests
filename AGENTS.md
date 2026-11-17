@@ -6,10 +6,10 @@ Kubernetes/Helm manifests for a homelab, deployed via ArgoCD (GitOps).
 
 ### Kubernetes workloads — ArgoCD ApplicationSets in `apps/`
 
-- `apps/prod/` — production (10 apps: piraeus, network, monitoring, sec, devops-tools, external-secrets, media, p2p, data, crds)
-- `apps/test/` — test (5 apps: devops-tools, network, piraeus, external-secrets, crds)
+- `apps/prod/` — production (10 apps: storage, network, monitoring, sec, devops-tools, external-secrets, media, p2p, data, crds)
+- `apps/test/` — test (7 apps: devops-tools, network, storage, external-secrets, data, sec, crds)
 
-Each ApplicationSet references a subdirectory under its environment folder. Add a new app by adding an entry to `generators.list.elements`.
+Each ApplicationSet references a subdirectory under its environment folder. The `storage` ApplicationSet is a parent kustomization that deploys both Piraeus (LINSTOR/DRBD) and Local Path Provisioner into a single `storage` namespace.
 
 ### Infrastructure — Terraform in `infra/environments/`
 

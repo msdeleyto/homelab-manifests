@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: piraeus
+  name: storage
   namespace: devops-tools
   annotations:
     argocd.argoproj.io/sync-wave: "-2"
@@ -10,6 +10,9 @@ spec:
     - list:
         elements:
           - name: piraeus
+            path: ./manifests/storage/piraeus
+          - name: local-path-provisioner
+            path: ./manifests/storage/local-path-provisioner
   template:
     metadata:
       name: '{{name}}'
@@ -18,10 +21,10 @@ spec:
       source:
         repoURL: https://github.com/msdeleyto/homelab-manifests.git
         targetRevision: refactor/secrets
-        path: './manifests/piraeus/{{name}}'
+        path: '{{path}}'
       destination:
         server: https://kubernetes.default.svc
-        namespace: piraeus
+        namespace: storage
       syncPolicy:
         automated:
           prune: true
