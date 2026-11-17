@@ -1,0 +1,29 @@
+# Copy this file to terraform.tfvars and fill in your values.
+# terraform.tfvars is gitignored — never commit secrets.
+
+# Proxmox VE
+pve_endpoint     = "https://<pve-ip>:8006"
+pve_api_token    = "api-token"
+pve_node         = "pve-test"
+pve_storage_pool = "local-lvm"
+cpu_type         = "kvm64" # or "host" if host-passthrough is configured
+
+# Talos image — can reuse the same image as prod (PVE won't re-download if already present)
+talos_version      = "v1.9.0"
+talos_schematic_id = "CHANGE_ME"
+talos_image_url    = "https://factory.talos.dev/image/CHANGE_ME/v1.9.0/nocloud-amd64.raw.xz"
+
+# Cluster
+cluster_name = "homelab-test"
+
+# For a single-node cluster the VIP is just the node's own IP
+cluster_vip  = "<vip>"
+gateway      = "<gateway>"
+
+# Absolute path to the root of this repository on the machine running Terraform
+manifests_path = "/path/to/homelab-manifests"
+
+# Single node
+# nodes = {
+#   "talos-test-01" = { vmid = 201, ip = "<node-ip>/24", controlplane = true, cpu_cores = 4, memory_mb = 8192, os_disk_gb = 32, data_disk_gb = 64, mac_address = "00:00:00:00:00:00" }
+# }

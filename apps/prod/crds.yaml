@@ -4,13 +4,13 @@ metadata:
   name: crds
   namespace: devops-tools
   annotations:
-    argocd.argoproj.io/sync-wave: "-5"
+    argocd.argoproj.io/sync-wave: "-3"
 spec:
   destination:
     server: https://kubernetes.default.svc
   project: default
   source:
-    path: ./crds
+    path: ./manifests/crds
     repoURL: https://github.com/msdeleyto/homelab-manifests.git
     targetRevision: main
   syncPolicy:

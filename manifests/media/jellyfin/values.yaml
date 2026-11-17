@@ -1,0 +1,92 @@
+nameOverride: jellyfin
+fullnameOverride: jellyfin
+
+image:
+  repository: docker.io/jellyfin/jellyfin
+  tag: "10.11.11@sha256:aefb67e6a7ff1debdd154a78a7bbb780fd0c873d8639210a7f6a2016ad2b35db"
+
+serviceAccount:
+  create: false
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  runAsGroup: 100
+  fsGroup: 1000
+  seccompProfile:
+    type: RuntimeDefault
+
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+    - ALL
+
+service:
+  type: ClusterIP
+  ports:
+  - name: http
+    port: 8096
+    targetPort: http
+    protocol: TCP
+
+ports:
+- name: http
+  containerPort: 8096
+  protocol: TCP
+
+httpRoute:
+  enabled: true
+  parentRefs:
+  - name: cluster-gateway
+    group: gateway.networking.k8s.io
+    kind: Gateway
+    sectionName: https
+    namespace: network
+  hostnames:
+  - "jellyfin.${DOMAIN}"
+  port: 8096
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /
+
+resources:
+  limits:
+    ephemeral-storage: 32Gi
+  requests:
+    ephemeral-storage: 16Gi
+
+storage:
+  create: true
+  name: jellyfin
+  className: piraeus
+  accessModes:
+  - ReadWriteOnce
+  size: 10Gi
+
+volumes:
+- name: config
+  persistentVolumeClaim:
+    claimName: jellyfin
+- name: data
+  nfs:
+    server: nas.homelab
+    path: /volume1/data/media
+
+volumeMounts:
+- mountPath: /config
+  name: config
+- name: data
+  mountPath: /data/media
+
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: node-role.kubernetes.io/control-plane
+          operator: NotIn
+          values:
+          - "true"

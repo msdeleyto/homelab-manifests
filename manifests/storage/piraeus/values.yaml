@@ -1,0 +1,67 @@
+# LINSTOR satellite (node agent) configuration
+satellite:
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  # For Talos, we need to ensure proper kernel module loading
+  extraVolumes:
+  - name: kernel-modules
+    hostPath:
+      path: /lib/modules
+      type: Directory
+  extraVolumeMounts:
+  - name: kernel-modules
+    mountPath: /lib/modules
+    readOnly: true
+
+# Final configuration
+linstorCluster:
+  controller:
+    enabled: true
+    # Resources configured via patches to avoid overriding the entire podTemplate
+  csiController:
+    enabled: true
+    # Resources configured via patches to avoid overriding the entire podTemplate
+
+linstorSatelliteConfigurations:
+  - name: talos-config
+    podTemplate:
+      spec:
+        containers:
+        - name: linstor-satellite
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          volumeMounts:
+          - name: kernel-modules
+            mountPath: /lib/modules
+            readOnly: true
+        volumes:
+        - name: kernel-modules
+          hostPath:
+            path: /lib/modules
+            type: Directory
+    storagePools:
+      - name: data
+        lvmPool:
+          volumeGroup: data-vg
+        source:
+          hostDevices:
+            - /dev/sdb
+
+storageClasses:
+  - name: piraeus
+    reclaimPolicy: Delete
+    allowVolumeExpansion: true
+    volumeBindingMode: WaitForFirstConsumer
+    parameters:
+      linstor.csi.linbit.com/storagePool: data
+      linstor.csi.linbit.com/autoPlace: "2"

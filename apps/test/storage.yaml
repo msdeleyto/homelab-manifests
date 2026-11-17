@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: storage
+  namespace: devops-tools
+  annotations:
+    argocd.argoproj.io/sync-wave: "-2"
+spec:
+  generators:
+    - list:
+        elements:
+          - name: piraeus
+            path: ./manifests/storage/piraeus
+          - name: local-path-provisioner
+            path: ./manifests/storage/local-path-provisioner
+  template:
+    metadata:
+      name: '{{name}}'
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/msdeleyto/homelab-manifests.git
+        targetRevision: main
+        path: '{{path}}'
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: storage
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        managedNamespaceMetadata:
+          labels:
+            pod-security.kubernetes.io/enforce: privileged
+            pod-security.kubernetes.io/warn: privileged
+            pod-security.kubernetes.io/audit: privileged
+            pod-security.kubernetes.io/audit-version: latest
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=true

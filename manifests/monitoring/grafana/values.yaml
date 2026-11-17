@@ -1,0 +1,83 @@
+grafana.ini:
+  auth.proxy:
+    enabled: true
+    header_name: X-Auth-Request-User
+    header_property: username
+    auto_sign_up: false
+
+replicaCount: 1
+
+admin:
+  existingSecret: grafana-secret
+
+envFromSecret: grafana-contact-points-secret
+
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+    datasources:
+    - name: prometheus
+      type: prometheus
+      uid: prometheus
+      access: proxy
+      url: http://prometheus-server
+      isDefault: true
+      jsonData:
+        httpMethod: POST
+        manageAlerts: true
+        prometheusType: Prometheus
+        prometheusVersion: 2.44.0
+        cacheLevel: 'Low'
+        disableRecordingRules: false
+    - name: loki
+      type: loki
+      access: proxy
+      url: http://loki:3100
+      orgId: 1
+      basicAuth: false
+      version: 1
+      jsonData:
+        httpHeaderName1: 'X-Scope-OrgID'
+      secureJsonData:
+        httpHeaderValue1: 'homelab'
+    - name: tempo
+      type: tempo
+      uid: tempo
+      url: http://tempo:3200
+      access: proxy
+      basicAuth: false
+
+dashboards:
+  default:
+    argocd:
+      gnetId: 14584
+      revision: 1
+    piraeus:
+      gnetId: 6162
+      revision: 1
+      datasource:
+      - name: DS_PROMETHEUS
+        value: prometheus
+    proxmox:
+      gnetId: 10347
+      revision: 5
+      datasource:
+      - name: DS_PROMETHEUS
+        value: prometheus
+    # crowdsec:
+    #   url: https://grafana.com/api/dashboards/21419/revisions/6/download
+    # falco:
+    #   url: https://grafana.com/api/dashboards/17319/revisions/7/download
+
+dashboardProviders:
+  dashboardproviders.yaml:
+    apiVersion: 1
+    providers:
+    - name: default
+      orgId: 1
+      folder: ""
+      type: file
+      disableDeletion: false
+      editable: false
+      options:
+        path: /var/lib/grafana/dashboards/default

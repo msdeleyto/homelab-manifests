@@ -1,0 +1,15 @@
+persistence:
+  enabled: true
+  enableStatefulSetAutoDeletePVC: false
+  storageClassName: piraeus
+  accessModes:
+    - ReadWriteOnce
+  size: 10Gi
+
+tempo:
+  reportingEnabled: false
+  receivers:
+    otlp:
+      protocols:
+        http:
+          endpoint: "0.0.0.0:4318"

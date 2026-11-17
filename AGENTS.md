@@ -4,28 +4,39 @@ Kubernetes/Helm manifests for a homelab, deployed via ArgoCD (GitOps).
 
 ## Environments
 
-Two environments, managed by ArgoCD ApplicationSets in `apps/`:
+### Kubernetes workloads — ArgoCD ApplicationSets in `apps/`
 
-- `apps/prod/` — production (11 apps: longhorn, network, monitoring, vault, sec, devops-tools, external-secrets, media, p2p, data)
-- `apps/test/` — test (5 apps: devops-tools, network, vault, longhorn, external-secrets)
+- `apps/prod/` — production platform (network, storage, devops, external-secrets, sec, crds)
+- `apps/test/` — same platform components for testing
 
-Each ApplicationSet references a subdirectory under its environment folder. Add a new app by adding an entry to `generators.list.elements`.
+Each environment may also include workload-specific apps. Each ApplicationSet references a subdirectory under `manifests/`. The `storage` ApplicationSet is a parent kustomization that deploys multiple storage backends into a single `storage` namespace.
+
+### Infrastructure — Terraform in `infra/terraform/`
+
+- `infra/terraform/environments/prod/` — 3-node HA cluster (talos-01/02/03 @ `.50-.52`, VIP @ `.80`) on a **dedicated bare-metal Proxmox VE host**
+- `infra/terraform/environments/test/` — bare-metal Proxmox VE host (same architecture as prod)
+
+Both environments share the same modules under `infra/terraform/modules/`.
+
+### Host Configuration — Ansible in `infra/ansible/`
+
+Ansible playbook (`pve-config.yaml`) to prepare Proxmox VE hosts: switch to no-subscription repos, harden SSH, create the Terraform service user/role/token, and install host-level monitoring.
 
 ## Full Bootstrap
 
 One-shot cluster bootstrap from scratch (no existing cluster required):
 
 ```bash
-tooling/bootstrap
+BITWARDEN_ACCESS_TOKEN=<your-token> ./manifests/tooling/bootstrap
 ```
 
-This installs CRDs → CNI (Cilium) → Storage (Longhorn) → Vault → External Secrets Operator → ArgoCD.
+This installs CRDs → CNI (Container Network Interface) → Certificate Management → External Secrets Operator → ArgoCD. After bootstrap, ArgoCD takes over and deploys all other applications via GitOps.
 
-Vault bootstrap requires a secrets file (`vault/tooling/bootstrap <secrets.yaml>`) containing `cluster.secrets.vault.unsealer[]` and `cluster.secrets.vault.vault.rootToken`.
+ESO bootstrap requires a Bitwarden Secrets Manager machine account access token. Create one in your Bitwarden SM organization with access to the project containing your secrets.
 
 ## Variable Substitution
 
-Manifests use `envsubst` for: `INFRA_DOMAIN`, `INFRA_LB_IP`, `INFRA_HA_VIP`, `INFRA_ENV`.
+Manifests use `envsubst` for: `ENV`, `DOMAIN`, `BITWARDEN_ORG_ID`, `BITWARDEN_PROJECT_ID`, `BITWARDEN_ACCESS_TOKEN`.
 Template a copy of `.env.example` with actual values before deploying.
 
 ## Manifest Rendering
@@ -36,26 +47,21 @@ Never apply manifests directly — always go through kustomize first.
 ## Key Conventions
 
 - All namespaces enforce `pod-security.kubernetes.io/audit: restricted` (audit-version: latest)
-- ArgoCD sync-waves: ESO `-3`, Vault `-4`, others default `0`
+- ArgoCD sync-waves: CRDs `-3`, storage `-2`, others default `0`
 - ArgoCD uses `CreateNamespace=true` and `ServerSideApply=true`
-- Renovate auto-meres minor/patch Helm chart updates (`renovate.json`)
+- Renovate auto-merges minor/patch Helm chart updates (`renovate.json`)
 - CI validates all YAML manifests on PR/push
 
 ## Directory Ownership
 
 | Directory | Purpose |
 |---|---|
-| `apps/` | ArgoCD ApplicationSet definitions |
-| `charts/` | Local Helm charts (base-app) |
-| `crds/` | Cluster CRDs (remote sources via kustomize) |
-| `monitoring/` | Monitoring stack (alloy, grafana, loki, prometheus, tempo) |
-| `vault/` | HashiCorp Vault deployment + auth/policies |
-| `sec/` | Security tools (keycloak, oauth2-proxy, falco, kubebench) |
-| `network/` | CNI (cilium), cert-manager, envoy gateway |
-| `longhorn-system/` | Block storage |
-| `data/` | Databases (CNPG) and AI infra (litellm) |
-| `media/` | Media servers (cwa, hometube, jellyfin, yubal) |
-| `p2p/` | P2P tools (jackett, qbittorrent, shelfmark, slskd) |
-| `devops-tools/` | ArgoCD, tooling bootstrap |
-| `tooling/` | Root-level bootstrap orchestrator |
-| `external-secrets/` | External Secrets Operator |
+| `apps/` | ArgoCD ApplicationSet definitions (per environment) |
+| `infra/ansible/` | Ansible playbook for Proxmox VE host configuration |
+| `infra/terraform/environments/prod/` | Terraform: 3-node prod cluster (bare-metal PVE host) |
+| `infra/terraform/environments/test/` | Terraform: test cluster (bare-metal PVE host) |
+| `infra/terraform/modules/` | Shared Terraform modules (talos-image, talos-vm, talos-cluster) |
+| `manifests/` | All Kubernetes/Helm manifests |
+| `manifests/charts/` | Local Helm charts (base-app) |
+| `manifests/crds/` | Cluster CRDs (remote sources via kustomize) |
+| `manifests/tooling/` | Bootstrap orchestrator script |

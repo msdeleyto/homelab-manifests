@@ -1,0 +1,40 @@
+extraScrapeConfigs: |
+  - job_name: 'pve'
+    static_configs:
+      - targets:
+        - pve01.lab:9221
+        - pve02.lab:9221
+    metrics_path: /pve
+    params:
+      module: [default]
+      cluster: ['1']
+      node: ['1']
+  - job_name: 'argocd-repo-server'
+    metrics_path: /metrics
+    scrape_interval: 5s
+    static_configs:
+    - targets: ['argocd-repo-server-metrics.devops-tools.svc.cluster.local:8084']
+  - job_name: 'argocd-server'
+    metrics_path: /metrics
+    scrape_interval: 5s
+    static_configs:
+    - targets: ['argocd-server-metrics.devops-tools.svc.cluster.local:8083']
+  - job_name: 'argocd-application-controller'
+    metrics_path: /metrics
+    scrape_interval: 5s
+    static_configs:
+    - targets: ['argocd-application-controller-metrics.devops-tools.svc.cluster.local:8082']
+  - job_name: 'piraeus'
+    metrics_path: /metrics
+    kubernetes_sd_configs:
+    - role: pod
+      namespaces:
+        names:
+        - piraeus
+    relabel_configs:
+    - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_component]
+      regex: linstor-controller
+      action: keep
+    - source_labels: [__meta_kubernetes_pod_container_port_number]
+      regex: 3376
+      action: keep

@@ -11,80 +11,86 @@ cd homelab-manifests
 
 # 2. Copy and configure the environment template
 cp .env.example .env
-# Edit .env with your values: INFRA_ENV, INFRA_DOMAIN, INFRA_LB_IP, etc.
+# Edit .env with your values: ENV, DOMAIN, Bitwarden credentials, etc.
 
-# 3. Bootstrap the cluster (requires existing K8s cluster)
-./tooling/bootstrap
+# 3. Bootstrap the cluster (requires existing K8s cluster and Bitwarden token)
+BITWARDEN_ACCESS_TOKEN=<your-token> ./manifests/tooling/bootstrap
 
-# 4. ArgoCD will pick up all apps automatically
-#    Production: apps/prod/  (11 apps)
-#    Test:       apps/test/  (5 apps)
+# 4. ArgoCD takes over and deploys all apps from apps/<env>/ via GitOps
 ```
 
 ### Prerequisites
 
 - **Kubernetes** cluster (v1.29+)
 - **Helm** 3.x
-- **kubectl**
+- **kubectl** (includes `kustomize`)
 - **envsubst** (for variable substitution in manifests)
-- **yq** (for secrets file parsing)
+- **yq** (for parsing YAML configuration)
 
 ## Project Layout
 
 ```
 .
-├── apps/                      # ArgoCD ApplicationSet definitions
+├── apps/                      # ArgoCD ApplicationSet definitions (per environment)
 │   ├── prod/                  # Production environment
 │   └── test/                  # Test environment
-├── charts/                    # Local Helm charts (base-app templates)
-├── monitoring/                # Observability stack
-├── network/                   # Networking (CNI, cert-manager, envoy)
-├── sec/                       # Security tools
-├── data/                      # Data services (PostgreSQL, LLM proxy)
-├── media/                     # Media server apps
-├── p2p/                       # P2P apps
-├── vault/                     # HashiCorp Vault
-├── external-secrets/          # External Secrets Operator
-├── devops-tools/              # ArgoCD deployment
-├── longhorn-system/           # Block storage
-├── tooling/                   # Bootstrap orchestrator
-└── .github/workflows/         # CI: validate Kubernetes manifests
+├── infra/                     # Infrastructure as code
+│   ├── ansible/               # Proxmox VE host configuration playbook
+│   └── terraform/             # Terraform modules and environments (Proxmox + Talos)
+│       ├── environments/      # Per-environment Terraform configs (prod, test)
+│       └── modules/           # Shared modules (talos-image, talos-vm, talos-cluster)
+├── manifests/                 # All Kubernetes/Helm manifests
+│   ├── charts/                # Local Helm charts (base-app)
+│   ├── crds/                  # Cluster CRDs (remote sources via kustomize)
+│   ├── tooling/               # Bootstrap orchestrator
+│   └── <namespace>/           # Per-namespace directories
+│       └── <app>/             # Per-app manifests (kustomize base + overlays)
+└── .github/workflows/         # CI: validate manifests, Renovate, Slack notifications
 ```
 
 ## Architecture
 
 ### GitOps with ArgoCD
 
-All workloads are deployed and managed by ArgoCD ApplicationSets. Apps are organized into two environments:
+All workloads are deployed and managed by ArgoCD ApplicationSets. Apps are organized into environments under `apps/<env>/`, where each YAML file defines an ApplicationSet (or Application for CRDs) that references manifests under `manifests/`.
 
-| Environment | Apps | Description |
-|---|---|---|
-| `prod` | 11 | Full stack: media, monitoring, security, networking, data, devops |
-| `test` | 5 | Subset for testing: devops-tools, network, vault, longhorn, external-secrets |
+| Environment | Description |
+|---|---|
+| `prod` | Full platform: network, storage, devops, secrets, security |
+| `test` | Same platform components for testing |
 
-Each ApplicationSet uses `CreateNamespace=true` and `ServerSideApply=true` for self-healing and namespace management. Sync-waves are ordered: ArgoCD → Vault (-4) → ESO (-3) → other apps (0).
+Each environment may also include workload-specific apps (media, P2P, data services, etc.) that depend on the platform layer.
+
+Each ApplicationSet uses `CreateNamespace=true` and `ServerSideApply=true` for self-healing and namespace management. Sync-waves order bootstrap dependencies (CRDs → storage → everything else).
 
 ### Bootstrap Flow
 
-The cluster is bootstrapped in 5 sequential steps via `tooling/bootstrap`:
+The cluster is bootstrapped sequentially via `manifests/tooling/bootstrap`:
 
-1. **CRDs** — Install cluster-wide CRDs (gateway-api, cert-manager, ESO, etc.)
-2. **CNI (Cilium)** — Deploy Cilium with load-balancer pool and HA VIP
-3. **Storage (Longhorn)** — Deploy Longhorn with PVCs, control-plane-tolerated
-4. **Vault** — Initialize, unseal, configure auth, load secrets (requires `vault/tooling/bootstrap <secrets.yaml>`)
-5. **External Secrets Operator** — Install ESO for secret injection into apps
+1. **CRDs** — Install cluster-wide Custom Resource Definitions (gateway API, certificates, external secrets, etc.)
+2. **CNI (Container Network Interface)** — Deploy networking with load-balancer pool and HA VIP
+3. **Certificate Management** — Install automated TLS certificate provisioning
+4. **External Secrets Operator** — Install ESO with Bitwarden SDK server and configure Bitwarden access token
+5. **ArgoCD** — Install ArgoCD which takes over deployment of all other applications via GitOps
+
+Source your environment file and provide the Bitwarden token:
+
+```bash
+set -a && source .env && set +a
+BITWARDEN_ACCESS_TOKEN=<your-token> ./manifests/tooling/bootstrap
+```
 
 ### Configuration
 
-All manifests use `envsubst` for variable substitution. The template file is:
+All manifests use `envsubst` for variable substitution. Variables are defined in `.env`:
 
-| Variable | Description | Required |
-|---|---|---|
-| `INFRA_ENV` | Environment: `test` or `prod` | Yes |
-| `INFRA_DOMAIN` | Domain for ingress and services | Yes |
-| `INFRA_LB_IP` | Load balancer IP (Cilium) | Yes |
-| `INFRA_HA_VIP` | HA Virtual IP | Yes |
-| `VAULT_ADMIN_PASSWORD` | Vault admin password | Yes (prod) |
+| Variable | Description |
+|---|---|
+| `ENV` | Environment: `prod` or `test` |
+| `DOMAIN` | Domain for ingress and services |
+| `BITWARDEN_ORG_ID` | Bitwarden organization ID |
+| `BITWARDEN_PROJECT_ID` | Bitwarden project ID |
+| `BITWARDEN_ACCESS_TOKEN` | Bitwarden SM machine account access token |
 
 Template a copy of `.env.example` with your actual values before deploying:
 
@@ -93,28 +99,28 @@ cp .env.example .env
 # Edit .env with your cluster-specific values
 ```
 
-### Vault Setup
+### Secrets Management
 
-Vault bootstrap requires a secrets file at `vault/tooling/bootstrap <secrets.yaml>` containing:
+External Secrets Operator (ESO) integrates with Bitwarden Secrets Manager to inject secrets into applications. The Bitwarden SDK server runs in-cluster with TLS certificates managed by the certificate manager.
 
-- `cluster.secrets.vault.unsealer[]` — Unseal keys (filled automatically from `vault operator init`)
-- `cluster.secrets.vault.vault.rootToken` — Initial root token (filled automatically)
+The bootstrap script creates the Bitwarden access token secret automatically. For manual setup:
+
+```bash
+kubectl create secret generic bitwarden-access-token \
+  --namespace external-secrets \
+  --from-literal=token=<your-bitwarden-sm-access-token>
+```
 
 ## CI/CD
 
-GitHub Actions workflow validates all Kubernetes manifests on every PR and push to `main`:
+GitHub Actions workflows run on every PR and push to `main`:
 
-```bash
-# CI pipeline:
-# 1. Render all manifests through kustomize + envsubst
-# 2. Validate YAML structure and Kubernetes resource specs
-# 3. Slack notification on successful merge
-```
+- **Validate Kubernetes manifests** — renders all manifests through kustomize + envsubst and validates YAML structure
+- **Renovate** — automated dependency updates (minor/patch auto-merge)
+- **Slack notification** — on Renovate-triggered merges to `main`
 
 ## Notes
 
-> Vault bootstrap is a one-time operation that initializes the Vault server, unseals it with keys from your secrets file, and configures auth engines and policies. After bootstrap, subsequent deploys use the existing vault deployment.
-
 > All namespaces enforce `pod-security.kubernetes.io/audit: restricted` (audit-version: latest).
 
-> Renovate auto-merges minor and patch Kubernetes manifest updates in `renovate.json`.
+> Renovate auto-merges minor and patch updates per `renovate.json`.

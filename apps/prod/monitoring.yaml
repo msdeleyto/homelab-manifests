@@ -10,7 +10,7 @@ spec:
           - name: alloy
           # - name: crowdsec
           - name: grafana
-          - name: loki
+          # - name: loki
           - name: prometheus
           - name: tempo
           # - name: timescale
@@ -22,7 +22,7 @@ spec:
       source:
         repoURL: https://github.com/msdeleyto/homelab-manifests.git
         targetRevision: main
-        path: './monitoring/{{name}}'
+        path: './manifests/monitoring/{{name}}'
       destination:
         server: https://kubernetes.default.svc
         namespace: monitoring
@@ -32,9 +32,9 @@ spec:
           selfHeal: true
         managedNamespaceMetadata:
           labels:
-#            pod-security.kubernetes.io/enforce: baseline
-#            pod-security.kubernetes.io/enforce-version: latest
-            pod-security.kubernetes.io/audit: restricted
+            pod-security.kubernetes.io/enforce: privileged
+            pod-security.kubernetes.io/warn: privileged
+            pod-security.kubernetes.io/audit: privileged
             pod-security.kubernetes.io/audit-version: latest
         syncOptions:
           - CreateNamespace=true

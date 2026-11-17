@@ -1,0 +1,35 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: timescaledb
+spec:
+  instances: 3
+  imageName: timescale/timescaledb-ha:pg16.13-ts2.26.4
+
+  postgresUID: 70
+  postgresGID: 70
+
+  postgresql:
+    parameters:
+      shared_preload_libraries: "timescaledb"
+
+  bootstrap:
+    initdb:
+      database: monitoring
+      owner: monitoring
+      secret:
+        name: timescaledb-secret
+      postInitApplicationSQL:
+      - CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;
+
+  storage:
+    size: 20Gi
+    storageClass: piraeus
+
+  resources:
+    requests:
+      cpu: "1"
+      memory: "2Gi"
+    limits:
+      cpu: "2"
+      memory: "4Gi"

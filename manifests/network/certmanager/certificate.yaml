@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: domain
+spec:
+  secretName: domain-tls-secret
+  commonName: ${DOMAIN}
+  issuerRef:
+    name: letsencrypt
+    kind: Issuer
+  dnsNames:
+  - ${DOMAIN}
+  - "*.${DOMAIN}"
