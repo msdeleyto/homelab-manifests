@@ -1,6 +1,3 @@
-# TODO
-# - Install Glances
-
 - name: Prepare and configure Proxmox VE host for Terraform
   hosts: proxmox
   become: true
@@ -174,8 +171,66 @@
       when: terraform_token_id not in user_tokens.stdout
       changed_when: true
 
+    # =========================================================================
+    # 7. Install Glances with sensor support (web mode)
+    # =========================================================================
+    - name: Install lm-sensors and python3-venv
+      ansible.builtin.apt:
+        name:
+          - lm-sensors
+          - python3-venv
+        state: present
+
+    - name: Create Glances virtual environment
+      ansible.builtin.command: python3 -m venv /opt/glances
+      args:
+        creates: /opt/glances/bin/pip
+
+    - name: Install Glances with sensor and web support in venv
+      ansible.builtin.pip:
+        name:
+          - glances[sensors]
+          - fastapi
+          - uvicorn
+        virtualenv: /opt/glances
+        virtualenv_command: python3 -m venv
+
+    - name: Install Glances systemd service
+      ansible.builtin.copy:
+        dest: /etc/systemd/system/glances.service
+        owner: root
+        group: root
+        mode: '0644'
+        content: |
+          [Unit]
+          Description=Glances
+          After=network.target
+
+          [Service]
+          Type=simple
+          ExecStart=/opt/glances/bin/glances -w
+          Restart=on-failure
+          RestartSec=5
+
+          [Install]
+          WantedBy=multi-user.target
+      notify: Reload systemd and restart Glances
+
+    - name: Enable and start Glances service
+      ansible.builtin.systemd:
+        name: glances
+        enabled: true
+        state: started
+        daemon_reload: true
+
   handlers:
     - name: Reload SSH service
       ansible.builtin.service:
         name: ssh
         state: reloaded
+
+    - name: Reload systemd and restart Glances
+      ansible.builtin.systemd:
+        name: glances
+        daemon_reload: true
+        state: restarted
