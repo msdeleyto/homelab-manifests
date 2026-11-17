@@ -6,18 +6,21 @@ Kubernetes/Helm manifests for a homelab, deployed via ArgoCD (GitOps).
 
 ### Kubernetes workloads — ArgoCD ApplicationSets in `apps/`
 
-- `apps/prod/` — production (10 apps: storage, network, monitoring, sec, devops-tools, external-secrets, media, p2p, data, crds)
-- `apps/test/` — test (7 apps: devops-tools, network, storage, external-secrets, data, sec, crds)
+- `apps/prod/` — production (storage, network, monitoring, sec, devops-tools, external-secrets, media, p2p, data, crds)
+- `apps/test/` — test (devops-tools, network, storage, external-secrets, data, sec, crds)
 
-Each ApplicationSet references a subdirectory under its environment folder. The `storage` ApplicationSet is a parent kustomization that deploys both Piraeus (LINSTOR/DRBD) and Local Path Provisioner into a single `storage` namespace.
+Each ApplicationSet references a subdirectory under `manifests/`. The `storage` ApplicationSet is a parent kustomization that deploys both Piraeus (LINSTOR/DRBD) and Local Path Provisioner into a single `storage` namespace.
 
-### Infrastructure — Terraform in `infra/environments/`
+### Infrastructure — Terraform in `infra/terraform/`
 
-- `infra/environments/prod/` — 3-node HA cluster (talos-01/02/03 @ `.50-.52`, VIP @ `.80`) on a **dedicated bare-metal Proxmox VE host**
-- `infra/environments/test/` — **single-VM** cluster (talos-test-01 @ `.60`, VMID 201, 100 GB data disk) running on a **Proxmox VE instance deployed as a VM on this machine** (nested virtualization)
-- `infra/tooling/create-test-pve-vm` — helper script to launch the local test Proxmox VE VM via libvirt/KVM with `--cpu host-passthrough`
+- `infra/terraform/environments/prod/` — 3-node HA cluster (talos-01/02/03 @ `.50-.52`, VIP @ `.80`) on a **dedicated bare-metal Proxmox VE host**
+- `infra/terraform/environments/test/` — bare-metal Proxmox VE host (same architecture as prod)
 
-Both environments share the same modules under `infra/modules/`. The test environment sets `cluster_vip` to the node's own IP (no L2 VIP election needed for one node) and uses `cpu_type = "kvm64"` (or `"host"`).
+Both environments share the same modules under `infra/terraform/modules/`.
+
+### Host Configuration — Ansible in `infra/ansible/`
+
+Ansible playbook (`pve-config.yaml`) to prepare Proxmox VE hosts: switch to no-subscription repos, harden SSH, create the Terraform service user/role/token, and install host-level monitoring (Glances).
 
 ## Full Bootstrap
 
@@ -33,7 +36,7 @@ ESO bootstrap requires a Bitwarden Secrets Manager machine account access token.
 
 ## Variable Substitution
 
-Manifests use `envsubst` for: `DOMAIN`, `INFRA_LB_IP`, `INFRA_HA_VIP`, `INFRA_ENV`, `INFRA_BITWARDEN_ORG_ID`, `INFRA_BITWARDEN_PROJECT_ID`.
+Manifests use `envsubst` for: `ENV`, `DOMAIN`, `BITWARDEN_ORG_ID`, `BITWARDEN_PROJECT_ID`, `BITWARDEN_ACCESS_TOKEN`.
 Template a copy of `.env.example` with actual values before deploying.
 
 ## Manifest Rendering
@@ -44,20 +47,21 @@ Never apply manifests directly — always go through kustomize first.
 ## Key Conventions
 
 - All namespaces enforce `pod-security.kubernetes.io/audit: restricted` (audit-version: latest)
-- ArgoCD sync-waves: ESO `-3`, others default `0`
+- ArgoCD sync-waves: CRDs `-3`, storage `-2`, others default `0`
 - ArgoCD uses `CreateNamespace=true` and `ServerSideApply=true`
-- Renovate auto-meres minor/patch Helm chart updates (`renovate.json`)
+- Renovate auto-merges minor/patch Helm chart updates (`renovate.json`)
 - CI validates all YAML manifests on PR/push
 
 ## Directory Ownership
 
 | Directory | Purpose |
 |---|---|
-| `apps/` | ArgoCD ApplicationSet definitions |
-| `infra/environments/prod/` | Terraform: 3-node prod cluster (bare-metal PVE host) |
-| `infra/environments/test/` | Terraform: single-VM test cluster (nested PVE VM on this host) |
-| `infra/modules/` | Shared Terraform modules (pve-config, talos-image, talos-vm, talos-cluster) |
-| `infra/tooling/` | Local helper scripts (create-test-pve-vm) |
+| `apps/` | ArgoCD ApplicationSet definitions (per environment) |
+| `infra/ansible/` | Ansible playbook for Proxmox VE host configuration |
+| `infra/terraform/environments/prod/` | Terraform: 3-node prod cluster (bare-metal PVE host) |
+| `infra/terraform/environments/test/` | Terraform: test cluster (bare-metal PVE host) |
+| `infra/terraform/modules/` | Shared Terraform modules (talos-image, talos-vm, talos-cluster) |
 | `manifests/` | All Kubernetes/Helm manifests |
 | `manifests/charts/` | Local Helm charts (base-app) |
 | `manifests/crds/` | Cluster CRDs (remote sources via kustomize) |
+| `manifests/tooling/` | Bootstrap orchestrator script |
