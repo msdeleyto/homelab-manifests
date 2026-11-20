@@ -10,7 +10,6 @@ spec:
           - name: jackett
           # - name: qbittorrent
           - name: shelfmark
-          # - name: slskd
   template:
     metadata:
       name: '{{name}}'
