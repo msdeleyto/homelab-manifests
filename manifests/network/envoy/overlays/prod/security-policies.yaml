@@ -67,15 +67,15 @@ spec:
   - group: gateway.networking.k8s.io
     kind: HTTPRoute
     name: jackett-route
-  - group: gateway.networking.k8s.io
-    kind: HTTPRoute
-    name: qb-route
+  # - group: gateway.networking.k8s.io
+  #   kind: HTTPRoute
+  #   name: qb-route
   - group: gateway.networking.k8s.io
     kind: HTTPRoute
     name: shelfmark-route
-  - group: gateway.networking.k8s.io
-    kind: HTTPRoute
-    name: slskd-route
+  # - group: gateway.networking.k8s.io
+  #   kind: HTTPRoute
+  #   name: slskd-route
   extAuth:
     headersToExtAuth:
     - Cookie
