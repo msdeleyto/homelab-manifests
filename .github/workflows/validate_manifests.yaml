@@ -25,7 +25,7 @@ jobs:
     if: ${{ always() && github.event_name == 'push' && github.event.sender.login == 'homelab-renovate-app[bot]' }}
     steps:
     - name: Send job result to slack
-      uses: slackapi/slack-github-action@0d95c9a7becc1e6e297d76df9bc735c44f4cbcbc # v3.0.5
+      uses: slackapi/slack-github-action@0bc3581177d9a0f8d555e07689384b376528e8fa # v4.1.0
       with:
         webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
         webhook-type: incoming-webhook
