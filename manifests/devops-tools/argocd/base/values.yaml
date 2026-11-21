@@ -34,15 +34,6 @@ configs:
             command: [sh, -c, find . -name kustomization.yaml]
   cm:
     create: true
-    dex.config: |
-      connectors:
-      - type: authproxy
-        id: oauth2-proxy
-        name: OAuth2-Proxy
-        config:
-          userHeader: X-Auth-Request-User
-          staticGroups:
-          - default
     resource.customizations: |
       argoproj.io/Application:
         health.lua: |
@@ -70,9 +61,6 @@ configs:
     create: true
     policy.csv: |
       g, admin, role:admin
-
-dex:
-  enabled: true
 
 redis:
   enabled: true

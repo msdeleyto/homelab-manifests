@@ -12,7 +12,7 @@ spec:
           - name: cilium
             path: ./manifests/network/cilium/overlays/prod
           - name: envoy
-            path: ./manifests/network/envoy/overlays/prod
+            path: ./manifests/network/envoy
   template:
     metadata:
       name: '{{name}}'
