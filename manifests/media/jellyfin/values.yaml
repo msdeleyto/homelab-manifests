@@ -53,10 +53,14 @@ httpRoute:
         value: /
 
 resources:
-  limits:
-    ephemeral-storage: 32Gi
   requests:
+    cpu: 500m
+    memory: 1Gi
     ephemeral-storage: 16Gi
+  limits:
+    cpu: 2000m
+    memory: 2Gi
+    ephemeral-storage: 32Gi
 
 storage:
   create: true
