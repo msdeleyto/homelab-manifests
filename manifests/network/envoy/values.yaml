@@ -2,3 +2,11 @@ crds:
   gatewayAPI:
     safeUpgradePolicy:
       enabled: false
+
+certgen:
+  resources:
+    requests:
+      cpu: 50m
+      memory: 32Mi
+    limits:
+      memory: 64Mi

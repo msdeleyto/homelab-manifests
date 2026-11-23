@@ -9,3 +9,19 @@ spec:
     kubernetes:
       envoyService:
         externalTrafficPolicy: Cluster
+      envoyDeployment:
+        replicas: 2
+        pod:
+          topologySpreadConstraints:
+          - maxSkew: 1
+            topologyKey: kubernetes.io/hostname
+            whenUnsatisfiable: ScheduleAnyway
+            labelSelector:
+              matchLabels:
+                gateway.envoyproxy.io/owning-gateway-name: cluster-gateway
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              memory: 256Mi

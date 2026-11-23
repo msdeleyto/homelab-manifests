@@ -22,6 +22,12 @@ loki:
 
 chunksCache:
   enabled: true
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      memory: 128Mi
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
@@ -34,6 +40,12 @@ chunksCache:
 
 resultsCache:
   enabled: true
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      memory: 128Mi
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
@@ -59,7 +71,6 @@ singleBinary:
       cpu: 200m
       memory: 512Mi
     limits:
-      cpu: 500m
       memory: 1Gi
   affinity:
     nodeAffinity:

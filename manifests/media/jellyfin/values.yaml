@@ -58,7 +58,6 @@ resources:
     memory: 1Gi
     ephemeral-storage: 16Gi
   limits:
-    cpu: 2000m
     memory: 2Gi
     ephemeral-storage: 32Gi
 

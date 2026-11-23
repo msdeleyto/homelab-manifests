@@ -28,7 +28,6 @@ agent:
       cpu: 100m
       memory: 256Mi
     limits:
-      cpu: 200m
       memory: 512Mi
   env:
   - name: COLLECTIONS
@@ -46,7 +45,6 @@ lapi:
       cpu: 100m
       memory: 256Mi
     limits:
-      cpu: 300m
       memory: 512Mi
   nodeSelector:
     role: worker

@@ -11,6 +11,7 @@ spec:
           # - name: crowdsec
           - name: grafana
           # - name: loki
+          - name: metrics-server
           - name: prometheus
           - name: tempo
           # - name: timescale

@@ -5,7 +5,6 @@ satellite:
       cpu: 100m
       memory: 128Mi
     limits:
-      cpu: 500m
       memory: 512Mi
   # For Talos, we need to ensure proper kernel module loading
   extraVolumes:
@@ -22,10 +21,28 @@ satellite:
 linstorCluster:
   controller:
     enabled: true
-    # Resources configured via patches to avoid overriding the entire podTemplate
+    podTemplate:
+      spec:
+        containers:
+        - name: linstor-controller
+          resources:
+            requests:
+              cpu: 200m
+              memory: 384Mi
+            limits:
+              memory: 768Mi
   csiController:
     enabled: true
-    # Resources configured via patches to avoid overriding the entire podTemplate
+    podTemplate:
+      spec:
+        containers:
+        - name: csi-controller
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              memory: 128Mi
 
 linstorSatelliteConfigurations:
   - name: talos-config
@@ -38,7 +55,6 @@ linstorSatelliteConfigurations:
               cpu: 100m
               memory: 128Mi
             limits:
-              cpu: 500m
               memory: 512Mi
           volumeMounts:
           - name: kernel-modules

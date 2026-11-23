@@ -6,7 +6,6 @@ resources:
     cpu: 100m
     memory: 128Mi
   limits:
-    cpu: 200m
     memory: 256Mi
 tolerations:
 - key: node-role.kubernetes.io/control-plane
@@ -19,7 +18,6 @@ webhook:
       cpu: 50m
       memory: 64Mi
     limits:
-      cpu: 100m
       memory: 128Mi
   tolerations:
     - key: node-role.kubernetes.io/control-plane
@@ -32,7 +30,6 @@ cainjector:
       cpu: 50m
       memory: 64Mi
     limits:
-      cpu: 100m
       memory: 128Mi
   tolerations:
   - key: node-role.kubernetes.io/control-plane
@@ -45,7 +42,6 @@ startupapicheck:
       cpu: 50m
       memory: 64Mi
     limits:
-      cpu: 100m
       memory: 128Mi
   tolerations:
   - key: node-role.kubernetes.io/control-plane

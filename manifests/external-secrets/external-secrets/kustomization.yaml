@@ -10,8 +10,27 @@ helmCharts:
   releaseName: external-secrets
   valuesInline:
     installCRDs: false
+    resources:
+      requests:
+        cpu: 50m
+        memory: 64Mi
+      limits:
+        memory: 128Mi
+    webhook:
+      resources:
+        requests:
+          cpu: 50m
+          memory: 64Mi
+        limits:
+          memory: 128Mi
     bitwarden-sdk-server:
       enabled: true
+      resources:
+        requests:
+          cpu: 50m
+          memory: 64Mi
+        limits:
+          memory: 128Mi
       image:
         tls:
           enabled: true

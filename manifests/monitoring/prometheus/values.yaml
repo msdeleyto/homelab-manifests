@@ -10,9 +10,8 @@ server:
   resources:
     requests:
       cpu: 250m
-      memory: 512Mi
+      memory: 640Mi
     limits:
-      cpu: 1000m
       memory: 1Gi
   affinity:
     nodeAffinity:
@@ -29,9 +28,27 @@ alertmanager:
 
 kube-state-metrics:
   enabled: true
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      memory: 128Mi
 
 prometheus-node-exporter:
   enabled: true
+  resources:
+    requests:
+      cpu: 50m
+      memory: 32Mi
+    limits:
+      memory: 64Mi
 
 prometheus-pushgateway:
   enabled: true
+  resources:
+    requests:
+      cpu: 50m
+      memory: 32Mi
+    limits:
+      memory: 64Mi
