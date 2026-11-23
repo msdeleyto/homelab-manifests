@@ -54,11 +54,11 @@ httpRoute:
 
 resources:
   requests:
-    cpu: 200m
-    memory: 256Mi
+    cpu: 500m
+    memory: 512Mi
     ephemeral-storage: 16Gi
   limits:
-    memory: 1Gi
+    memory: 2Gi
     ephemeral-storage: 32Gi
 
 storage:
