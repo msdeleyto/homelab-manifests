@@ -16,9 +16,9 @@ helmCharts:
         resources:
           requests:
             cpu: 100m
-            memory: 128Mi
+            memory: 64Mi
           limits:
-            memory: 512Mi
+            memory: 128Mi
 
   - name: linstor-cluster
     repo: oci://ghcr.io/piraeusdatastore/helm-charts

@@ -21,9 +21,9 @@ operator:
 resources:
   requests:
     cpu: 100m
-    memory: 128Mi
+    memory: 200Mi
   limits:
-    memory: 256Mi
+    memory: 400Mi
 
 l2announcements:
   enabled: true
@@ -48,9 +48,9 @@ hubble:
     resources:
       requests:
         cpu: 50m
-        memory: 64Mi
+        memory: 32Mi
       limits:
-        memory: 128Mi
+        memory: 64Mi
   ui:
     enabled: true
     resources:

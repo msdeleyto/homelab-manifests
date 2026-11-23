@@ -77,9 +77,9 @@ volumeMounts:
 resources:
   requests:
     cpu: 100m
-    memory: 192Mi
+    memory: 96Mi
   limits:
-    memory: 384Mi
+    memory: 192Mi
 
 affinity:
   nodeAffinity:

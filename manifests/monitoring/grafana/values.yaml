@@ -2,10 +2,10 @@ replicaCount: 1
 
 resources:
   requests:
-    cpu: 100m
-    memory: 192Mi
+    cpu: 50m
+    memory: 96Mi
   limits:
-    memory: 384Mi
+    memory: 192Mi
 
 admin:
   existingSecret: grafana-secret

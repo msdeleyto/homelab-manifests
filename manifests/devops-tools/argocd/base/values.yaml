@@ -77,10 +77,10 @@ controller:
     enabled: true
   resources:
     requests:
-      cpu: 200m
-      memory: 384Mi
+      cpu: 100m
+      memory: 320Mi
     limits:
-      memory: 768Mi
+      memory: 640Mi
 
 server:
   replicas: 1
@@ -99,10 +99,10 @@ repoServer:
     enabled: true
   resources:
     requests:
-      cpu: 100m
-      memory: 192Mi
+      cpu: 50m
+      memory: 64Mi
     limits:
-      memory: 384Mi
+      memory: 128Mi
   rbac:
   - verbs:
     - get

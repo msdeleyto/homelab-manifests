@@ -28,9 +28,9 @@ helmCharts:
       resources:
         requests:
           cpu: 50m
-          memory: 64Mi
+          memory: 32Mi
         limits:
-          memory: 128Mi
+          memory: 64Mi
       image:
         tls:
           enabled: true

@@ -28,9 +28,9 @@ linstorCluster:
           resources:
             requests:
               cpu: 200m
-              memory: 384Mi
+              memory: 450Mi
             limits:
-              memory: 768Mi
+              memory: 900Mi
   csiController:
     enabled: true
     podTemplate:

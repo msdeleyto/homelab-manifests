@@ -11,9 +11,9 @@ tempo:
   resources:
     requests:
       cpu: 100m
-      memory: 256Mi
+      memory: 64Mi
     limits:
-      memory: 512Mi
+      memory: 256Mi
   receivers:
     otlp:
       protocols:
