@@ -9,6 +9,32 @@ terraform {
 
 locals {
   first_controlplane = keys(var.nodes)[0]
+
+  # Label conventions follow:
+  #   - NFD (Node Feature Discovery) PCI labels for vendor/device detection
+  #   - gpu.amd.com/* namespace for capability advertisement
+  #   - amdgpu=true for backward compatibility with existing workloads
+  gpu_config_patches = {
+    for name, node in var.nodes : name => [
+      yamlencode({
+        apiVersion = "v1alpha1"
+        kind       = "KubeNodeConfig"
+        labels = {
+          # NFD-compatible PCI labels (matches what Node Feature Discovery
+          # would generate for an AMD VGA compatible controller, vendor 1002)
+          "feature.node.kubernetes.io/pci-0300_1002.present" = "true"
+          "feature.node.kubernetes.io/pci-0300_1002.vendor"  = "1002"
+
+          # Capability labels — let workloads select on GPU features
+          "gpu.amd.com/present" = "true"
+          "gpu.amd.com/vaapi"   = "true"
+
+          # Backward-compatible label used by existing workloads
+          "amdgpu" = "true"
+        }
+      }),
+    ] if node.gpu_mapping != null
+  }
 }
 
 # ---------------------------------------------------------------------------
@@ -139,7 +165,9 @@ data "talos_machine_configuration" "controlplane" {
           maxSize = var.local_path_volume_size
         }
       }),
-    ]
+    ],
+
+    lookup(local.gpu_config_patches, each.key, []),
   )
 }
 

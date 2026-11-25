@@ -34,6 +34,7 @@ variable "nodes" {
   type = map(object({
     ip           = string
     controlplane = bool
+    gpu_mapping  = optional(string)
   }))
 
   validation {

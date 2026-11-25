@@ -2,6 +2,7 @@
   hosts: proxmox
   become: true
   gather_facts: true
+  force_handlers: true
   vars:
     terraform_user: "terraform@pve"
     terraform_user_comment: "Terraform Provisioner"
@@ -37,6 +38,9 @@
       - VM.GuestAgent.Unrestricted
       - VM.Migrate
       - VM.PowerMgmt
+      # PCI Resource Mapping
+      - Mapping.Use
+      - Mapping.Audit
   tasks:
     # =========================================================================
     # 1. Update Sources to No-Subscription (Proxmox VE and Ceph)
@@ -121,6 +125,7 @@
       ansible.builtin.command: pveum role list
       register: existing_roles
       changed_when: false
+      check_mode: false
 
     - name: Create Terraform role
       ansible.builtin.command: pveum role add {{ terraform_role }} -privs "{{ terraform_privs | join(',') }}"
@@ -139,6 +144,7 @@
       ansible.builtin.command: pveum user list
       register: existing_users
       changed_when: false
+      check_mode: false
 
     - name: Create Terraform service user
       ansible.builtin.command: pveum user add {{ terraform_user }} --comment "{{ terraform_user_comment }}"
@@ -149,13 +155,19 @@
     # 5. Assign Role to User
     # =========================================================================
     - name: Check existing ACL assignments
-      ansible.builtin.command: pveum acl list
+      ansible.builtin.command: pveum acl list --output-format json
       register: existing_acls
       changed_when: false
+      check_mode: false
 
     - name: Assign Terraform role to Terraform user at root path (/)
       ansible.builtin.command: pveum acl modify / -role {{ terraform_role }} -user {{ terraform_user }}
-      when: not (existing_acls.stdout | regex_search('^/\s+.*' ~ (terraform_user | regex_escape) ~ '.*' ~ (terraform_role | regex_escape), multiline=True))
+      when: >-
+        existing_acls.stdout | from_json
+        | selectattr('path', 'equalto', '/')
+        | selectattr('roleid', 'equalto', terraform_role)
+        | selectattr('ugid', 'equalto', terraform_user)
+        | list | length == 0
       changed_when: true
 
     # =========================================================================
@@ -165,6 +177,7 @@
       ansible.builtin.command: pveum user token list {{ terraform_user }}
       register: user_tokens
       changed_when: false
+      check_mode: false
 
     - name: Generate API token for Terraform user
       ansible.builtin.command: pveum user token add {{ terraform_user }} {{ terraform_token_id }} -privsep=0 --output-format json
@@ -223,7 +236,172 @@
         state: started
         daemon_reload: true
 
+    # =========================================================================
+    # 8. Configure GPU Passthrough (IOMMU/vfio)
+    # =========================================================================
+    - name: Compute desired GRUB kernel command line
+      ansible.builtin.set_fact:
+        grub_cmdline_desired: "quiet amd_iommu=on iommu=pt vfio-pci.ids={{ gpu_pci_ids | join(',') }}"
+
+    - name: Read current kernel command line
+      ansible.builtin.command: cat /proc/cmdline
+      register: current_cmdline
+      changed_when: false
+      check_mode: false
+
+    - name: Set kernel parameters for IOMMU and vfio-pci
+      ansible.builtin.lineinfile:
+        path: /etc/default/grub
+        regexp: '^GRUB_CMDLINE_LINUX_DEFAULT='
+        line: 'GRUB_CMDLINE_LINUX_DEFAULT="{{ grub_cmdline_desired }}"'
+        backup: true
+      notify: Update initramfs and GRUB
+
+    - name: Add vfio modules to /etc/modules
+      ansible.builtin.lineinfile:
+        path: /etc/modules
+        line: "{{ item }}"
+        state: present
+      loop:
+        - vfio
+        - vfio_iommu_type1
+        - vfio_pci
+      notify: Update initramfs and GRUB
+
+    - name: Configure vfio-pci to load before amdgpu and snd_hda_intel
+      ansible.builtin.copy:
+        dest: /etc/modprobe.d/vfio.conf
+        owner: root
+        group: root
+        mode: '0644'
+        content: |
+          softdep amdgpu pre: vfio-pci
+          softdep snd_hda_intel pre: vfio-pci
+      notify: Update initramfs and GRUB
+
+    - name: Trigger boot refresh when the running kernel cmdline is outdated
+      # debug + changed_when is used purely to notify the handler: the on-disk
+      # config may already be correct while the generated grub.cfg / running
+      # kernel still reflect an older value (e.g. from a run with a stale
+      # inventory variable, or a run that failed before handlers were flushed)
+      ansible.builtin.debug:
+        msg: >-
+          Running kernel cmdline does not contain '{{ grub_cmdline_desired }}' -
+          regenerating initramfs/GRUB and rebooting
+      when: grub_cmdline_desired not in current_cmdline.stdout
+      changed_when: true
+      notify: Update initramfs and GRUB
+
+    - name: Apply boot configuration changes before continuing
+      ansible.builtin.meta: flush_handlers
+
+    - name: Read existing PCI resource mappings
+      ansible.builtin.command: pvesh get /cluster/mapping/pci --output-format json
+      register: existing_pci_mappings
+      changed_when: false
+      check_mode: false
+
+    - name: Read GPU hardware properties from sysfs
+      # PVE validates mapping entries against the real hardware on VM start
+      # (PVE::Mapping::PCI::assert_valid): each entry must carry the device's
+      # actual vendor:device id, IOMMU group and subsystem id, or the VM fails
+      # to start with "PCI device mapping invalid (hardware probably changed)".
+      # Values are read from function .0 of the first configured PCI address.
+      ansible.builtin.shell:
+        cmd: |
+          set -eu
+          dev=/sys/bus/pci/devices/{{ gpu_pci_addresses[0] }}
+          printf '{"iommugroup":"%s","id":"%s:%s","subsystem-id":"%s:%s"}' \
+            "$(basename "$(readlink -f "$dev/iommu_group")")" \
+            "$(sed 's/^0x//' "$dev/vendor")" "$(sed 's/^0x//' "$dev/device")" \
+            "$(sed 's/^0x//' "$dev/subsystem_vendor")" "$(sed 's/^0x//' "$dev/subsystem_device")"
+      register: gpu_sysfs
+      changed_when: false
+      check_mode: false
+
+    - name: Compute PCI resource mapping state
+      ansible.builtin.set_fact:
+        gpu_hw: "{{ gpu_sysfs.stdout | from_json }}"
+        gpu_mapping_ids: "{{ existing_pci_mappings.stdout | from_json | map(attribute='id') | list }}"
+        gpu_mapping_current: >-
+          {{ ((existing_pci_mappings.stdout | from_json
+          | selectattr('id', 'equalto', gpu_mapping_name) | first
+          | default({}, true))['map']) | default([]) }}
+        # whole-device paths (function suffix stripped, deduplicated): a path without
+        # ".N" maps the entire device, so GPU + HDMI audio are passed through together
+        # (";"-separated paths would be alternatives, and their differing device IDs
+        # would fail validation)
+        gpu_mapping_path: "{{ gpu_pci_addresses | map('regex_replace', '\\.[0-9a-fA-F]$', '') | unique | join(';') }}"
+
+    - name: Build desired PCI mapping entry
+      ansible.builtin.set_fact:
+        gpu_mapping_entry: >-
+          node={{ ansible_facts['hostname'] }},id={{ gpu_hw['id'] }},iommugroup={{
+          gpu_hw['iommugroup'] }},path={{ gpu_mapping_path }},subsystem-id={{
+          gpu_hw['subsystem-id'] }}
+
+    - name: Create PCI resource mapping for GPU passthrough
+      ansible.builtin.command:
+        argv:
+          - pvesh
+          - create
+          - /cluster/mapping/pci
+          - --id
+          - "{{ gpu_mapping_name }}"
+          - --map
+          - "{{ gpu_mapping_entry }}"
+      when: gpu_mapping_name not in gpu_mapping_ids
+      changed_when: true
+
+    - name: Update PCI resource mapping when the node entry differs
+      ansible.builtin.command:
+        argv:
+          - pvesh
+          - set
+          - "/cluster/mapping/pci/{{ gpu_mapping_name }}"
+          - --map
+          - "{{ gpu_mapping_entry }}"
+      when:
+        - gpu_mapping_name in gpu_mapping_ids
+        - >-
+          gpu_mapping_current
+          | select('search', 'node=' ~ (ansible_facts['hostname'] | regex_escape) ~ '(,|$)')
+          | select('search', '(^|,)id=' ~ (gpu_hw['id'] | regex_escape) ~ '(,|$)')
+          | select('search', 'iommugroup=' ~ (gpu_hw['iommugroup'] | regex_escape) ~ '(,|$)')
+          | select('search', 'path=' ~ (gpu_mapping_path | regex_escape) ~ '(,|$)')
+          | select('search', 'subsystem-id=' ~ (gpu_hw['subsystem-id'] | regex_escape) ~ '(,|$)')
+          | list | length == 0
+      changed_when: true
+
+    - name: Check PCI mapping ACL assignments
+      ansible.builtin.command: pveum acl list --output-format json
+      register: mapping_acls
+      changed_when: false
+      check_mode: false
+
+    - name: Grant terraform user permission to use PCI mappings
+      ansible.builtin.command: pveum acl modify /mapping/pci -user {{ terraform_user }} -role {{ terraform_role }}
+      when: >-
+        mapping_acls.stdout | from_json
+        | selectattr('path', 'equalto', '/mapping/pci')
+        | selectattr('roleid', 'equalto', terraform_role)
+        | selectattr('ugid', 'equalto', terraform_user)
+        | list | length == 0
+      changed_when: true
+
   handlers:
+    - name: Update initramfs and GRUB
+      ansible.builtin.shell: |
+        update-initramfs -u -k all
+        update-grub
+      changed_when: true
+      notify: Reboot host
+
+    - name: Reboot host
+      ansible.builtin.reboot:
+        reboot_timeout: 300
+        msg: "Rebooting for IOMMU/vfio changes"
+
     - name: Reload SSH service
       ansible.builtin.service:
         name: ssh

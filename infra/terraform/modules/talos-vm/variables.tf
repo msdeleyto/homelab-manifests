@@ -25,6 +25,7 @@ variable "nodes" {
     os_disk_gb   = number
     data_disk_gb = number
     mac_address  = string
+    gpu_mapping  = optional(string) # PVE PCI resource mapping name, e.g. "amdgpu"
   }))
 }
 

@@ -26,6 +26,8 @@ resource "proxmox_virtual_environment_vm" "talos" {
   on_boot = true
   started = true
 
+  machine = each.value.gpu_mapping != null ? "q35" : "pc"
+
   agent {
     enabled = true # QEMU guest agent installed via Talos extension
     trim    = true
@@ -68,10 +70,23 @@ resource "proxmox_virtual_environment_vm" "talos" {
   }
 
   network_device {
-    bridge   = "vmbr0"
-    model    = "virtio"
-    firewall = false
+    bridge      = "vmbr0"
+    model       = "virtio"
+    firewall    = false
     mac_address = each.value.mac_address
+  }
+
+  # Optional GPU passthrough via a PVE PCI resource mapping.
+  # Only attached to the node whose `gpu_mapping` is set.
+  dynamic "hostpci" {
+    for_each = each.value.gpu_mapping != null ? [1] : []
+    content {
+      device  = "hostpci0"
+      mapping = each.value.gpu_mapping
+      pcie    = true
+      rombar  = true
+      xvga    = false
+    }
   }
 
   # Talos boots from the cloud-init / nocloud image; no cloud-init block needed.

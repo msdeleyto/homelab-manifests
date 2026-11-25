@@ -10,6 +10,7 @@
 5. **Assigns Permissions (ACL)**: Binds `TerraformProv` to `terraform@pve` recursively at root path (`/`).
 6. **Generates API Token**: Generates the Terraform API token (`-privsep=0`).
 7. **Installs host monitoring**: Installs a monitoring agent with sensor support in a Python venv at `/opt/glances`, with a systemd service running the web UI.
+8. **Configures GPU Passthrough (IOMMU/vfio)**: Uses the GPU inventory variables (`gpu_pci_ids`, `gpu_pci_addresses`, `gpu_mapping_name` — lists of vendor:device IDs and PCI addresses) to set the GRUB kernel command line (`amd_iommu=on iommu=pt vfio-pci.ids=...`), loads the `vfio` modules early (`/etc/modules` plus a `vfio-pci` softdep ahead of `amdgpu`/`snd_hda_intel`), creates or updates the Proxmox PCI resource mapping via the cluster API (`pvesh .../cluster/mapping/pci`) using a whole-device path plus the hardware properties (`iommugroup`, `subsystem-id`) read from sysfs, which PVE validates against the real device on VM start. When the boot configuration changed — or the running kernel cmdline drifted from the desired one — initramfs/GRUB are regenerated and the host is rebooted via handlers (`force_handlers` ensures this happens even if a later task fails).
 
 ## Usage
 
