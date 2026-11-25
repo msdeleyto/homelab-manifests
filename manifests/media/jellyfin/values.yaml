@@ -15,6 +15,10 @@ podSecurityContext:
   fsGroup: 1000
   seccompProfile:
     type: RuntimeDefault
+  # Grant access to /dev/dri for hardware video acceleration
+  supplementalGroups:
+  - 44   # video group
+  - 109  # render group (common on modern systems)
 
 securityContext:
   allowPrivilegeEscalation: false
@@ -77,12 +81,18 @@ volumes:
   nfs:
     server: nas.homelab
     path: /volume1/data/media
+- name: dri
+  hostPath:
+    path: /dev/dri
+    type: DirectoryOrCreate
 
 volumeMounts:
 - mountPath: /config
   name: config
 - name: data
   mountPath: /data/media
+- name: dri
+  mountPath: /dev/dri
 
 affinity:
   nodeAffinity:
