@@ -36,7 +36,8 @@ linstorCluster:
     podTemplate:
       spec:
         containers:
-        - name: linstor-csi
+        - name: csi-controller
+          image: quay.io/piraeusdatastore/piraeus-csi-driver:v2.12.1
           resources:
             requests:
               cpu: 50m
